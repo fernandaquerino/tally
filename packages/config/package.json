@@ -1,0 +1,21 @@
+{
+  "name": "@tally/config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./eslint": "./eslint.config.js",
+    "./tsconfig/base": "./tsconfig/base.json",
+    "./tsconfig/nextjs": "./tsconfig/nextjs.json",
+    "./tsconfig/node": "./tsconfig/node.json"
+  },
+  "dependencies": {
+    "@eslint/js": "^9.30.0",
+    "globals": "^16.3.0",
+    "typescript-eslint": "^8.35.1"
+  },
+  "peerDependencies": {
+    "eslint": ">=9",
+    "typescript": ">=5"
+  }
+}
