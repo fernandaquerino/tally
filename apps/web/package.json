@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start --port 3000",
     "lint": "eslint src --max-warnings=0",
-    "test": "node --test",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf .next *.tsbuildinfo",
     "storybook": "storybook dev -p 6006",
@@ -31,14 +32,19 @@
     "@storybook/nextjs": "^10.5.0",
     "@tailwindcss/postcss": "^4.3.2",
     "@tally/config": "workspace:*",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/node": "^22.15.32",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "eslint": "^9.30.0",
     "eslint-plugin-storybook": "^10.5.0",
+    "jsdom": "^29.1.1",
     "postcss": "^8.5.18",
     "storybook": "^10.5.0",
     "tailwindcss": "^4.3.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vitest": "^4.1.10"
   }
 }
