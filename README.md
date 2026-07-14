@@ -2,7 +2,7 @@
 
 > **O app financeiro para quem vive de CNPJ.** Controle o PJ e o pessoal no mesmo lugar, com IA que te diz quanto do seu faturamento é realmente seu.
 
-**Status:** 🚧 em desenvolvimento — fase de discovery/fundação (pré-MVP). Ainda não há release utilizável.
+**Status:** 🚧 em desenvolvimento — discovery concluído e backlog do app completo em mapeamento. Ainda não há release utilizável.
 
 ---
 
@@ -80,16 +80,39 @@ Scripts úteis: `pnpm lint` · `pnpm typecheck` · `pnpm test` · `pnpm test:e2e
 | 🎨 UX (jornadas, fluxos, princípios de design)                              | [`docs/ux/`](docs/ux/)                                                                                         |
 | 🏗️ Arquitetura (system design, modelo de domínio/dados, threat model, ADRs) | [`docs/architecture/`](docs/architecture/) — comece por [`architecture.md`](docs/architecture/architecture.md) |
 
+## Telas principais
+
+O roadmap foi organizado por telas/domínios para facilitar o desenvolvimento no GitHub Projects:
+
+- **Dashboard** — visão geral, 3 números principais, painel PJ e alertas
+- **Transações** — lançamento rápido, PF/PJ, recorrências, parcelamentos e split de recebimento
+- **Contas** — contas PF/PJ, saldos derivados, transferências e auditoria de saldo
+- **Categorias** — categorias padrão e customizadas por contexto
+- **Cartões** — cartões, faturas por competência, parcelas, fechamento e pagamento
+- **Metas** — objetivos financeiros PF/PJ, progresso e contribuições
+- **Dívidas** — dívidas, parcelas, prioridade de pagamento e comprometido futuro
+- **Relatórios** — fechamento mensal, filtros PF/PJ/Tudo, drill-down e exportação
+- **Settings** — perfil, fiscal, regras de split, segurança, dados e preferências
+
 ## Roadmap (milestones)
 
-- [ ] **M0 — Fundação:** monorepo, CI, Docker, deploy hello-world
-- [ ] **M1 — Walking skeleton:** auth, tenancy (+ testes de IDOR), CRUD de transações PF/PJ, home com 3 números
-- [ ] **M2 — O diferencial:** onboarding fiscal, divisor de recebimento, provisões, painel PJ
-- [ ] **M3 — Cartão por fatura:** faturas, parcelamento, fechamento, pagamento
-- [ ] **M4 — IA v1:** lançamento por linguagem natural, categorização, resumo semanal
-- [ ] **M5 — Beta:** PWA/offline, exportação, e-mails, checklist de segurança
+- [ ] **Sprint 0 — Fundação:** monorepo, Next.js, NestJS, PostgreSQL, Redis, Prisma, CI, seed, design system mínimo e ADRs
+- [ ] **Sprint 1 — App Shell + Auth:** registro/login, sessão, tenancy, onboarding fiscal, layout autenticado e sidebar com todas as telas
+- [ ] **Sprint 2 — Dashboard:** home com 3 números, painel PJ, próximos alertas e últimas transações
+- [ ] **Sprint 3 — Transações:** CRUD, lançamento em menos de 10s, filtros, recorrências, parcelamentos e divisor de recebimento PJ
+- [ ] **Sprint 4 — Contas:** contas PF/PJ, saldos derivados, transferências, pró-labore e reconciliação
+- [ ] **Sprint 5 — Categorias:** categorias por contexto, categorias padrão/customizadas e sugestão de última categoria usada
+- [ ] **Sprint 6 — Cartões:** cartões, faturas, compra parcelada, fechamento automático e pagamento de fatura
+- [ ] **Sprint 7 — Metas:** metas PF/PJ, progresso, contribuições e widget compacto no dashboard
+- [ ] **Sprint 8 — Dívidas:** cadastro de dívidas, parcelas, pagamentos, priorização e impacto no comprometido futuro
+- [ ] **Sprint 9 — Relatórios:** relatório mensal, filtros PF/PJ/Tudo, gráficos expansíveis, drill-down e export CSV/JSON
+- [ ] **Sprint 10 — Settings:** perfil, configurações fiscais, regras de split, segurança, exportação, exclusão de conta e preferências
+- [ ] **Sprint 11 — IA + Alertas:** lançamento por linguagem natural, categorização com feedback, insights, alertas e resumo semanal
+- [ ] **Sprint 12 — PWA + Beta:** PWA instalável, fila offline, idempotência, observabilidade, E2E, deploy, backup/restore e checklist beta
 
-Pós-MVP: import CSV/OFX e visão do contador (v1.5) → conta família e metas (v2) → Open Finance (v2+).
+> Observação: o MVP original priorizava o momento AHA do split PJ. Este roadmap é a versão **app completo de portfólio**, já incluindo Metas e Dívidas como telas planejadas desde o começo.
+
+Pós-beta: import CSV/OFX, visão do contador, conta família, Open Finance e integrações com emissores de NF/contabilidade.
 
 ## Princípios inegociáveis
 

@@ -1,0 +1,28 @@
+{
+  "name": "@tally/shared",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint src --max-warnings=0",
+    "test": "node --test",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "clean": "rm -rf dist *.tsbuildinfo"
+  },
+  "devDependencies": {
+    "@tally/config": "workspace:*",
+    "eslint": "^9.30.0",
+    "typescript": "^5.8.3"
+  }
+}
+
