@@ -1,7 +1,37 @@
 @import "tailwindcss";
 
+/*
+ * Design tokens (mínimos) — Tailwind v4 gera utilitários a partir daqui.
+ * Ex.: `--color-primary` habilita `bg-primary`, `text-primary`, `border-primary`.
+ * São cores placeholder; ajuste à vontade sem mexer nos componentes.
+ */
 @theme {
   --font-sans: Arial, Helvetica, sans-serif;
+
+  /* Marca */
+  --color-primary: #7c3aed;
+  --color-primary-hover: #6d28d9;
+  --color-primary-foreground: #ffffff;
+
+  /* Superfícies e texto */
+  --color-background: #ffffff;
+  --color-foreground: #0f172a;
+  --color-muted: #f1f5f9;
+  --color-muted-foreground: #64748b;
+  --color-border: #e2e8f0;
+
+  /* Neutro (ex.: botão secundário) */
+  --color-secondary: #f1f5f9;
+  --color-secondary-hover: #e2e8f0;
+  --color-secondary-foreground: #0f172a;
+
+  /* Destrutivo / erro */
+  --color-destructive: #dc2626;
+  --color-destructive-hover: #b91c1c;
+  --color-destructive-foreground: #ffffff;
+
+  /* Foco */
+  --color-ring: #7c3aed;
 }
 
 body {

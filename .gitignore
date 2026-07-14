@@ -9,3 +9,7 @@ prisma/generated
 .env
 .env.local
 .DS_Store
+
+*storybook.log
+storybook-static
+debug-storybook.log

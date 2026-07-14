@@ -7,3 +7,4 @@ coverage
 prisma/generated
 pnpm-lock.yaml
 *.tsbuildinfo
+storybook-static
