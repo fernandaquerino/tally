@@ -1,0 +1,135 @@
+name: Feature request
+description: Detalhe uma nova funcionalidade ou entrega do backlog
+title: "[FEAT] "
+labels:
+  - feature
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use este template para detalhar uma funcionalidade, configuração técnica ou entrega do backlog.
+
+        Preencha o contexto, o escopo e os critérios de aceite de forma objetiva para que a issue possa ser desenvolvida sem ambiguidades.
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Contexto
+      description: Explique o problema, a necessidade e por que essa entrega é importante.
+      placeholder: |
+        O projeto é um portfólio fullstack e precisa validar automaticamente a qualidade do código antes dos commits e durante cada pull request.
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Escopo
+      description: Liste tudo o que deve ser implementado nesta issue.
+      placeholder: |
+        - [ ] Criar workflow `.github/workflows/ci.yml`
+        - [ ] Configurar setup do Node.js com cache do pnpm
+        - [ ] Rodar `pnpm lint`
+        - [ ] Configurar Husky e hook de `pre-commit`
+        - [ ] Configurar `lint-staged`
+    validations:
+      required: true
+
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Fora do escopo
+      description: Liste explicitamente o que não deve ser implementado nesta issue.
+      placeholder: |
+        - [ ] Deploy automático
+        - [ ] Testes completos de integração e E2E
+        - [ ] Funcionalidades de outras sprints
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Critérios de aceite
+      description: Liste as condições necessárias para considerar a issue concluída.
+      placeholder: |
+        - [ ] Pull requests disparam o workflow de CI
+        - [ ] A CI falha quando alguma validação falha
+        - [ ] O hook de `pre-commit` é executado ao realizar um commit
+        - [ ] Commits são permitidos quando todas as validações passam
+    validations:
+      required: true
+
+  - type: textarea
+    id: technical-notes
+    attributes:
+      label: Notas técnicas
+      description: Adicione decisões técnicas, restrições, referências ou orientações de implementação.
+      placeholder: |
+        - Usar o script `prepare` do `package.json` para inicializar o Husky.
+        - Manter o `pre-commit` rápido, validando apenas arquivos staged.
+        - Deixar `typecheck`, testes completos e build para a CI.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Área
+      description: Selecione a principal área impactada pela issue.
+      options:
+        - Setup e infraestrutura
+        - CI/CD
+        - Qualidade de código
+        - Design System
+        - Frontend
+        - Backend
+        - Banco de dados
+        - Autenticação
+        - Testes
+        - Observabilidade
+        - Documentação
+        - Segurança
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Prioridade
+      options:
+        - Baixa
+        - Média
+        - Alta
+        - Crítica
+    validations:
+      required: true
+
+  - type: input
+    id: estimate
+    attributes:
+      label: Estimativa
+      description: Informe a estimativa em Story Points.
+      placeholder: "Ex: 1 SP, 2 SP, 3 SP, 5 SP"
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependências
+      description: Informe issues, configurações ou entregas necessárias antes desta implementação.
+      placeholder: |
+        - Depende da issue #00
+        - Requer que o monorepo esteja configurado
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist de definição
+      options:
+        - label: O contexto e o objetivo da issue estão claros
+          required: true
+        - label: O escopo está separado do que está fora do escopo
+          required: true
+        - label: Os critérios de aceite são objetivos e verificáveis
+          required: true
+        - label: A issue não contém dados sensíveis
+          required: true
