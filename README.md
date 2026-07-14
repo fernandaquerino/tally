@@ -120,8 +120,8 @@ git commit --no-verify
 ```
 
 **CI:** o workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) roda em
-pull requests (e em pushes para `main`) e executa, em sequência, `pnpm lint`,
-`pnpm typecheck`, `pnpm test` e `pnpm build`. Qualquer falha reprova a checagem.
+pull requests (e em pushes para `main`) e executa, em sequência, `pnpm format:check`,
+`pnpm lint`, `pnpm typecheck`, `pnpm test` e `pnpm build`. Qualquer falha reprova a checagem.
 
 ## Documentação
 
