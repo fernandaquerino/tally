@@ -7,22 +7,41 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "development": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./money": {
+      "development": "./src/lib/money.ts",
+      "types": "./dist/lib/money.d.ts",
+      "default": "./dist/lib/money.js"
+    },
+    "./schemas": {
+      "development": "./src/schemas/index.ts",
+      "types": "./dist/schemas/index.d.ts",
+      "default": "./dist/schemas/index.js"
+    },
+    "./types": {
+      "development": "./src/types/index.ts",
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/types/index.js"
     }
   },
   "files": ["dist"],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "lint": "eslint src --max-warnings=0",
-    "test": "node --test",
+    "test": "node --conditions development --test",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "clean": "rm -rf dist *.tsbuildinfo"
   },
+  "dependencies": {
+    "zod": "^4.4.3"
+  },
   "devDependencies": {
     "@tally/config": "workspace:*",
+    "@types/node": "^22.15.32",
     "eslint": "^9.30.0",
     "typescript": "^5.8.3"
   }
 }
-
