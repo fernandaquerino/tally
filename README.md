@@ -51,7 +51,7 @@ tally/
 
 ## Rodando localmente
 
-> ⚠️ O código ainda está em construção (milestone M0). Instruções-alvo:
+> ⚠️ O código ainda está em construção (milestone M0).
 
 ```bash
 # pré-requisitos: Node 20+, pnpm, Docker
@@ -60,14 +60,35 @@ git clone https://github.com/<user>/tally.git
 cd tally
 pnpm install
 
-cp .env.example .env        # preencha as variáveis
+cp .env.example .env        # valores locais prontos para desenvolvimento
 
 docker compose up -d        # Postgres + Redis
-pnpm db:migrate             # aplica migrations
-pnpm db:seed                # dados de exemplo
 
 pnpm dev                    # web em :3000, api em :3001
 ```
+
+### Infraestrutura local
+
+```bash
+# subir Postgres e Redis em segundo plano
+docker compose up -d
+
+# consultar estado e healthchecks
+docker compose ps
+
+# derrubar os containers preservando os dados
+docker compose down
+
+# reset completo: derruba containers e apaga os volumes locais
+docker compose down -v
+```
+
+O volume nomeado `tally_postgres_data` mantém os dados do PostgreSQL entre
+reinícios e execuções de `docker compose down`. O comando de reset com `-v` é
+destrutivo e deve ser usado somente quando for necessário recriar o ambiente.
+Por padrão, os serviços são publicados em `localhost:5433` (PostgreSQL) e
+`localhost:6380` (Redis), evitando conflito com instalações locais nas portas
+padrão; ambos podem ser alterados no arquivo `.env`.
 
 Scripts úteis: `pnpm lint` · `pnpm typecheck` · `pnpm test` · `pnpm test:e2e` · `pnpm build`
 
