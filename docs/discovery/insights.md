@@ -3,14 +3,14 @@
 > Um insight = um padrão observado + evidência + implicação. Status: 🔴 hipótese · 🟡 evidência parcial · 🟢 validado.
 > Insights 1–8 vêm do benchmark (fonte secundária); entrevistas devem confirmá-los ou derrubá-los.
 
-| # | Insight | Evidência | Status | Implicação para o produto |
-|---|---|---|---|---|
-| 1 | A mistura PF/PJ é a dor central do microempreendedor | Sebrae: ~60% dos MEIs usaram dinheiro pessoal p/ dívidas da empresa; reviews do Minhas Economias elogiam separação de contas | 🟡 | Core do produto: toggle PF/PJ + divisor |
-| 2 | Sync bancário instável é a maior causa de reviews negativas | Reclame Aqui Mobills; Trustpilot Wallet; App Store Despezzas | 🟢 | Manual-first no MVP (ADR-0007); OF só quando sustentável |
-| 3 | Cartão mal modelado gera "saldo não bate" crônico | Reviews da categoria; tese do LAPI | 🟢 | Fatura/competência no modelo de dados (ADR-0005) |
-| 4 | IA virou commodity; IA proativa é o que encanta | Tração do Pierre (64M transações em 1 ano); histórias de "achou R$ 380 em assinaturas" | 🟢 | IA que avisa > IA que responde; contexto fiscal como diferencial |
-| 5 | Categoria tem ~70% de abandono em 100 dias; problema é comportamento, não ferramenta | Estudos da categoria; YNAB como contraprova (método retém) | 🟢 | Produto ensina um método (o split), não só registra |
-| 6 | Família/casal mal atendido no Brasil | Gambiarras de login compartilhado; sucesso do household do Monarch nos EUA | 🟡 | v2; motivo de upgrade |
-| 7 | PJ paga por ferramenta de trabalho com menos fricção que PF por app pessoal | Âncoras: contador R$ 100–300/mês, Cora Pro R$ 45/mês, ferramentas SaaS | 🔴 | Testar em entrevista (H2) |
-| 8 | Trial curto e aumentos de preço corroem confiança | Reclamações Monarch (7 dias) e YNAB (60→109/ano) | 🟢 | Trial 30 dias; grandfathering |
-| 9 | *(preencher a partir das entrevistas)* | | | |
+| #   | Insight                                                                              | Evidência                                                                                                                    | Status | Implicação para o produto                                        |
+| --- | ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------- | ------ | ---------------------------------------------------------------- |
+| 1   | A mistura PF/PJ é a dor central do microempreendedor                                 | Sebrae: ~60% dos MEIs usaram dinheiro pessoal p/ dívidas da empresa; reviews do Minhas Economias elogiam separação de contas | 🟡     | Core do produto: toggle PF/PJ + divisor                          |
+| 2   | Sync bancário instável é a maior causa de reviews negativas                          | Reclame Aqui Mobills; Trustpilot Wallet; App Store Despezzas                                                                 | 🟢     | Manual-first no MVP (ADR-0007); OF só quando sustentável         |
+| 3   | Cartão mal modelado gera "saldo não bate" crônico                                    | Reviews da categoria; tese do LAPI                                                                                           | 🟢     | Fatura/competência no modelo de dados (ADR-0005)                 |
+| 4   | IA virou commodity; IA proativa é o que encanta                                      | Tração do Pierre (64M transações em 1 ano); histórias de "achou R$ 380 em assinaturas"                                       | 🟢     | IA que avisa > IA que responde; contexto fiscal como diferencial |
+| 5   | Categoria tem ~70% de abandono em 100 dias; problema é comportamento, não ferramenta | Estudos da categoria; YNAB como contraprova (método retém)                                                                   | 🟢     | Produto ensina um método (o split), não só registra              |
+| 6   | Família/casal mal atendido no Brasil                                                 | Gambiarras de login compartilhado; sucesso do household do Monarch nos EUA                                                   | 🟡     | v2; motivo de upgrade                                            |
+| 7   | PJ paga por ferramenta de trabalho com menos fricção que PF por app pessoal          | Âncoras: contador R$ 100–300/mês, Cora Pro R$ 45/mês, ferramentas SaaS                                                       | 🔴     | Testar em entrevista (H2)                                        |
+| 8   | Trial curto e aumentos de preço corroem confiança                                    | Reclamações Monarch (7 dias) e YNAB (60→109/ano)                                                                             | 🟢     | Trial 30 dias; grandfathering                                    |
+| 9   | _(preencher a partir das entrevistas)_                                               |                                                                                                                              |        |                                                                  |

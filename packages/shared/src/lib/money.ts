@@ -82,7 +82,8 @@ export function parseDecimalToCents(
   }
 
   if (intPart === "") intPart = "0";
-  const cents = BigInt(intPart) * CENTS_PER_UNIT + BigInt(fracPart.padEnd(2, "0"));
+  const cents =
+    BigInt(intPart) * CENTS_PER_UNIT + BigInt(fracPart.padEnd(2, "0"));
   return sign * cents;
 }
 

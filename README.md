@@ -90,7 +90,38 @@ Por padrão, os serviços são publicados em `localhost:5433` (PostgreSQL) e
 `localhost:6380` (Redis), evitando conflito com instalações locais nas portas
 padrão; ambos podem ser alterados no arquivo `.env`.
 
-Scripts úteis: `pnpm lint` · `pnpm typecheck` · `pnpm test` · `pnpm test:e2e` · `pnpm build`
+Scripts úteis: `pnpm lint` · `pnpm typecheck` · `pnpm test` · `pnpm test:e2e` · `pnpm build` · `pnpm format`
+
+### Qualidade e git hooks
+
+O projeto usa [Husky](https://typicode.github.io/husky) + [lint-staged](https://github.com/lint-staged/lint-staged)
+para validar cada commit, e um workflow de CI que roda em todo pull request.
+
+**Instalação:** os hooks são configurados automaticamente após `pnpm install`
+(script `prepare`, que executa `husky`). Não é preciso nenhum passo manual — se
+você já instalou as dependências, o hook de `pre-commit` já está ativo.
+
+**O que roda no `pre-commit`:** apenas verificações rápidas sobre os arquivos
+_staged_ (via `lint-staged`):
+
+- `*.{ts,tsx,js,jsx,mjs,cjs}` → `eslint --fix` + `prettier --write`
+- `*.{json,md,yml,yaml,css}` → `prettier --write`
+
+Erros de lint que não podem ser corrigidos automaticamente **bloqueiam o commit**.
+`typecheck`, testes completos e `build` ficam por conta da CI, para não deixar o
+commit local lento.
+
+```bash
+# formatar todo o repositório manualmente, se necessário
+pnpm format
+
+# pular os hooks em uma emergência (evite usar no dia a dia)
+git commit --no-verify
+```
+
+**CI:** o workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) roda em
+pull requests (e em pushes para `main`) e executa, em sequência, `pnpm format:check`,
+`pnpm lint`, `pnpm typecheck`, `pnpm test` e `pnpm build`. Qualquer falha reprova a checagem.
 
 ## Documentação
 

@@ -9,11 +9,10 @@ export default function HomePage() {
           Finanças PF e PJ no mesmo lugar.
         </h1>
         <p className="mt-6 max-w-xl text-lg leading-8 text-slate-600">
-          Saiba quanto do seu faturamento é imposto, reserva da empresa e dinheiro realmente
-          disponível para você.
+          Saiba quanto do seu faturamento é imposto, reserva da empresa e
+          dinheiro realmente disponível para você.
         </p>
       </section>
     </main>
   );
 }
-
