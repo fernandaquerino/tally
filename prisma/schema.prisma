@@ -1,0 +1,54 @@
+generator client {
+  provider            = "prisma-client"
+  output              = "./generated/client"
+  moduleFormat        = "esm"
+  importFileExtension = "ts"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum HouseholdRole {
+  OWNER
+  MEMBER
+
+  @@map("household_role")
+}
+
+model User {
+  id           String            @id @default(uuid(7)) @db.Uuid
+  email        String            @unique
+  name         String
+  passwordHash String?           @map("password_hash")
+  googleId     String?           @unique @map("google_id")
+  memberships  HouseholdMember[]
+  createdAt    DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime          @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("users")
+}
+
+model Household {
+  id        String            @id @default(uuid(7)) @db.Uuid
+  name      String
+  members   HouseholdMember[]
+  createdAt DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime          @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("households")
+}
+
+model HouseholdMember {
+  householdId String        @map("household_id") @db.Uuid
+  userId      String        @map("user_id") @db.Uuid
+  role        HouseholdRole @default(MEMBER)
+  household   Household     @relation(fields: [householdId], references: [id], onDelete: Cascade)
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@id([householdId, userId])
+  @@index([userId])
+  @@map("household_members")
+}
