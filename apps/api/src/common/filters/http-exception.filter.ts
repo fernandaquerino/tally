@@ -33,8 +33,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const context = host.switchToHttp();
     const response = context.getResponse<HttpResponse>();
     const request = context.getRequest<HttpRequest>();
-    const status = exception instanceof HttpException ? exception.getStatus() : 500;
-    const exceptionResponse = exception instanceof HttpException ? exception.getResponse() : undefined;
+    const status =
+      exception instanceof HttpException ? exception.getStatus() : 500;
+    const exceptionResponse =
+      exception instanceof HttpException ? exception.getResponse() : undefined;
     const code = this.getCode(exceptionResponse, status);
     const message = this.getMessage(exceptionResponse, status);
 
@@ -45,8 +47,15 @@ export class HttpExceptionFilter implements ExceptionFilter {
     response.status(status).json({ error: { code, message } });
   }
 
-  private getCode(response: string | object | undefined, status: number): string {
-    if (typeof response === "object" && response !== null && "code" in response) {
+  private getCode(
+    response: string | object | undefined,
+    status: number,
+  ): string {
+    if (
+      typeof response === "object" &&
+      response !== null &&
+      "code" in response
+    ) {
       const code = response.code;
 
       if (typeof code === "string") {
@@ -54,15 +63,24 @@ export class HttpExceptionFilter implements ExceptionFilter {
       }
     }
 
-    return typeof HttpStatus[status] === "string" ? HttpStatus[status] : `HTTP_${status}`;
+    return typeof HttpStatus[status] === "string"
+      ? HttpStatus[status]
+      : `HTTP_${status}`;
   }
 
-  private getMessage(response: string | object | undefined, status: number): string {
+  private getMessage(
+    response: string | object | undefined,
+    status: number,
+  ): string {
     if (typeof response === "string") {
       return response;
     }
 
-    if (typeof response === "object" && response !== null && "message" in response) {
+    if (
+      typeof response === "object" &&
+      response !== null &&
+      "message" in response
+    ) {
       const message = response.message;
 
       if (typeof message === "string") {
@@ -70,7 +88,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
       }
     }
 
-    return status >= 500 ? "Erro interno do servidor." : "Não foi possível processar a requisição.";
+    return status >= 500
+      ? "Erro interno do servidor."
+      : "Não foi possível processar a requisição.";
   }
 }
-

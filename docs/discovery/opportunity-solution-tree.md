@@ -3,6 +3,7 @@
 > Formato Teresa Torres. Outcome no topo; oportunidades = dores/necessidades ouvidas (não features); soluções ligadas a oportunidades; experimentos testam soluções.
 
 ## Outcome (negócio)
+
 **Usuários que fecham o mês sabendo seu "disponível real"** (North Star) → proxy de retenção e conversão paga.
 
 ```

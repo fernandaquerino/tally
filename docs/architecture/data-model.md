@@ -124,6 +124,7 @@ audit_log (
 ```
 
 ## Índices críticos
+
 ```sql
 transactions: (household_id, occurred_on DESC), (invoice_id), (context_id, occurred_on),
               (installment_group_id), (category_id)
@@ -133,13 +134,16 @@ insights:     (user_id, read_at)
 ```
 
 ## Derivações (nunca armazenar como verdade)
+
 - Saldo de conta = Σ transactions da conta → **view materializada `account_balances`** com refresh no commit de escrita (ou trigger); job diário de reconciliação compara e loga divergência.
 - Total da fatura aberta = Σ transactions da invoice; congela em `closed_total_cents` no fechamento (invariante 6: fatura fechada imutável).
 - "Comprometido futuro" = provisions pending + parcelas de faturas futuras.
 
 ## Regras de migração
+
 - Prisma Migrate; migrations no repositório; nunca editar migration aplicada.
 - Toda mudança destrutiva em 2 passos (expand → contract) — mesmo solo, cria o hábito.
 
 ## Decisões deliberadas (ver ADRs)
+
 - Centavos em bigint (ADR-0006) · fatura como entidade (ADR-0005) · household desde o dia 1 (v2 barata) · sem Open Finance no schema do MVP — quando vier, entra como `connections` + `imported_transactions` staging sem tocar o core (ADR-0007).

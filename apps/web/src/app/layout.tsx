@@ -7,11 +7,12 @@ export const metadata: Metadata = {
   description: "Finanças PF e PJ no mesmo lugar.",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
+export default function RootLayout({
+  children,
+}: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="pt-BR">
       <body>{children}</body>
     </html>
   );
 }
-

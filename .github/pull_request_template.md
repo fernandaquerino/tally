@@ -47,4 +47,5 @@ Closes #
 - [ ] Low
 - [ ] Medium
 - [ ] High
+
 <!-- Para Medium/High, descreva o plano de rollback ou mitigação. -->

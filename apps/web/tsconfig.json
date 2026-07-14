@@ -3,9 +3,7 @@
   "compilerOptions": {
     "incremental": true,
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"]
     },
     "tsBuildInfoFile": "node_modules/.cache/tsconfig.tsbuildinfo"
   },
@@ -15,7 +13,5 @@
     "src/**/*.tsx",
     ".next/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

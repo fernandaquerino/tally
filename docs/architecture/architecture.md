@@ -112,33 +112,33 @@ Responsabilidades:
 
 ## 4. Design system / UI foundation
 
-| Componente | Onde | Tipo | Props principais | Estados | Testes | Deps |
-|---|---|---|---|---|---|---|
-| Button | `components/ui` | genérico | variant, size, loading | hover/focus/disabled/loading | unit | cva |
-| Input / MoneyInput | `components/ui` | genérico | error, label; cents in/out | focus/error | unit | — |
-| Select | `components/ui` | genérico | options, value | open/disabled | unit | radix |
-| Dialog | `components/ui` | genérico | open, onOpenChange | focus trap | unit a11y | radix |
-| Tabs / SegmentedControl | `components/ui` | genérico | value, onChange | active | unit | radix |
-| Toast | `components/feedback` | genérico | variant | auto-dismiss | — | sonner |
-| EmptyState / LoadingState / ErrorState | `components/feedback` | genérico | title, action / skeleton / onRetry | — | — | — |
-| DataTable | `components/app` | genérico | columns, data | loading/empty | unit | tanstack |
-| DateField / MonthPicker | `components/app` | genérico | value, onChange | — | unit | — |
-| AppShell / Sidebar / Topbar | `components/app` | produto | items, user | active | — | — |
-| PageHeader | `components/app` | produto | title, actions | — | — | — |
-| MetricCard | `components/app` | produto | label, value_cents, trend | loading | unit | — |
-| **ContextBadge** | `components/app` | produto | context (PF\|PJ) | — | unit | — |
-| TransactionAmount | `components/app` | produto | cents, type | — | unit | — |
-| ChartCard | `components/charts` | genérico | title, data | loading/empty | — | recharts |
-| QuickEntryModal | `features/transactions` | produto | defaultContext, onSaved | submitting/error | unit+integration | RHF+Zod |
-| AIEntryField | `features/ai-entry` | produto | onProposal | idle/parsing/error | unit | — |
-| AIProposalCard | `features/ai-entry` | produto | proposal, onConfirm/onEdit | editable | unit | — |
-| **SplitPanel** ⭐ | `features/split` | produto | income, rules, onApply | ajuste de % | unit+integration | — |
-| InvoiceView | `features/cards` | produto | invoice | open/closed/paid | unit | — |
-| InstallmentTag | `features/cards` | produto | no, of | — | — | — |
-| PJPanel / CeilingBar | `features/pj-panel` | produto | metrics / usage | warning ≥85% | unit | — |
-| ProvisionCard | `features/provisions` | produto | provision, onPay | pending/paid | unit | — |
-| MonthCloseReport | `features/reports` | produto | month | — | integration | — |
-| InsightCard | `features/ai-entry` | produto | insight, evidence | read/unread | unit | — |
+| Componente                             | Onde                    | Tipo     | Props principais                   | Estados                      | Testes           | Deps     |
+| -------------------------------------- | ----------------------- | -------- | ---------------------------------- | ---------------------------- | ---------------- | -------- |
+| Button                                 | `components/ui`         | genérico | variant, size, loading             | hover/focus/disabled/loading | unit             | cva      |
+| Input / MoneyInput                     | `components/ui`         | genérico | error, label; cents in/out         | focus/error                  | unit             | —        |
+| Select                                 | `components/ui`         | genérico | options, value                     | open/disabled                | unit             | radix    |
+| Dialog                                 | `components/ui`         | genérico | open, onOpenChange                 | focus trap                   | unit a11y        | radix    |
+| Tabs / SegmentedControl                | `components/ui`         | genérico | value, onChange                    | active                       | unit             | radix    |
+| Toast                                  | `components/feedback`   | genérico | variant                            | auto-dismiss                 | —                | sonner   |
+| EmptyState / LoadingState / ErrorState | `components/feedback`   | genérico | title, action / skeleton / onRetry | —                            | —                | —        |
+| DataTable                              | `components/app`        | genérico | columns, data                      | loading/empty                | unit             | tanstack |
+| DateField / MonthPicker                | `components/app`        | genérico | value, onChange                    | —                            | unit             | —        |
+| AppShell / Sidebar / Topbar            | `components/app`        | produto  | items, user                        | active                       | —                | —        |
+| PageHeader                             | `components/app`        | produto  | title, actions                     | —                            | —                | —        |
+| MetricCard                             | `components/app`        | produto  | label, value_cents, trend          | loading                      | unit             | —        |
+| **ContextBadge**                       | `components/app`        | produto  | context (PF\|PJ)                   | —                            | unit             | —        |
+| TransactionAmount                      | `components/app`        | produto  | cents, type                        | —                            | unit             | —        |
+| ChartCard                              | `components/charts`     | genérico | title, data                        | loading/empty                | —                | recharts |
+| QuickEntryModal                        | `features/transactions` | produto  | defaultContext, onSaved            | submitting/error             | unit+integration | RHF+Zod  |
+| AIEntryField                           | `features/ai-entry`     | produto  | onProposal                         | idle/parsing/error           | unit             | —        |
+| AIProposalCard                         | `features/ai-entry`     | produto  | proposal, onConfirm/onEdit         | editable                     | unit             | —        |
+| **SplitPanel** ⭐                      | `features/split`        | produto  | income, rules, onApply             | ajuste de %                  | unit+integration | —        |
+| InvoiceView                            | `features/cards`        | produto  | invoice                            | open/closed/paid             | unit             | —        |
+| InstallmentTag                         | `features/cards`        | produto  | no, of                             | —                            | —                | —        |
+| PJPanel / CeilingBar                   | `features/pj-panel`     | produto  | metrics / usage                    | warning ≥85%                 | unit             | —        |
+| ProvisionCard                          | `features/provisions`   | produto  | provision, onPay                   | pending/paid                 | unit             | —        |
+| MonthCloseReport                       | `features/reports`      | produto  | month                              | —                            | integration      | —        |
+| InsightCard                            | `features/ai-entry`     | produto  | insight, evidence                  | read/unread                  | unit             | —        |
 
 `SplitPanel` é o componente mais importante do produto (momento AHA, hipótese H4) — prototipar e testar primeiro.
 
@@ -286,7 +286,7 @@ jobs:
       - lint (eslint) + typecheck (tsc --noEmit) [turbo, por workspace]
       - unit (vitest run)
       - prisma-check (schema ⇄ migrations consistentes)
-      - integration (vitest, serviço Postgres+Redis)   # inclui suite de tenancy
+      - integration (vitest, serviço Postgres+Redis) # inclui suite de tenancy
       - build (turbo build: web + api)
       - e2e (playwright, stack completa em serviços)
       - deploy-preview (Vercel web, em PR)
