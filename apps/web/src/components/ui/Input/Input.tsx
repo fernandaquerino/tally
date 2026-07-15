@@ -28,7 +28,7 @@ type InputA11yProps =
       "aria-labelledby": string;
     };
 
-type InputProps = BaseInputProps & InputA11yProps;
+export type InputProps = BaseInputProps & InputA11yProps;
 
 export function Input({
   className,
