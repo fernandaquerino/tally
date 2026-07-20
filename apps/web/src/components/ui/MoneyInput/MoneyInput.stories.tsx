@@ -1,11 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
+import { useState } from "react";
 
 import { MoneyInput } from "./MoneyInput";
 
 interface MoneyInputStoryArgs {
   label: string;
   placeholder?: string;
-  defaultValue?: string;
+  defaultValue?: bigint;
   helperText?: string;
   error?: string;
   disabled?: boolean;
@@ -47,7 +48,7 @@ export const Playground: Story = {};
 export const Income: Story = {
   name: "Receita",
   args: {
-    defaultValue: "5.000,00",
+    defaultValue: 500000n,
     helperText: "Valor recebido",
     transactionType: "income",
   },
@@ -56,9 +57,31 @@ export const Income: Story = {
 export const Expense: Story = {
   name: "Despesa",
   args: {
-    defaultValue: "1.250,00",
+    defaultValue: 125000n,
     helperText: "Valor pago",
     transactionType: "expense",
+  },
+};
+
+/** Controlado: o valor vive em centavos (bigint) no estado do formulário. */
+export const Controlled: Story = {
+  name: "Controlado (centavos)",
+  render: function ControlledStory() {
+    const [cents, setCents] = useState<bigint | undefined>(850000n);
+
+    return (
+      <div className="flex flex-col gap-2">
+        <MoneyInput
+          label="Valor"
+          transactionType="income"
+          value={cents}
+          onValueChange={setCents}
+        />
+        <p className="text-xs text-muted-foreground">
+          Em centavos: <span className="font-mono">{String(cents)}</span>
+        </p>
+      </div>
+    );
   },
 };
 
@@ -67,13 +90,13 @@ export const States: Story = {
   render: () => (
     <div className="grid w-[min(90vw,44rem)] gap-4 sm:grid-cols-2">
       <MoneyInput
-        defaultValue="5.000,00"
+        defaultValue={500000n}
         helperText="Receita"
         label="Receita"
         transactionType="income"
       />
       <MoneyInput
-        defaultValue="1.250,00"
+        defaultValue={125000n}
         helperText="Despesa"
         label="Despesa"
         transactionType="expense"
@@ -85,7 +108,7 @@ export const States: Story = {
         transactionType="expense"
       />
       <MoneyInput
-        defaultValue="750,00"
+        defaultValue={75000n}
         disabled
         label="Desabilitado"
         transactionType="income"
