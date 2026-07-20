@@ -21,4 +21,16 @@ if (!Element.prototype.setPointerCapture) {
   Element.prototype.hasPointerCapture = vi.fn(() => false);
 }
 
+if (!globalThis.ResizeObserver) {
+  globalThis.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  };
+}
+
+if (!Element.prototype.scrollIntoView) {
+  Element.prototype.scrollIntoView = vi.fn();
+}
+
 afterEach(() => cleanup());
