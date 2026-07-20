@@ -1,1 +1,1 @@
-export { ErrorState } from "./ErrorState";
+export { ErrorState, type ErrorStateProps } from "./ErrorState";

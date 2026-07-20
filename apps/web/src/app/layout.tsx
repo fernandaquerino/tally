@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/app/ThemeProvider";
-import { Toaster } from "@/components/ui/Toaster";
 import "./styles.css";
+import { Toaster } from "@/components/feedback/Toaster";
 
 export const metadata: Metadata = {
   title: "Tally",
