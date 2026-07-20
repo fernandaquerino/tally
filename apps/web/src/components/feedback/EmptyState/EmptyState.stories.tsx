@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
 import { PlusIcon, ReceiptTextIcon } from "lucide-react";
 
-import { Button } from "../Button";
+import { Button } from "../../ui/Button";
 import { EmptyState } from "./EmptyState";
 
 const meta = {

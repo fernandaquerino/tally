@@ -3,7 +3,7 @@ import type { HTMLAttributes, ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
-import { Button } from "../Button";
+import { Button } from "../../ui/Button";
 
 export interface ErrorStateProps extends Omit<
   HTMLAttributes<HTMLDivElement>,

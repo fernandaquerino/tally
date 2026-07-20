@@ -10,7 +10,7 @@ import { Toaster as SonnerToaster, type ToasterProps } from "sonner";
 
 import { useThemeOptional } from "@/components/app/ThemeProvider";
 
-import { Spinner } from "../Spinner";
+import { Spinner } from "../../ui/Spinner";
 
 /**
  * Toaster global da aplicação. Deve ser montado uma única vez, perto da raiz
