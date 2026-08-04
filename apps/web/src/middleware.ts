@@ -10,11 +10,20 @@ const PROTECTED_PREFIXES = ["/dashboard"];
 
 export function middleware(request: NextRequest): NextResponse {
   const { pathname } = request.nextUrl;
+  const hasSession = request.cookies.has(SESSION_HINT_COOKIE);
+
+  // Raiz não tem página própria: manda para o dashboard ou para o login.
+  if (pathname === "/") {
+    const target = request.nextUrl.clone();
+    target.pathname = hasSession ? "/dashboard" : "/login";
+    return NextResponse.redirect(target);
+  }
+
   const isProtected = PROTECTED_PREFIXES.some(
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
   );
 
-  if (isProtected && !request.cookies.has(SESSION_HINT_COOKIE)) {
+  if (isProtected && !hasSession) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/login";
     loginUrl.searchParams.set("redirect", pathname);
@@ -25,5 +34,5 @@ export function middleware(request: NextRequest): NextResponse {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  matcher: ["/", "/dashboard/:path*"],
 };
