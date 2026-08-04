@@ -16,7 +16,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "prisma generate && tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json",
+    "generate": "prisma generate",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
