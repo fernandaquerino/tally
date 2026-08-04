@@ -8,10 +8,13 @@ import type { CookieOptions, Response } from "express";
 
 import {
   ACCESS_COOKIE,
+  LAST_LOGIN_METHOD_COOKIE,
+  LAST_LOGIN_METHOD_TTL_MS,
   REFRESH_COOKIE,
   REFRESH_COOKIE_PATH,
   REFRESH_TOKEN_BYTES,
   SESSION_HINT_COOKIE,
+  type LoginMethod,
 } from "./auth.constants.js";
 
 export interface AccessTokenSubject {
@@ -113,6 +116,18 @@ export class TokensService {
       sameSite: "lax",
       path: "/",
       maxAge: refreshMaxAge,
+      ...this.domainOption(),
+    });
+  }
+
+  /** Dica de UX não sensível; nunca é usada para validar a sessão. */
+  setLastLoginMethodCookie(res: Response, method: LoginMethod): void {
+    res.cookie(LAST_LOGIN_METHOD_COOKIE, method, {
+      httpOnly: false,
+      secure: this.config.get<string>("NODE_ENV") === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: LAST_LOGIN_METHOD_TTL_MS,
       ...this.domainOption(),
     });
   }

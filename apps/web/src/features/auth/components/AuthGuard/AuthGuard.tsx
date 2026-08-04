@@ -5,7 +5,7 @@ import { useEffect, type ReactNode } from "react";
 
 import { Spinner } from "@/components/ui/Spinner";
 
-import { useSession } from "../hooks/useSession";
+import { useSession } from "../../hooks/useSession";
 
 /**
  * Proteção de sessão no cliente (defesa em profundidade junto do middleware,

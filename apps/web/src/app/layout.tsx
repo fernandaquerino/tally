@@ -30,7 +30,9 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className={geistSans.className}>
+      {/* suppressHydrationWarning: extensões (ex.: Grammarly) injetam atributos
+          no <body> antes da hidratação; o warning é ruído, não bug do app. */}
+      <body className={geistSans.className} suppressHydrationWarning>
         <ThemeProvider defaultTheme="system">
           <QueryProvider>{children}</QueryProvider>
           <Toaster />

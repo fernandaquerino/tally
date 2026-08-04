@@ -3,30 +3,55 @@
 import { Button } from "@/components/ui/Button";
 import { Divider } from "@/components/ui/Divider";
 
+import type { LoginMethod } from "../../utils/last-login-method";
+import { LastLoginHint } from "../LastLoginHint";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/v1";
 
 /**
  * Login social. São âncoras (navegação top-level), não fetch: o OAuth precisa de
  * redirect de página inteira. A API conduz o fluxo e volta para /dashboard.
  */
-export function SocialButtons() {
+interface SocialButtonsProps {
+  showDivider?: boolean;
+  size?: "default" | "lg";
+  lastUsedMethod?: LoginMethod | null;
+}
+
+export function SocialButtons({
+  showDivider = true,
+  size = "default",
+  lastUsedMethod = null,
+}: SocialButtonsProps) {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-col gap-2">
-        <Button asChild variant="outline" className="w-full">
+        <Button
+          asChild
+          variant={lastUsedMethod === "google" ? "default" : "outline"}
+          size={size}
+          className="w-full"
+        >
           <a href={`${API_URL}/auth/oauth/google`}>
             <GoogleIcon />
             Continuar com Google
           </a>
         </Button>
-        <Button asChild variant="outline" className="w-full">
+        {lastUsedMethod === "google" ? <LastLoginHint method="Google" /> : null}
+        <Button
+          asChild
+          variant={lastUsedMethod === "github" ? "default" : "outline"}
+          size={size}
+          className="w-full"
+        >
           <a href={`${API_URL}/auth/oauth/github`}>
             <GithubIcon />
             Continuar com GitHub
           </a>
         </Button>
+        {lastUsedMethod === "github" ? <LastLoginHint method="GitHub" /> : null}
       </div>
-      <Divider label="ou" />
+      {showDivider ? <Divider label="ou" /> : null}
     </div>
   );
 }

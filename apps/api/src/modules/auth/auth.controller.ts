@@ -29,6 +29,7 @@ import {
   OAUTH_STATE_COOKIE_PATH,
   OAUTH_STATE_TTL_MS,
   REFRESH_COOKIE,
+  type LoginMethod,
 } from "./auth.constants.js";
 import { AuthService, type RequestMeta } from "./auth.service.js";
 import type { PublicUser } from "./dto/public-user.js";
@@ -60,7 +61,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ): Promise<{ user: PublicUser }> {
     const result = await this.auth.register(body, this.metaFrom(req));
-    return this.completeSession(res, result);
+    return this.completeSession(res, result, "email");
   }
 
   @Post("login")
@@ -73,7 +74,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ): Promise<{ user: PublicUser }> {
     const result = await this.auth.login(body, this.metaFrom(req));
-    return this.completeSession(res, result);
+    return this.completeSession(res, result, "email");
   }
 
   @Post("refresh")
@@ -161,6 +162,7 @@ export class AuthController {
         this.metaFrom(req),
       );
       this.tokens.setAuthCookies(res, result.accessToken, result.refreshToken);
+      this.tokens.setLastLoginMethodCookie(res, provider);
       res.redirect(this.webUrl("/dashboard"));
     } catch (error) {
       this.logger.warn(`OAuth ${provider} falhou: ${this.reason(error)}`);
@@ -171,8 +173,12 @@ export class AuthController {
   private completeSession(
     res: Response,
     result: { user: PublicUser; accessToken: string; refreshToken: string },
+    loginMethod?: LoginMethod,
   ): { user: PublicUser } {
     this.tokens.setAuthCookies(res, result.accessToken, result.refreshToken);
+    if (loginMethod) {
+      this.tokens.setLastLoginMethodCookie(res, loginMethod);
+    }
     return { user: result.user };
   }
 

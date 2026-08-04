@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 
-import { FormError } from "./FormError";
+import { FormError } from "../FormError";
 
 const MESSAGES: Record<string, string> = {
   oauth_unavailable: "Este login social não está disponível no momento.",

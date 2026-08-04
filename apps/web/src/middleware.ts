@@ -12,11 +12,14 @@ export function middleware(request: NextRequest): NextResponse {
   const { pathname } = request.nextUrl;
   const hasSession = request.cookies.has(SESSION_HINT_COOKIE);
 
-  // Raiz não tem página própria: manda para o dashboard ou para o login.
+  // `/` é público (landing). Só quem está logado é levado ao dashboard.
   if (pathname === "/") {
-    const target = request.nextUrl.clone();
-    target.pathname = hasSession ? "/dashboard" : "/login";
-    return NextResponse.redirect(target);
+    if (hasSession) {
+      const target = request.nextUrl.clone();
+      target.pathname = "/dashboard";
+      return NextResponse.redirect(target);
+    }
+    return NextResponse.next();
   }
 
   const isProtected = PROTECTED_PREFIXES.some(
