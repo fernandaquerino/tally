@@ -1,6 +1,6 @@
 generator client {
   provider            = "prisma-client"
-  output              = "./generated/client"
+  output              = "../src/generated/client"
   moduleFormat        = "esm"
   importFileExtension = "ts"
 }
@@ -23,6 +23,7 @@ model User {
   passwordHash String?           @map("password_hash")
   googleId     String?           @unique @map("google_id")
   memberships  HouseholdMember[]
+  refreshTokens RefreshToken[]
   createdAt    DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt    DateTime          @updatedAt @map("updated_at") @db.Timestamptz(3)
 
@@ -51,4 +52,25 @@ model HouseholdMember {
   @@id([householdId, userId])
   @@index([userId])
   @@map("household_members")
+}
+
+/// Refresh tokens rotativos (ADR-0008). Guardamos apenas o hash determinístico
+/// do token; o valor em claro só existe no cookie do cliente. `familyId` agrupa
+/// a cadeia de rotação para permitir detecção de reuso e revogação em cascata.
+model RefreshToken {
+  id           String    @id @default(uuid(7)) @db.Uuid
+  userId       String    @map("user_id") @db.Uuid
+  familyId     String    @map("family_id") @db.Uuid
+  tokenHash    String    @unique @map("token_hash")
+  expiresAt    DateTime  @map("expires_at") @db.Timestamptz(3)
+  revokedAt    DateTime? @map("revoked_at") @db.Timestamptz(3)
+  replacedById String?   @map("replaced_by_id") @db.Uuid
+  userAgent    String?   @map("user_agent")
+  ip           String?
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@index([userId])
+  @@index([familyId])
+  @@map("refresh_tokens")
 }

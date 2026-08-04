@@ -1,5 +1,6 @@
 import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
+import cookieParser from "cookie-parser";
 import { AppModule } from "./app.module.js";
 import { HttpExceptionFilter } from "./common/filters/http-exception.filter.js";
 import { ResponseEnvelopeInterceptor } from "./common/interceptors/response-envelope.interceptor.js";
@@ -12,6 +13,7 @@ async function bootstrap(): Promise<void> {
     .split(",")
     .map((origin) => origin.trim());
 
+  app.use(cookieParser());
   app.enableCors({
     credentials: true,
     origin: allowedOrigins,

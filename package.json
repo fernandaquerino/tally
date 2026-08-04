@@ -11,10 +11,11 @@
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
-    "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate dev",
-    "db:seed": "prisma db seed",
-    "db:studio": "prisma studio",
+    "db:generate": "pnpm --filter @tally/db db:generate",
+    "db:migrate": "pnpm --filter @tally/db db:migrate",
+    "db:deploy": "pnpm --filter @tally/db db:deploy",
+    "db:seed": "pnpm --filter @tally/db db:seed",
+    "db:studio": "pnpm --filter @tally/db db:studio",
     "lint": "turbo lint",
     "test": "turbo test",
     "typecheck": "turbo typecheck",
@@ -32,15 +33,8 @@
     "husky": "^9.1.7",
     "lint-staged": "^17.0.8",
     "prettier": "^3.9.5",
-    "prisma": "^7.8.0",
-    "tsx": "^4.23.1",
     "turbo": "^2.5.4",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.35.1"
-  },
-  "dependencies": {
-    "@prisma/adapter-pg": "^7.8.0",
-    "@prisma/client": "^7.8.0",
-    "pg": "^8.22.0"
   }
 }

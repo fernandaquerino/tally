@@ -127,10 +127,15 @@ Falha em qualquer etapa desfará toda a operação. O client nunca enviará `use
 
 ## Ações
 
-1. [ ] Adicionar o modelo de refresh token e uma nova migration Prisma, incluindo família e dados de rotação/revogação.
-2. [ ] Criar o módulo de auth no NestJS com Argon2id, emissão de JWT, cookies e rotação transacional.
-3. [ ] Criar `AuthGuard`, `TenancyGuard` e o contexto autenticado tipado.
-4. [ ] Criar `GET /v1/me` e os contratos compartilhados de autenticação.
-5. [ ] Criar páginas de login/cadastro e estado de sessão no web sem persistência local de tokens.
-6. [ ] Adicionar rate limit e validação de origem nos endpoints de autenticação.
-7. [ ] Cobrir cadastro atômico, login, refresh, reuso, logout e isolamento entre households com testes automatizados.
+1. [x] Adicionar o modelo de refresh token e uma nova migration Prisma, incluindo família e dados de rotação/revogação.
+2. [x] Criar o módulo de auth no NestJS com Argon2id, emissão de JWT, cookies e rotação transacional.
+3. [x] Criar `AuthGuard`, `TenancyGuard` e o contexto autenticado tipado.
+4. [x] Criar `GET /v1/me` e os contratos compartilhados de autenticação.
+5. [x] Criar páginas de login/cadastro e estado de sessão no web sem persistência local de tokens.
+6. [x] Adicionar rate limit e validação de origem nos endpoints de autenticação.
+7. [ ] Cobrir cadastro atômico, login, refresh, reuso, logout e isolamento entre households com testes automatizados. — _Parcial: schemas compartilhados e formulários web cobertos; os testes de service/e2e de tenancy e reuso dependem de um Postgres de teste e de um runner que resolva o TS da API (ver Follow-up)._
+
+## Nota de implementação (2026-08-04)
+
+- O `PrismaClient` e o schema passaram a viver no pacote workspace **`@tally/db`** (`packages/db`), consumido pela API via `PrismaService` e pelo seed. Decisão de estrutura (não altera a política desta ADR); ver também ADR-0004.
+- Cookie-dica não sensível `tally_session` (host-only, sem token) permite ao middleware do Next saber que há sessão sem ler o access token httpOnly; o refresh silencioso no client renova o access de 15min de forma transparente.

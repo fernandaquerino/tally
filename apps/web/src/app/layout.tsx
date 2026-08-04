@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
+import { QueryProvider } from "@/components/app/QueryProvider";
 import { ThemeProvider } from "@/components/app/ThemeProvider";
 import "./styles.css";
 import { Toaster } from "@/components/feedback/Toaster";
@@ -31,7 +32,7 @@ export default function RootLayout({
     >
       <body className={geistSans.className}>
         <ThemeProvider defaultTheme="system">
-          {children}
+          <QueryProvider>{children}</QueryProvider>
           <Toaster />
         </ThemeProvider>
       </body>
