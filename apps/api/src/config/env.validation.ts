@@ -26,6 +26,15 @@ const envSchema = z.object({
   JWT_AUDIENCE: z.string().min(1).default("tally-web"),
 
   COOKIE_DOMAIN: z.string().optional(),
+
+  // OAuth (ADR-0008): a API é a autoridade; providers são opcionais — sem
+  // credenciais, os endpoints sociais respondem 501 e o resto segue funcionando.
+  API_PUBLIC_URL: z.string().url().default("http://localhost:3001"),
+  WEB_APP_URL: z.string().url().default("http://localhost:3000"),
+  AUTH_GOOGLE_ID: z.string().optional(),
+  AUTH_GOOGLE_SECRET: z.string().optional(),
+  AUTH_GITHUB_ID: z.string().optional(),
+  AUTH_GITHUB_SECRET: z.string().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;

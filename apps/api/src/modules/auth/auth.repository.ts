@@ -30,11 +30,14 @@ export class AuthRepository {
   /**
    * Cria usuário + household + membership OWNER atomicamente (ADR-0008 §Cadastro).
    * Falha em qualquer etapa desfaz tudo. `email` único é garantido no banco.
+   * `passwordHash` é opcional para contas criadas via OAuth.
    */
   async createUserWithHousehold(data: {
     name: string;
     email: string;
-    passwordHash: string;
+    passwordHash?: string;
+    googleId?: string;
+    githubId?: string;
   }): Promise<CreatedUser> {
     return this.prisma.$transaction(async (tx) => {
       const household = await tx.household.create({
@@ -44,7 +47,9 @@ export class AuthRepository {
         data: {
           name: data.name,
           email: data.email,
-          passwordHash: data.passwordHash,
+          passwordHash: data.passwordHash ?? null,
+          googleId: data.googleId ?? null,
+          githubId: data.githubId ?? null,
         },
       });
 
@@ -57,6 +62,28 @@ export class AuthRepository {
       });
 
       return { user, householdId: household.id, role: "OWNER" };
+    });
+  }
+
+  findUserByProviderId(
+    field: "googleId" | "githubId",
+    providerId: string,
+  ): Promise<UserWithMembership | null> {
+    return this.prisma.user.findFirst({
+      where: { [field]: providerId },
+      include: { memberships: true },
+    });
+  }
+
+  linkProvider(
+    userId: string,
+    field: "googleId" | "githubId",
+    providerId: string,
+  ): Promise<UserWithMembership> {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { [field]: providerId },
+      include: { memberships: true },
     });
   }
 

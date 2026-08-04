@@ -9,8 +9,9 @@ import { Prisma } from "@tally/db";
 import type { LoginInput, RegisterInput } from "@tally/shared";
 import argon2 from "argon2";
 
-import { AuthRepository } from "./auth.repository.js";
+import { AuthRepository, type UserWithMembership } from "./auth.repository.js";
 import { toPublicUser, type PublicUser } from "./dto/public-user.js";
+import type { NormalizedProfile } from "./oauth/oauth.types.js";
 import { TokensService, type AccessTokenSubject } from "./tokens.service.js";
 
 export interface RequestMeta {
@@ -161,6 +162,76 @@ export class AuthService {
     };
   }
 
+  /**
+   * Login/cadastro via OAuth (ADR-0008 §OAuth). Vincula por provider id; se não
+   * existir, vincula a uma conta com o MESMO e-mail apenas quando verificado
+   * (evita takeover); senão cria conta nova sem senha. Emite a mesma sessão.
+   */
+  async loginWithOAuth(
+    profile: NormalizedProfile,
+    meta: RequestMeta,
+  ): Promise<SessionResult> {
+    const field = profile.provider === "google" ? "googleId" : "githubId";
+
+    const byProvider = await this.repo.findUserByProviderId(
+      field,
+      profile.providerId,
+    );
+    if (byProvider) {
+      return this.issueForExistingUser(byProvider, meta);
+    }
+
+    if (!profile.email) {
+      throw new UnauthorizedException({
+        code: "OAUTH_NO_EMAIL",
+        message: "Não foi possível obter um e-mail do provedor.",
+      });
+    }
+
+    if (profile.emailVerified) {
+      const byEmail = await this.repo.findUserByEmail(profile.email);
+      if (byEmail) {
+        const linked = await this.repo.linkProvider(
+          byEmail.id,
+          field,
+          profile.providerId,
+        );
+        return this.issueForExistingUser(linked, meta);
+      }
+    }
+
+    try {
+      const created = await this.repo.createUserWithHousehold({
+        name: profile.name,
+        email: profile.email,
+        [field]: profile.providerId,
+      });
+
+      return this.issueSession(
+        {
+          userId: created.user.id,
+          householdId: created.householdId,
+          role: created.role,
+        },
+        created.user,
+        randomUUID(),
+        meta,
+      );
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2002"
+      ) {
+        // E-mail já usado por outra conta e não confirmamos posse (não verificado).
+        throw new ConflictException({
+          code: "EMAIL_ALREADY_REGISTERED",
+          message: "Este e-mail já tem uma conta. Entre com e-mail e senha.",
+        });
+      }
+      throw error;
+    }
+  }
+
   /** Logout idempotente: revoga a família do refresh apresentado, se houver. */
   async logout(rawToken: string | undefined): Promise<void> {
     if (!rawToken) {
@@ -186,6 +257,30 @@ export class AuthService {
     }
 
     return toPublicUser(user, membership.householdId, membership.role);
+  }
+
+  private async issueForExistingUser(
+    user: UserWithMembership,
+    meta: RequestMeta,
+  ): Promise<SessionResult> {
+    const membership = user.memberships[0];
+    if (!membership) {
+      throw new UnauthorizedException({
+        code: "UNAUTHENTICATED",
+        message: "Sessão inválida.",
+      });
+    }
+
+    return this.issueSession(
+      {
+        userId: user.id,
+        householdId: membership.householdId,
+        role: membership.role,
+      },
+      user,
+      randomUUID(),
+      meta,
+    );
   }
 
   private async issueSession(

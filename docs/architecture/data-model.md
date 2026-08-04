@@ -12,7 +12,7 @@ households (
 users (
   id uuid PK, household_id FK→households,
   email citext UNIQUE, password_hash text NULL,      -- NULL se OAuth
-  google_id text NULL UNIQUE, name text,
+  google_id text NULL UNIQUE, github_id text NULL UNIQUE, name text,
   created_at, updated_at
 )
 

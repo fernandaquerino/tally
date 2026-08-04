@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 
 import {
   Card,
@@ -8,7 +9,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/Card";
+import { OAuthErrorNotice } from "@/features/auth/components/OAuthErrorNotice";
 import { RegisterForm } from "@/features/auth/components/RegisterForm";
+import { SocialButtons } from "@/features/auth/components/SocialButtons";
 
 export const metadata: Metadata = {
   title: "Criar conta · Tally",
@@ -24,6 +27,10 @@ export default function RegisterPage() {
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-6">
+        <Suspense fallback={null}>
+          <OAuthErrorNotice />
+        </Suspense>
+        <SocialButtons />
         <RegisterForm />
         <p className="text-sm text-muted-foreground">
           Já tem conta?{" "}

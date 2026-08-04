@@ -14,3 +14,8 @@ export const REFRESH_COOKIE_PATH = "/v1/auth";
 
 /** Bytes de entropia do refresh token opaco. */
 export const REFRESH_TOKEN_BYTES = 32;
+
+/** Cookie temporário com o `state` do OAuth (CSRF do fluxo de redirect). */
+export const OAUTH_STATE_COOKIE = "tally_oauth_state";
+export const OAUTH_STATE_COOKIE_PATH = "/v1/auth/oauth";
+export const OAUTH_STATE_TTL_MS = 10 * 60_000;

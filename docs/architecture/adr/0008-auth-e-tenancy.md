@@ -139,3 +139,12 @@ Falha em qualquer etapa desfará toda a operação. O client nunca enviará `use
 
 - O `PrismaClient` e o schema passaram a viver no pacote workspace **`@tally/db`** (`packages/db`), consumido pela API via `PrismaService` e pelo seed. Decisão de estrutura (não altera a política desta ADR); ver também ADR-0004.
 - Cookie-dica não sensível `tally_session` (host-only, sem token) permite ao middleware do Next saber que há sessão sem ler o access token httpOnly; o refresh silencioso no client renova o access de 15min de forma transparente.
+
+### OAuth (Google + GitHub) no backend
+
+Coerente com a rejeição da Opção D, o login social roda **na API** (Authorization Code flow, implementado sem passport), não no Next.js/Auth.js:
+
+- `GET /v1/auth/oauth/:provider` → gera `state` (cookie httpOnly single-use, CSRF) e redireciona ao consentimento.
+- `GET /v1/auth/oauth/:provider/callback` → valida o `state`, troca o `code`, lê o perfil e **emite a mesma sessão** (cookies httpOnly + refresh rotativo). Redireciona para `WEB_APP_URL/dashboard`, ou `/login?error=…` em falha.
+- Vínculo de conta: primeiro por **provider id** (`google_id`/`github_id`); se não houver, vincula a uma conta existente **apenas com e-mail verificado** (evita takeover, threat-model S); senão cria conta nova sem senha. E-mail já usado por outra conta sem verificação → erro pedindo login por senha.
+- Providers são **opcionais** (credenciais em env); sem credenciais o endpoint redireciona com `error=oauth_unavailable`. A API segue sendo a única autoridade de sessão — o front só tem âncoras para os endpoints.

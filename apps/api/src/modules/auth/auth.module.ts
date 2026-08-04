@@ -7,6 +7,7 @@ import { TenancyGuard } from "../../common/guards/tenancy.guard.js";
 import { AuthController } from "./auth.controller.js";
 import { AuthRepository } from "./auth.repository.js";
 import { AuthService } from "./auth.service.js";
+import { OAuthService } from "./oauth/oauth.service.js";
 import { TokensService } from "./tokens.service.js";
 
 @Module({
@@ -17,6 +18,7 @@ import { TokensService } from "./tokens.service.js";
     AuthService,
     AuthRepository,
     TokensService,
+    OAuthService,
     AuthGuard,
     TenancyGuard,
     OriginGuard,
