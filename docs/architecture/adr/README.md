@@ -12,3 +12,4 @@ Numeração sequencial; ADR aceito não se edita — se a decisão mudar, cria-s
 | 0005 | Cartão de crédito modelado por fatura (competência vs. caixa) | Aceito |
 | 0006 | Dinheiro como inteiro em centavos                             | Aceito |
 | 0007 | Manual-first: sem Open Finance no MVP                         | Aceito |
+| 0008 | Autenticação por cookies e tenancy derivada da sessão         | Aceito |
