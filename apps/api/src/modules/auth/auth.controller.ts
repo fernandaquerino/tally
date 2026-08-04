@@ -22,11 +22,8 @@ import { loginSchema, registerSchema } from "@tally/shared";
 import type { LoginInput, RegisterInput } from "@tally/shared";
 import type { CookieOptions, Request, Response } from "express";
 
-import { CurrentUser } from "../../common/decorators/current-user.decorator.js";
-import { AuthGuard } from "../../common/guards/auth.guard.js";
 import { OriginGuard } from "../../common/guards/origin.guard.js";
 import { ZodValidationPipe } from "../../common/pipes/zod-validation.pipe.js";
-import type { AuthenticatedUser } from "../../common/types/authenticated-user.js";
 import {
   OAUTH_STATE_COOKIE,
   OAUTH_STATE_COOKIE_PATH,
@@ -108,12 +105,6 @@ export class AuthController {
   ): Promise<void> {
     await this.auth.logout(this.refreshCookie(req));
     this.tokens.clearAuthCookies(res);
-  }
-
-  @Get("me")
-  @UseGuards(AuthGuard)
-  async me(@CurrentUser() user: AuthenticatedUser): Promise<PublicUser> {
-    return this.auth.me(user.userId);
   }
 
   /** Início do fluxo OAuth: redireciona ao consentimento do provider. */

@@ -7,13 +7,14 @@ import { TenancyGuard } from "../../common/guards/tenancy.guard.js";
 import { AuthController } from "./auth.controller.js";
 import { AuthRepository } from "./auth.repository.js";
 import { AuthService } from "./auth.service.js";
+import { MeController } from "./me.controller.js";
 import { OAuthService } from "./oauth/oauth.service.js";
 import { TokensService } from "./tokens.service.js";
 
 @Module({
   // JwtModule global para que o AuthGuard seja utilizável em qualquer módulo.
   imports: [JwtModule.register({ global: true })],
-  controllers: [AuthController],
+  controllers: [AuthController, MeController],
   providers: [
     AuthService,
     AuthRepository,
