@@ -1,9 +1,650 @@
 @import "tailwindcss";
 
-@theme {
-  --font-sans: Arial, Helvetica, sans-serif;
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Tally Design System
+ * Tailwind CSS v4 + shadcn/ui
+ *
+ * Primitives do Design System ficam disponíveis como:
+ *   bg-neutral-50, text-primary-600, bg-pf-100, text-pj-600, etc.
+ *
+ * Tokens semânticos devem ser preferidos nos componentes:
+ *   bg-background, bg-surface, text-foreground-muted, border-border,
+ *   bg-success-subtle, text-expense, bg-pf-subtle, etc.
+ */
+@theme inline static {
+  /* Typography */
+  /* Font families */
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* Font sizes */
+  --text-display: 2.5rem;
+  --text-display--line-height: 2.75rem;
+
+  --text-heading-1: 1.75rem;
+  --text-heading-1--line-height: 2.125rem;
+
+  --text-heading-2: 1.375rem;
+  --text-heading-2--line-height: 1.75rem;
+
+  --text-heading-3: 1.125rem;
+  --text-heading-3--line-height: 1.5rem;
+
+  --text-heading-4: 0.9375rem;
+  --text-heading-4--line-height: 1.375rem;
+
+  --text-body-lg: 1rem;
+  --text-body-lg--line-height: 1.625rem;
+
+  --text-body: 0.875rem;
+  --text-body--line-height: 1.3125rem;
+
+  --text-body-sm: 0.8125rem;
+  --text-body-sm--line-height: 1.1875rem;
+
+  --text-label: 0.8125rem;
+  --text-label--line-height: 1rem;
+
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1rem;
+
+  --text-overline: 0.6875rem;
+  --text-overline--line-height: 0.875rem;
+
+  --text-financial-lg: 2rem;
+  --text-financial-lg--line-height: 2.375rem;
+
+  --text-financial-md: 1.25rem;
+  --text-financial-md--line-height: 1.625rem;
+
+  --text-financial-sm: 0.875rem;
+  --text-financial-sm--line-height: 1.25rem;
+
+  /* Radius */
+  --radius-xs: calc(var(--radius) - 4px);
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 4px);
+  --radius-xl: calc(var(--radius) + 8px);
+  --radius-2xl: calc(var(--radius) + 12px);
+
+  /* Neutral primitives */
+  --color-neutral-0: #ffffff;
+  --color-neutral-25: #fcfcfd;
+  --color-neutral-50: #f8f9fb;
+  --color-neutral-100: #f1f3f7;
+  --color-neutral-200: #e7eaf0;
+  --color-neutral-300: #d5dae3;
+  --color-neutral-400: #aeb6c4;
+  --color-neutral-500: #8a94a6;
+  --color-neutral-600: #656e80;
+  --color-neutral-700: #4a5262;
+  --color-neutral-800: #333a47;
+  --color-neutral-900: #1f242e;
+  --color-neutral-950: #12151b;
+
+  /* Brand primitives */
+  --color-primary-50: #f1f1fd;
+  --color-primary-100: #e4e5fb;
+  --color-primary-200: #cdcef6;
+  --color-primary-300: #abadee;
+  --color-primary-400: #8385e3;
+  --color-primary-500: #5e63d6;
+  --color-primary-600: #4f54c4;
+  --color-primary-700: #4548a8;
+  --color-primary-800: #3a3d85;
+  --color-primary-900: #33356b;
+  --color-primary-950: #1f203f;
+
+  /* Personal context (PF) primitives */
+  --color-pf-50: #eef3fe;
+  --color-pf-100: #dde8fd;
+  --color-pf-200: #c2d4fb;
+  --color-pf-300: #9bb6f6;
+  --color-pf-400: #6e90ee;
+  --color-pf-500: #4a72e0;
+  --color-pf-600: #3b60d4;
+  --color-pf-700: #3350b0;
+
+  /* Business context (PJ) primitives */
+  --color-pj-50: #e9f6f4;
+  --color-pj-100: #cfebe7;
+  --color-pj-200: #a2d9d1;
+  --color-pj-300: #63beb2;
+  --color-pj-400: #2ca093;
+  --color-pj-500: #0f8577;
+  --color-pj-600: #0c6a5e;
+  --color-pj-700: #0c5348;
+
+  /* shadcn/ui semantic aliases */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--surface);
+  --color-card-foreground: var(--foreground);
+  --color-popover: var(--surface-raised);
+  --color-popover-foreground: var(--foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-subtle: var(--primary-subtle);
+  --color-primary-border: var(--primary-border);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-hover: var(--destructive-hover);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Tally surfaces and text */
+  --color-background-subtle: var(--background-subtle);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-hover: var(--surface-hover);
+  --color-surface-selected: var(--surface-selected);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-foreground-subtle: var(--foreground-subtle);
+
+  /* Personal / business context */
+  --color-pf: var(--pf);
+  --color-pf-hover: var(--pf-hover);
+  --color-pf-foreground: var(--pf-foreground);
+  --color-pf-subtle: var(--pf-subtle);
+  --color-pf-border: var(--pf-border);
+
+  --color-pj: var(--pj);
+  --color-pj-hover: var(--pj-hover);
+  --color-pj-foreground: var(--pj-foreground);
+  --color-pj-subtle: var(--pj-subtle);
+  --color-pj-border: var(--pj-border);
+
+  /* Feedback */
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-subtle: var(--success-subtle);
+  --color-success-border: var(--success-border);
+
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning-subtle: var(--warning-subtle);
+  --color-warning-border: var(--warning-border);
+
+  --color-error: var(--error);
+  --color-error-foreground: var(--error-foreground);
+  --color-error-subtle: var(--error-subtle);
+  --color-error-border: var(--error-border);
+
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-info-subtle: var(--info-subtle);
+  --color-info-border: var(--info-border);
+
+  /* Financial semantics */
+  --color-income: var(--income);
+  --color-income-foreground: var(--income-foreground);
+  --color-income-subtle: var(--income-subtle);
+  --color-income-border: var(--income-border);
+
+  --color-expense: var(--expense);
+  --color-expense-foreground: var(--expense-foreground);
+  --color-expense-subtle: var(--expense-subtle);
+  --color-expense-border: var(--expense-border);
+
+  --color-transfer: var(--transfer);
+  --color-transfer-foreground: var(--transfer-foreground);
+  --color-transfer-subtle: var(--transfer-subtle);
+  --color-transfer-border: var(--transfer-border);
+
+  --color-pending: var(--pending);
+  --color-pending-foreground: var(--pending-foreground);
+  --color-pending-subtle: var(--pending-subtle);
+  --color-pending-border: var(--pending-border);
+
+  --color-overdue: var(--overdue);
+  --color-overdue-foreground: var(--overdue-foreground);
+  --color-overdue-subtle: var(--overdue-subtle);
+  --color-overdue-border: var(--overdue-border);
+
+  --color-paid: var(--paid);
+  --color-paid-foreground: var(--paid-foreground);
+  --color-paid-subtle: var(--paid-subtle);
+  --color-paid-border: var(--paid-border);
+
+  --color-ai: var(--ai);
+  --color-ai-foreground: var(--ai-foreground);
+  --color-ai-subtle: var(--ai-subtle);
+  --color-ai-border: var(--ai-border);
+
+  /* Sidebar */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Charts */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
 }
 
-body {
-  margin: 0;
+:root {
+  color-scheme: light;
+
+  --radius: 0.5rem;
+
+  /* Surfaces */
+  --background: #f8f9fb;
+  --background-subtle: #f1f3f7;
+  --surface: #ffffff;
+  --surface-raised: #fcfcfd;
+  --surface-hover: #f1f3f7;
+  --surface-selected: #eef0fb;
+
+  /* Text */
+  --foreground: #1f242e;
+  --foreground-muted: #656e80;
+  --foreground-subtle: #8a94a6;
+
+  /* Borders and focus */
+  --border: #e7eaf0;
+  --border-strong: #d5dae3;
+  --input: #d5dae3;
+  --ring: #5e63d6;
+
+  /* Brand */
+  --primary: #4f54c4;
+  --primary-hover: #4548a8;
+  --primary-foreground: #ffffff;
+  --primary-subtle: #f1f1fd;
+  --primary-border: #e4e5fb;
+
+  /* Neutral component aliases */
+  --secondary: #f1f3f7;
+  --secondary-foreground: #333a47;
+  --muted: #f1f3f7;
+  --muted-foreground: #656e80;
+  --accent: #eef0fb;
+  --accent-foreground: #4548a8;
+
+  /* Destructive action */
+  --destructive: #dc2626;
+  --destructive-hover: #b42318;
+  --destructive-foreground: #ffffff;
+
+  /* Personal context — PF */
+  --pf: #3b60d4;
+  --pf-hover: #3350b0;
+  --pf-foreground: #3350b0;
+  --pf-subtle: #eef3fe;
+  --pf-border: #c2d4fb;
+
+  /* Business context — PJ */
+  --pj: #0c6a5e;
+  --pj-hover: #0c5348;
+  --pj-foreground: #0c6a5e;
+  --pj-subtle: #e9f6f4;
+  --pj-border: #a2d9d1;
+
+  /* Success */
+  --success: #16a34a;
+  --success-foreground: #067647;
+  --success-subtle: #ecfdf3;
+  --success-border: #abefc6;
+
+  /* Warning */
+  --warning: #d97706;
+  --warning-foreground: #b54708;
+  --warning-subtle: #fffaeb;
+  --warning-border: #fedf89;
+
+  /* Error */
+  --error: #dc2626;
+  --error-foreground: #b42318;
+  --error-subtle: #fef3f2;
+  --error-border: #fecdca;
+
+  /* Info */
+  --info: #2570eb;
+  --info-foreground: #175cd3;
+  --info-subtle: #eff6ff;
+  --info-border: #b2ddff;
+
+  /* Financial semantics */
+  --income: #16a34a;
+  --income-foreground: #067647;
+  --income-subtle: #ecfdf3;
+  --income-border: #abefc6;
+
+  --expense: #b42318;
+  --expense-foreground: #b42318;
+  --expense-subtle: #fef3f2;
+  --expense-border: #fecdca;
+
+  --transfer: #656e80;
+  --transfer-foreground: #4a5262;
+  --transfer-subtle: #f1f3f7;
+  --transfer-border: #e7eaf0;
+
+  --pending: #d97706;
+  --pending-foreground: #b54708;
+  --pending-subtle: #fffaeb;
+  --pending-border: #fedf89;
+
+  --overdue: #dc2626;
+  --overdue-foreground: #b42318;
+  --overdue-subtle: #fef3f2;
+  --overdue-border: #fecdca;
+
+  --paid: #16a34a;
+  --paid-foreground: #067647;
+  --paid-subtle: #ecfdf3;
+  --paid-border: #abefc6;
+
+  --ai: #4f54c4;
+  --ai-foreground: #4548a8;
+  --ai-subtle: #eef0fb;
+  --ai-border: #e4e5fb;
+
+  /* Sidebar */
+  --sidebar: #fcfcfd;
+  --sidebar-foreground: #1f242e;
+  --sidebar-primary: #4f54c4;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #eef0fb;
+  --sidebar-accent-foreground: #4548a8;
+  --sidebar-border: #e7eaf0;
+  --sidebar-ring: #5e63d6;
+
+  /* Charts: brand + financial context */
+  --chart-1: #4f54c4;
+  --chart-2: #3b60d4;
+  --chart-3: #0f8577;
+  --chart-4: #16a34a;
+  --chart-5: #d97706;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --background: #101218;
+  --background-subtle: #151820;
+  --surface: #1a1e27;
+  --surface-raised: #1f242e;
+  --surface-hover: #292f3a;
+  --surface-selected: #292b55;
+
+  --foreground: #f8f9fb;
+  --foreground-muted: #aeb6c4;
+  --foreground-subtle: #8a94a6;
+
+  --border: #333a47;
+  --border-strong: #4a5262;
+  --input: #4a5262;
+  --ring: #8385e3;
+
+  --primary: #5e63d6;
+  --primary-hover: #4f54c4;
+  --primary-foreground: #ffffff;
+  --primary-subtle: #1f203f;
+  --primary-border: #3a3d85;
+
+  --secondary: #292f3a;
+  --secondary-foreground: #f1f3f7;
+  --muted: #1f242e;
+  --muted-foreground: #aeb6c4;
+  --accent: #292b55;
+  --accent-foreground: #cdcef6;
+
+  --destructive: #dc2626;
+  --destructive-hover: #b42318;
+  --destructive-foreground: #ffffff;
+
+  /* Personal context — PF */
+  --pf: #6e90ee;
+  --pf-hover: #4a72e0;
+  --pf-foreground: #c2d4fb;
+  --pf-subtle: #17234b;
+  --pf-border: #3350b0;
+
+  /* Business context — PJ */
+  --pj: #63beb2;
+  --pj-hover: #2ca093;
+  --pj-foreground: #a2d9d1;
+  --pj-subtle: #102a27;
+  --pj-border: #0c6a5e;
+
+  /* Success */
+  --success: #4ade80;
+  --success-foreground: #86efac;
+  --success-subtle: #12251a;
+  --success-border: #1f5132;
+
+  /* Warning */
+  --warning: #f59e0b;
+  --warning-foreground: #fcd34d;
+  --warning-subtle: #2a1d0b;
+  --warning-border: #5b3a0a;
+
+  /* Error */
+  --error: #f87171;
+  --error-foreground: #fca5a5;
+  --error-subtle: #2b1517;
+  --error-border: #6b2529;
+
+  /* Info */
+  --info: #60a5fa;
+  --info-foreground: #93c5fd;
+  --info-subtle: #10233d;
+  --info-border: #1d4f82;
+
+  /* Financial semantics */
+  --income: #4ade80;
+  --income-foreground: #86efac;
+  --income-subtle: #12251a;
+  --income-border: #1f5132;
+
+  --expense: #f87171;
+  --expense-foreground: #fca5a5;
+  --expense-subtle: #2b1517;
+  --expense-border: #6b2529;
+
+  --transfer: #aeb6c4;
+  --transfer-foreground: #d5dae3;
+  --transfer-subtle: #1f242e;
+  --transfer-border: #4a5262;
+
+  --pending: #f59e0b;
+  --pending-foreground: #fcd34d;
+  --pending-subtle: #2a1d0b;
+  --pending-border: #5b3a0a;
+
+  --overdue: #f87171;
+  --overdue-foreground: #fca5a5;
+  --overdue-subtle: #2b1517;
+  --overdue-border: #6b2529;
+
+  --paid: #4ade80;
+  --paid-foreground: #86efac;
+  --paid-subtle: #12251a;
+  --paid-border: #1f5132;
+
+  --ai: #8385e3;
+  --ai-foreground: #cdcef6;
+  --ai-subtle: #1f203f;
+  --ai-border: #3a3d85;
+
+  /* Sidebar */
+  --sidebar: #151820;
+  --sidebar-foreground: #f8f9fb;
+  --sidebar-primary: #5e63d6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #292b55;
+  --sidebar-accent-foreground: #cdcef6;
+  --sidebar-border: #333a47;
+  --sidebar-ring: #8385e3;
+
+  /* Charts use lighter values for contrast against dark surfaces */
+  --chart-1: #8385e3;
+  --chart-2: #6e90ee;
+  --chart-3: #63beb2;
+  --chart-4: #4ade80;
+  --chart-5: #f59e0b;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    background: var(--background);
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    min-height: 100dvh;
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    font-weight: 400;
+  }
+
+  ::selection {
+    background: var(--surface-selected);
+    color: var(--foreground);
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--foreground-subtle);
+  }
+
+  button,
+  [role="button"] {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .typography-display {
+    font-size: var(--text-display);
+    line-height: var(--text-display--line-height);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+
+  .typography-heading-1 {
+    font-size: var(--text-heading-1);
+    line-height: var(--text-heading-1--line-height);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+  }
+
+  .typography-heading-2 {
+    font-size: var(--text-heading-2);
+    line-height: var(--text-heading-2--line-height);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .typography-heading-3 {
+    font-size: var(--text-heading-3);
+    line-height: var(--text-heading-3--line-height);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+
+  .typography-heading-4 {
+    font-size: var(--text-heading-4);
+    line-height: var(--text-heading-4--line-height);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .typography-body-lg {
+    font-size: var(--text-body-lg);
+    line-height: var(--text-body-lg--line-height);
+    font-weight: 400;
+  }
+
+  .typography-body {
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    font-weight: 400;
+  }
+
+  .typography-body-sm {
+    font-size: var(--text-body-sm);
+    line-height: var(--text-body-sm--line-height);
+    font-weight: 400;
+  }
+
+  .typography-label {
+    font-size: var(--text-label);
+    line-height: var(--text-label--line-height);
+    font-weight: 500;
+  }
+
+  .typography-caption {
+    font-size: var(--text-caption);
+    line-height: var(--text-caption--line-height);
+    font-weight: 400;
+  }
+
+  .typography-overline {
+    font-size: var(--text-overline);
+    line-height: var(--text-overline--line-height);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .typography-financial-lg {
+    font-size: var(--text-financial-lg);
+    line-height: var(--text-financial-lg--line-height);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .typography-financial-md {
+    font-size: var(--text-financial-md);
+    line-height: var(--text-financial-md--line-height);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .typography-financial-sm {
+    font-size: var(--text-financial-sm);
+    line-height: var(--text-financial-sm--line-height);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
 }
