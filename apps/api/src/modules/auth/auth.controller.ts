@@ -22,6 +22,7 @@ import { loginSchema, registerSchema } from "@tally/shared";
 import type { LoginInput, RegisterInput } from "@tally/shared";
 import type { CookieOptions, Request, Response } from "express";
 
+import { Public } from "../../common/decorators/public.decorator.js";
 import { OriginGuard } from "../../common/guards/origin.guard.js";
 import { ZodValidationPipe } from "../../common/pipes/zod-validation.pipe.js";
 import {
@@ -40,6 +41,9 @@ import { TokensService } from "./tokens.service.js";
 // Rate limit estrito nos endpoints de credencial (threat-model S/D).
 const AUTH_THROTTLE = { limit: 5, ttl: 60_000 };
 
+// Todas as rotas de auth são públicas (isentas dos guards globais de sessão);
+// a proteção aqui é CSRF/origem (OriginGuard) + rate limit, não sessão.
+@Public()
 @Controller("auth")
 export class AuthController {
   private readonly logger = new Logger(AuthController.name);

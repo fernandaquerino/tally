@@ -133,7 +133,13 @@ Falha em qualquer etapa desfará toda a operação. O client nunca enviará `use
 4. [x] Criar `GET /v1/me` e os contratos compartilhados de autenticação.
 5. [x] Criar páginas de login/cadastro e estado de sessão no web sem persistência local de tokens.
 6. [x] Adicionar rate limit e validação de origem nos endpoints de autenticação.
-7. [ ] Cobrir cadastro atômico, login, refresh, reuso, logout e isolamento entre households com testes automatizados. — _Parcial: schemas compartilhados e formulários web cobertos; os testes de service/e2e de tenancy e reuso dependem de um Postgres de teste e de um runner que resolva o TS da API (ver Follow-up)._
+7. [ ] Cobrir cadastro atômico, login, refresh, reuso, logout e isolamento entre households com testes automatizados. — _Parcial: **isolamento entre households (IDOR) coberto** (ver nota 2026-08-05); faltam ainda os testes de service/e2e de cadastro/login/refresh/reuso/logout._
+
+## Nota de implementação (2026-08-05) — tenancy global (S1-02)
+
+- `AuthGuard` e `TenancyGuard` passaram a ser **globais** (`APP_GUARD`, ordem `Auth → Tenancy`): toda rota é fail-closed por padrão. Rotas de identidade/health optam por sair com o decorator `@Public()`.
+- Domínios acessam o banco por meio de `TenantScopedRepository` (`common/repositories`), cujo `scope(householdId, where)` injeta o `householdId` da sessão **por último**, tornando impossível forjar o tenant via input. O decorator `@CurrentHousehold()` entrega esse id aos handlers.
+- Isolamento provado por teste A/B de IDOR com Postgres real (`*.int.test.ts`, roda no CI e localmente com `TEST_DATABASE_URL`). O runner de testes da API passou a ser o **Vitest**.
 
 ## Nota de implementação (2026-08-04)
 

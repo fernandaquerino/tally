@@ -5,9 +5,11 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { Reflector } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
 
 import { ACCESS_COOKIE } from "../../modules/auth/auth.constants.js";
+import { IS_PUBLIC_KEY } from "../decorators/public.decorator.js";
 import type {
   AccessTokenClaims,
   AuthenticatedUser,
@@ -28,9 +30,18 @@ export class AuthGuard implements CanActivate {
   constructor(
     private readonly jwt: JwtService,
     private readonly config: ConfigService,
+    private readonly reflector: Reflector,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    if (isPublic) {
+      return true;
+    }
+
     const request = context.switchToHttp().getRequest<RequestWithAuth>();
     const token = request.cookies?.[ACCESS_COOKIE];
 
