@@ -12,7 +12,7 @@ households (
 users (
   id uuid PK, household_id FK→households,
   email citext UNIQUE, password_hash text NULL,      -- NULL se OAuth
-  google_id text NULL UNIQUE, name text,
+  google_id text NULL UNIQUE, github_id text NULL UNIQUE, name text,
   created_at, updated_at
 )
 
@@ -113,8 +113,9 @@ ai_feedback (
 )
 
 refresh_tokens (
-  id uuid PK, user_id FK, token_hash text, expires_at, revoked_at NULL,
-  user_agent text, ip inet
+  id uuid PK, user_id FK, family_id uuid, token_hash text UNIQUE,
+  expires_at, revoked_at NULL, replaced_by_id uuid NULL,   -- rotação + reuse detection (ADR-0008)
+  user_agent text, ip text
 )
 
 audit_log (

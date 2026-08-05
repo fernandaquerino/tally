@@ -1,6 +1,6 @@
 import "dotenv/config";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "./generated/client/client.ts";
+
+import { createPrismaClient } from "../src/index.ts";
 
 const connectionString = process.env.DATABASE_URL;
 
@@ -8,8 +8,7 @@ if (!connectionString) {
   throw new Error("DATABASE_URL é obrigatória para executar o seed.");
 }
 
-const adapter = new PrismaPg({ connectionString });
-const prisma = new PrismaClient({ adapter });
+const prisma = createPrismaClient(connectionString);
 
 async function seed(): Promise<void> {
   try {
