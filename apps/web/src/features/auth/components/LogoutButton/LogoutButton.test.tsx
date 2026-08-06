@@ -20,7 +20,7 @@ describe("LogoutButton", () => {
     mutate.mockReset();
   });
 
-  it("dispara o logout e volta para /login no sucesso", async () => {
+  it("triggers the logout and returns to /login on success", async () => {
     mutate.mockImplementation((_input, { onSuccess }) => onSuccess());
     const user = userEvent.setup();
     render(<LogoutButton />);

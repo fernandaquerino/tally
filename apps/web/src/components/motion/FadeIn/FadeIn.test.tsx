@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { FadeIn } from "./FadeIn";
 
 describe("FadeIn", () => {
-  it("renderiza o conteúdo (visível por padrão, sem depender da animação)", () => {
+  it("renders the content (visible by default, without relying on the animation)", () => {
     render(
       <FadeIn>
         <p>conteúdo</p>
@@ -14,7 +14,7 @@ describe("FadeIn", () => {
     expect(screen.getByText("conteúdo")).toBeInTheDocument();
   });
 
-  it("repassa a className para o wrapper", () => {
+  it("forwards the className to the wrapper", () => {
     render(
       <FadeIn className="max-w-sm">
         <span>x</span>

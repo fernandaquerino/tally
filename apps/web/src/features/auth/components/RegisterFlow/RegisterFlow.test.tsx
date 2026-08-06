@@ -48,7 +48,7 @@ describe("RegisterFlow", () => {
     document.cookie = "tally_last_login_method=; Max-Age=0; Path=/";
   });
 
-  it("destaca no cadastro o último método usado", async () => {
+  it("highlights the last used method on the sign-up screen", async () => {
     document.cookie = "tally_last_login_method=github; Path=/";
     renderWithClient(<RegisterFlow />);
 
@@ -60,7 +60,7 @@ describe("RegisterFlow", () => {
     ).toHaveClass("bg-primary");
   });
 
-  it("bloqueia senha curta antes de chamar a API", async () => {
+  it("blocks a short password before calling the API", async () => {
     renderWithClient(<RegisterFlow />);
     const user = await reachDetails();
 
@@ -80,7 +80,7 @@ describe("RegisterFlow", () => {
     expect(register).not.toHaveBeenCalled();
   });
 
-  it("cria conta e navega para o dashboard", async () => {
+  it("creates the account and navigates to the dashboard", async () => {
     register.mockResolvedValue({
       user: {
         id: "1",
@@ -111,7 +111,7 @@ describe("RegisterFlow", () => {
     });
   });
 
-  it("preserva o e-mail ao voltar da etapa final", async () => {
+  it("preserves the email when going back from the final step", async () => {
     renderWithClient(<RegisterFlow />);
     const user = await reachDetails();
 

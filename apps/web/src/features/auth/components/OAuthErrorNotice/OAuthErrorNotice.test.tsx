@@ -13,7 +13,7 @@ describe("OAuthErrorNotice", () => {
     search = "";
   });
 
-  it("traduz um código de erro conhecido para mensagem amigável", () => {
+  it("translates a known error code into a friendly message", () => {
     search = "error=oauth_denied";
     render(<OAuthErrorNotice />);
 
@@ -22,12 +22,12 @@ describe("OAuthErrorNotice", () => {
     );
   });
 
-  it("não renderiza nada sem erro na URL", () => {
+  it("renders nothing when there is no error in the URL", () => {
     const { container } = render(<OAuthErrorNotice />);
     expect(container).toBeEmptyDOMElement();
   });
 
-  it("ignora códigos de erro desconhecidos", () => {
+  it("ignores unknown error codes", () => {
     search = "error=algo_inesperado";
     const { container } = render(<OAuthErrorNotice />);
     expect(container).toBeEmptyDOMElement();

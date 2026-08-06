@@ -14,9 +14,24 @@ jobs:
     name: Lint, typecheck, test e build
     runs-on: ubuntu-latest
     env:
-      # O Prisma carrega a configuração durante `generate`, mas não conecta ao
-      # banco. Uma URL válida e não sensível mantém os checks determinísticos.
+      # URL usada pelo `generate`/`build` (Prisma carrega o config mas não
+      # conecta) e pelo serviço Postgres abaixo, que os testes de integração
+      # (tenancy/IDOR) consomem via TEST_DATABASE_URL.
       DATABASE_URL: postgresql://tally:tally@127.0.0.1:5432/tally_ci
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: tally
+          POSTGRES_PASSWORD: tally
+          POSTGRES_DB: tally_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U tally -d tally_ci"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -42,7 +57,14 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
+      - name: Apply database migrations
+        run: pnpm db:deploy
+
       - name: Test
+        # TEST_DATABASE_URL destrava os testes de integração (skipIf); sem ele,
+        # apenas os unitários rodariam.
+        env:
+          TEST_DATABASE_URL: ${{ env.DATABASE_URL }}
         run: pnpm test
 
       - name: Build
