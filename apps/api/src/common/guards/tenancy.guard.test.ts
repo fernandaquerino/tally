@@ -23,7 +23,7 @@ function reflectorReturning(isPublic: boolean): Reflector {
 }
 
 describe("TenancyGuard", () => {
-  it("passa quando há householdId na sessão", () => {
+  it("passes when the session has a householdId", () => {
     const guard = new TenancyGuard(reflectorReturning(false));
 
     expect(
@@ -33,7 +33,7 @@ describe("TenancyGuard", () => {
     ).toBe(true);
   });
 
-  it("bloqueia com 401 quando não há householdId", () => {
+  it("blocks with 401 when there is no householdId", () => {
     const guard = new TenancyGuard(reflectorReturning(false));
 
     expect(() => guard.canActivate(contextWith(undefined))).toThrow(
@@ -41,7 +41,7 @@ describe("TenancyGuard", () => {
     );
   });
 
-  it("libera rotas marcadas como @Public() sem exigir sessão", () => {
+  it("allows routes marked as @Public() without requiring a session", () => {
     const guard = new TenancyGuard(reflectorReturning(true));
 
     expect(guard.canActivate(contextWith(undefined))).toBe(true);

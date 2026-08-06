@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { FormError } from "./FormError";
 
 describe("FormError", () => {
-  it("anuncia a mensagem via role=alert", () => {
+  it("announces the message via role=alert", () => {
     render(<FormError message="E-mail ou senha inválidos." />);
 
     const alert = screen.getByRole("alert");

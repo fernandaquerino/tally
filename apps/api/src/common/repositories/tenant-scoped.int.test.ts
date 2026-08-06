@@ -86,7 +86,7 @@ describe.skipIf(!DATABASE_URL)("TenantScopedRepository (IDOR A/B)", () => {
     await prisma.$disconnect();
   });
 
-  it("A só enxerga o próprio membro, nunca o do household B", async () => {
+  it("A only sees its own member, never the one from household B", async () => {
     const result = await members.listMembers(householdA);
 
     expect(result).toHaveLength(1);
@@ -94,7 +94,7 @@ describe.skipIf(!DATABASE_URL)("TenantScopedRepository (IDOR A/B)", () => {
     expect(result.some((m) => m.userId === userB)).toBe(false);
   });
 
-  it("forjar o householdId de B no filtro não vaza dados de B", async () => {
+  it("forging household B's householdId in the filter does not leak B's data", async () => {
     // Cliente tenta forçar o tenant de B; o scope da sessão (A) sobrescreve.
     const result = await members.listMembers(householdA, {
       householdId: householdB,
@@ -104,7 +104,7 @@ describe.skipIf(!DATABASE_URL)("TenantScopedRepository (IDOR A/B)", () => {
     expect(result[0]?.userId).toBe(userA);
   });
 
-  it("cada household vê exatamente o seu membro", async () => {
+  it("each household sees exactly its own member", async () => {
     const fromB = await members.listMembers(householdB);
 
     expect(fromB).toHaveLength(1);

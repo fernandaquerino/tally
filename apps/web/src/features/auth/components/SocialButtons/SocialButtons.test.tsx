@@ -6,7 +6,7 @@ import { SocialButtons } from "./SocialButtons";
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/v1";
 
 describe("SocialButtons", () => {
-  it("aponta para os endpoints OAuth da API (redirect top-level, não fetch)", () => {
+  it("points to the API OAuth endpoints (top-level redirect, not fetch)", () => {
     render(<SocialButtons />);
 
     expect(
@@ -17,7 +17,7 @@ describe("SocialButtons", () => {
     ).toHaveAttribute("href", `${API_URL}/auth/oauth/github`);
   });
 
-  it("destaca o último provedor usado e mostra a dica", () => {
+  it("highlights the last used provider and shows the hint", () => {
     render(<SocialButtons lastUsedMethod="github" />);
 
     expect(
@@ -28,7 +28,7 @@ describe("SocialButtons", () => {
     ).toBeInTheDocument();
   });
 
-  it("omite o divisor quando showDivider é falso", () => {
+  it("omits the divider when showDivider is false", () => {
     render(<SocialButtons showDivider={false} />);
     expect(screen.queryByText("ou")).not.toBeInTheDocument();
   });

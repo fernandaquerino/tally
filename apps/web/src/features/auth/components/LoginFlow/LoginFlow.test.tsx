@@ -37,7 +37,7 @@ describe("LoginFlow", () => {
     document.cookie = "tally_last_login_method=; Max-Age=0; Path=/";
   });
 
-  it("destaca o último método de login e mostra a sugestão", async () => {
+  it("highlights the last login method and shows the suggestion", async () => {
     document.cookie = "tally_last_login_method=google; Path=/";
     renderWithClient(<LoginFlow />);
 
@@ -52,7 +52,7 @@ describe("LoginFlow", () => {
     ).toHaveClass("border");
   });
 
-  it("avança por e-mail e valida cada etapa antes de chamar a API", async () => {
+  it("advances by email and validates each step before calling the API", async () => {
     const user = userEvent.setup();
     renderWithClient(<LoginFlow />);
 
@@ -71,7 +71,7 @@ describe("LoginFlow", () => {
     expect(login).not.toHaveBeenCalled();
   });
 
-  it("navega para o dashboard em caso de sucesso", async () => {
+  it("navigates to the dashboard on success", async () => {
     login.mockResolvedValue({
       user: {
         id: "1",
@@ -105,7 +105,7 @@ describe("LoginFlow", () => {
     });
   });
 
-  it("mostra erro genérico quando a API rejeita credenciais", async () => {
+  it("shows a generic error when the API rejects the credentials", async () => {
     login.mockRejectedValue(
       new ApiError(401, {
         code: "INVALID_CREDENTIALS",
@@ -135,7 +135,7 @@ describe("LoginFlow", () => {
     expect(push).not.toHaveBeenCalled();
   });
 
-  it("preserva o e-mail ao voltar da etapa de senha", async () => {
+  it("preserves the email when going back from the password step", async () => {
     const user = userEvent.setup();
     renderWithClient(<LoginFlow />);
 

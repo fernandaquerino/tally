@@ -19,7 +19,7 @@ describe("AuthGuard", () => {
     useSession.mockReset();
   });
 
-  it("mostra loading enquanto a sessão carrega, sem redirecionar", () => {
+  it("shows loading while the session loads, without redirecting", () => {
     useSession.mockReturnValue({ isLoading: true });
     render(
       <AuthGuard>
@@ -31,7 +31,7 @@ describe("AuthGuard", () => {
     expect(replace).not.toHaveBeenCalled();
   });
 
-  it("renderiza os filhos quando há sessão válida", () => {
+  it("renders the children when the session is valid", () => {
     useSession.mockReturnValue({
       data: { id: "1", name: "Rafael" },
       isLoading: false,
@@ -46,7 +46,7 @@ describe("AuthGuard", () => {
     expect(replace).not.toHaveBeenCalled();
   });
 
-  it("redireciona para /login quando não há sessão", async () => {
+  it("redirects to /login when there is no session", async () => {
     useSession.mockReturnValue({ data: null, isLoading: false });
     render(
       <AuthGuard>
@@ -58,7 +58,7 @@ describe("AuthGuard", () => {
     expect(screen.queryByText("conteúdo")).not.toBeInTheDocument();
   });
 
-  it("redireciona para /login quando a sessão falha", async () => {
+  it("redirects to /login when the session fails", async () => {
     useSession.mockReturnValue({ isError: true, isLoading: false });
     render(
       <AuthGuard>

@@ -14,7 +14,7 @@ function contextWith(
 }
 
 describe("resolveCurrentHousehold", () => {
-  it("retorna o householdId da sessão", () => {
+  it("returns the householdId from the session", () => {
     const household = resolveCurrentHousehold(
       contextWith({ userId: "u1", householdId: "hh-a", role: "OWNER" }),
     );
@@ -22,7 +22,7 @@ describe("resolveCurrentHousehold", () => {
     expect(household).toBe("hh-a");
   });
 
-  it("lança 401 quando não há usuário na request", () => {
+  it("throws 401 when there is no user on the request", () => {
     expect(() => resolveCurrentHousehold(contextWith(undefined))).toThrow(
       UnauthorizedException,
     );
