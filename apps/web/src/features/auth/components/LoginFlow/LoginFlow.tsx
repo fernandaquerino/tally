@@ -54,8 +54,9 @@ export function LoginFlow() {
   }
 
   const submitLogin = handleSubmit((values) => {
+    console.log({ values });
     mutate(values, {
-      onSuccess: () => router.push("/dashboard"),
+      onSuccess: () => router.push("/onboarding"),
     });
   });
 
