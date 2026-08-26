@@ -6,7 +6,7 @@ import { NextResponse, type NextRequest } from "next/server";
  * Prefixos protegidos crescem conforme as telas da área `(app)` forem criadas.
  */
 const SESSION_HINT_COOKIE = "tally_session";
-const PROTECTED_PREFIXES = ["/dashboard"];
+const PROTECTED_PREFIXES = ["/dashboard", "/onboarding"];
 
 export function middleware(request: NextRequest): NextResponse {
   const { pathname } = request.nextUrl;
@@ -37,5 +37,5 @@ export function middleware(request: NextRequest): NextResponse {
 }
 
 export const config = {
-  matcher: ["/", "/dashboard/:path*"],
+  matcher: ["/", "/dashboard/:path*", "/onboarding"],
 };

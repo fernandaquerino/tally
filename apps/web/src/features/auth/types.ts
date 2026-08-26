@@ -8,4 +8,5 @@ export interface SessionUser {
   email: string;
   householdId: string;
   role: HouseholdRole;
+  onboardingCompleted: boolean;
 }

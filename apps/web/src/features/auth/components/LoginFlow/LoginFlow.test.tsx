@@ -79,6 +79,7 @@ describe("LoginFlow", () => {
         email: "rafael@example.test",
         householdId: "h1",
         role: "OWNER",
+        onboardingCompleted: true,
       },
     });
     const user = userEvent.setup();

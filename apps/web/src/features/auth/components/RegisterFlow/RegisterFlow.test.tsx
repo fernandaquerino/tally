@@ -80,7 +80,7 @@ describe("RegisterFlow", () => {
     expect(register).not.toHaveBeenCalled();
   });
 
-  it("creates the account and navigates to the dashboard", async () => {
+  it("creates the account and navigates to onboarding", async () => {
     register.mockResolvedValue({
       user: {
         id: "1",
@@ -88,6 +88,7 @@ describe("RegisterFlow", () => {
         email: "rafael@example.test",
         householdId: "h1",
         role: "OWNER",
+        onboardingCompleted: false,
       },
     });
     renderWithClient(<RegisterFlow />);
@@ -103,7 +104,7 @@ describe("RegisterFlow", () => {
     );
     await user.click(screen.getByRole("button", { name: "Criar conta" }));
 
-    await waitFor(() => expect(push).toHaveBeenCalledWith("/dashboard"));
+    await waitFor(() => expect(push).toHaveBeenCalledWith("/onboarding"));
     expect(register).toHaveBeenCalledWith({
       name: "Rafael",
       email: "rafael@example.test",
