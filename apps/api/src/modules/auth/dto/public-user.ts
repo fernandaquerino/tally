@@ -7,9 +7,12 @@ export interface PublicUser {
   email: string;
   householdId: string;
   role: HouseholdRole;
+  onboardingCompleted: boolean;
 }
 
-type UserIdentity = Pick<PublicUser, "id" | "name" | "email">;
+type UserIdentity = Pick<PublicUser, "id" | "name" | "email"> & {
+  onboardingCompletedAt: Date | null;
+};
 
 export function toPublicUser(
   user: UserIdentity,
@@ -22,5 +25,6 @@ export function toPublicUser(
     email: user.email,
     householdId,
     role,
+    onboardingCompleted: user.onboardingCompletedAt !== null,
   };
 }

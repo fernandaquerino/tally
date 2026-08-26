@@ -78,6 +78,39 @@ describe("RadioCardGroup", () => {
     expect(screen.getByRole("radio", { name: /Empresa \(PJ\)/ })).toBeChecked();
   });
 
+  it("renders trailing content alongside the option label", () => {
+    render(
+      <RadioCardGroup
+        label="Conta inicial"
+        options={[
+          {
+            value: "business",
+            label: "Conta da empresa",
+            trailing: <span>Empresa</span>,
+          },
+        ]}
+      />,
+    );
+
+    expect(
+      screen.getByRole("radio", { name: "Conta da empresa Empresa" }),
+    ).toBeInTheDocument();
+  });
+
+  it("can hide the visual control without removing radio semantics", () => {
+    render(
+      <RadioCardGroup
+        label="Conta inicial"
+        hideControl
+        options={[{ value: "business", label: "Conta da empresa" }]}
+      />,
+    );
+
+    expect(
+      screen.getByRole("radio", { name: "Conta da empresa" }),
+    ).toBeInTheDocument();
+  });
+
   it("does not select a disabled option", async () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();

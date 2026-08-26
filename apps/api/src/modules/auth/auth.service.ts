@@ -285,7 +285,9 @@ export class AuthService {
 
   private async issueSession(
     subject: AccessTokenSubject,
-    user: Pick<PublicUser, "id" | "name" | "email">,
+    user: Pick<PublicUser, "id" | "name" | "email"> & {
+      onboardingCompletedAt: Date | null;
+    },
     familyId: string,
     meta: RequestMeta,
   ): Promise<SessionResult> {

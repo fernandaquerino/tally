@@ -55,7 +55,8 @@ export function LoginFlow() {
 
   const submitLogin = handleSubmit((values) => {
     mutate(values, {
-      onSuccess: () => router.push("/dashboard"),
+      onSuccess: ({ user }) =>
+        router.push(user.onboardingCompleted ? "/dashboard" : "/onboarding"),
     });
   });
 

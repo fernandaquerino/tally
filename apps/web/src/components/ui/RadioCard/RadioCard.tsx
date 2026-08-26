@@ -12,6 +12,7 @@ export interface RadioCardOption {
   label: ReactNode;
   description?: ReactNode;
   icon?: ReactNode;
+  trailing?: ReactNode;
   accent?: RadioCardAccent;
   disabled?: boolean;
 }
@@ -28,6 +29,7 @@ export interface RadioCardGroupProps {
   helperText?: string;
   error?: string;
   hideLabel?: boolean;
+  hideControl?: boolean;
   className?: string;
 }
 
@@ -67,6 +69,7 @@ export function RadioCardGroup({
   helperText,
   error,
   hideLabel,
+  hideControl = false,
   className,
 }: RadioCardGroupProps) {
   const generatedId = useId();
@@ -131,11 +134,12 @@ export function RadioCardGroup({
               htmlFor={optionId}
               data-state={isSelected ? "checked" : "unchecked"}
               className={cn(
-                "relative flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-[background-color,border-color,box-shadow] duration-[120ms]",
+                "relative flex cursor-pointer items-start gap-3 rounded-xl border-2 p-[15px] transition-[background-color,border-color,box-shadow] duration-[120ms]",
                 "border-border bg-card",
                 "hover:border-border-strong",
                 "has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-ring has-[input:focus-visible]:ring-offset-2 has-[input:focus-visible]:ring-offset-background",
                 isSelected && accent.card,
+                hideControl && "items-center",
                 isDisabled &&
                   "cursor-not-allowed opacity-60 hover:border-border",
               )}
@@ -153,35 +157,46 @@ export function RadioCardGroup({
                 className="peer sr-only"
               />
 
-              <span
-                aria-hidden="true"
-                className={cn(
-                  "mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border-2 bg-card transition-colors duration-[120ms]",
-                  "border-border-strong",
-                  isSelected && accent.control,
-                )}
-              >
-                {isSelected ? (
-                  <span className={cn("size-2.5 rounded-full", accent.dot)} />
-                ) : null}
-              </span>
+              {!hideControl ? (
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    "mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border-2 bg-card transition-colors duration-[120ms]",
+                    "border-border-strong",
+                    isSelected && accent.control,
+                  )}
+                >
+                  {isSelected ? (
+                    <span className={cn("size-2.5 rounded-full", accent.dot)} />
+                  ) : null}
+                </span>
+              ) : null}
+
+              {option.icon ? (
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    "flex shrink-0 items-center justify-center [&_svg]:size-[18px]",
+                    accent.icon,
+                  )}
+                >
+                  {option.icon}
+                </span>
+              ) : null}
 
               <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                <span className="flex items-center gap-2">
-                  {option.icon ? (
-                    <span
-                      aria-hidden="true"
-                      className={cn(
-                        "flex shrink-0 items-center [&_svg]:size-[18px]",
-                        accent.icon,
-                      )}
-                    >
-                      {option.icon}
-                    </span>
-                  ) : null}
+                <span className="flex w-full items-center gap-2">
                   <span className="text-sm font-medium text-foreground">
                     {option.label}
                   </span>
+                  {option.trailing ? (
+                    <>
+                      {" "}
+                      <span className="ml-auto shrink-0">
+                        {option.trailing}
+                      </span>
+                    </>
+                  ) : null}
                 </span>
                 {option.description ? (
                   <span

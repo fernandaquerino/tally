@@ -9,3 +9,4 @@ export * from "./domain.ts";
 export * from "./money.ts";
 export * from "./date.ts";
 export * from "./pagination.ts";
+export * from "./onboarding.ts";

@@ -55,7 +55,7 @@ export function RegisterFlow() {
 
   const submitRegister = handleSubmit((values) => {
     mutate(values, {
-      onSuccess: () => router.push("/dashboard"),
+      onSuccess: () => router.push("/onboarding"),
     });
   });
 

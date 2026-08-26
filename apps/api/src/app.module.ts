@@ -9,6 +9,7 @@ import { validateEnv } from "./config/env.validation.js";
 import { AuthGuard } from "./common/guards/auth.guard.js";
 import { TenancyGuard } from "./common/guards/tenancy.guard.js";
 import { AuthModule } from "./modules/auth/auth.module.js";
+import { OnboardingModule } from "./modules/onboarding/onboarding.module.js";
 import { PrismaModule } from "./prisma/prisma.module.js";
 
 @Module({
@@ -24,6 +25,7 @@ import { PrismaModule } from "./prisma/prisma.module.js";
     ThrottlerModule.forRoot([{ ttl: 60_000, limit: 100 }]),
     PrismaModule,
     AuthModule,
+    OnboardingModule,
   ],
   controllers: [AppController],
   // Ordem importa: Throttler → Auth (popula request.user) → Tenancy (exige
