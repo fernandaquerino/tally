@@ -1,29 +1,29 @@
-# ADR-0005: Cartão de crédito modelado por fatura (competência vs. caixa)
+# ADR-0005: Credit card modeled by statement (accrual vs. cash)
 
-**Status:** Aceito · **Data:** 2026-07-13
+**Status:** Accepted · **Date:** 2026-07-13
 
-## Contexto
+## Context
 
-O benchmark mostrou que "saldo não bate" por cartão mal modelado é dor crônica da categoria (reviews de Mobills, Organizze; o LAPI faz disso diferencial). No Brasil, parcelamento em N× é o modelo mental dominante. Refatorar essa modelagem depois é caríssimo — a decisão precisa nascer certa.
+The benchmark showed that "the balance doesn't add up" due to a poorly modeled card is a chronic pain of the category (reviews of Mobills, Organizze; LAPI makes it a differentiator). In Brazil, installment purchases in N× are the dominant mental model. Refactoring this modeling later is extremely expensive — the decision needs to be born right.
 
-## Opções
+## Options
 
-### A: Cartão como conta com saldo negativo (o erro comum da categoria)
+### A: Card as an account with a negative balance (the category's common mistake)
 
-**Prós:** simples de implementar. **Contras:** mistura competência e caixa; parcelas futuras viram gambiarra; o saldo "mente" — exatamente a dor nº 3 do mercado. Descartada.
+**Pros:** simple to implement. **Cons:** mixes accrual and cash; future installments become a hack; the balance "lies" — exactly the market's pain #3. Rejected.
 
-### B: Fatura como entidade agrupadora (escolhida)
+### B: Statement as a grouping entity (chosen)
 
-Gasto no cartão → entra na fatura do ciclo (competência). Pagamento da fatura → transação de conta (caixa). Parcelas = N transações em N faturas futuras (`installment_group_id`). Fatura fechada é imutável.
-**Prós:** números que batem; projeção de comprometimento futuro correta; cartão misto PF/PJ possível (contexto na transação).
-**Contras:** mais entidades e regras (fechamento, estados, pagamento parcial); jobs de fechamento.
+A card purchase → goes into the cycle's statement (accrual). A statement payment → an account transaction (cash). Installments = N transactions across N future statements (`installment_group_id`). A closed statement is immutable.
+**Pros:** numbers that add up; a correct future-commitment projection; a mixed PF/PJ card is possible (context on the transaction).
+**Cons:** more entities and rules (closing, states, partial payment); closing jobs.
 
-## Decisão
+## Decision
 
-Opção B, com as invariantes 2, 5 e 6 do domain-model como testes obrigatórios e job diário de fechamento de ciclo.
+Option B, with domain-model invariants 2, 5 and 6 as mandatory tests and a daily cycle-closing job.
 
-## Consequências
+## Consequences
 
-- Fica mais fácil: confiança do usuário; "comprometido futuro" na home; relatório PF/PJ correto em cartão misto.
-- Fica mais difícil: implementação inicial (~a feature mais complexa do MVP depois do split).
-- Revisitar quando: nunca — é fundação.
+- Gets easier: user trust; "future committed" on the home; a correct PF/PJ report on a mixed card.
+- Gets harder: the initial implementation (~the most complex MVP feature after the split).
+- Revisit when: never — it's foundational.

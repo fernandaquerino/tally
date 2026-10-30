@@ -1,23 +1,23 @@
-# ADR-0006: Dinheiro como inteiro em centavos (bigint)
+# ADR-0006: Money as an integer in cents (bigint)
 
-**Status:** Aceito · **Data:** 2026-07-13
+**Status:** Accepted · **Date:** 2026-07-13
 
-## Contexto
+## Context
 
-Float em dinheiro produz erros de arredondamento (0.1 + 0.2 ≠ 0.3). Em app financeiro, um centavo divergente destrói confiança (princípio 6 de design).
+Float for money produces rounding errors (0.1 + 0.2 ≠ 0.3). In a financial app, a single diverging cent destroys trust (design principle 6).
 
-## Opções
+## Options
 
-- **A: float/double** — descartada (arredondamento).
-- **B: decimal/numeric no banco + Decimal.js** — correta, porém tipos Decimal do Prisma são objetos incômodos no TS e serializam mal em JSON.
-- **C: inteiro em centavos, bigint (escolhida)** — aritmética exata nativa; `amount_cents: 500000` = R$ 5.000,00; formatação só na borda (Intl.NumberFormat).
+- **A: float/double** — rejected (rounding).
+- **B: decimal/numeric in the database + Decimal.js** — correct, but Prisma's Decimal types are awkward objects in TS and serialize poorly to JSON.
+- **C: integer in cents, bigint (chosen)** — exact native arithmetic; `amount_cents: 500000` = R$ 5,000.00; formatting only at the edge (Intl.NumberFormat).
 
-## Decisão
+## Decision
 
-`bigint` centavos em todo o backend e API (JSON como string quando exceder Number.MAX_SAFE_INTEGER — na prática valores pessoais cabem em number, mas o contrato da API define string para segurança). Utilitários em `@tally/shared/money`: parse, format, split proporcional com **resto na última parcela** (invariante 5).
+`bigint` cents throughout the backend and API (JSON as a string when it exceeds Number.MAX_SAFE_INTEGER — in practice personal values fit in a number, but the API contract defines a string for safety). Utilities in `@tally/shared/money`: parse, format, proportional split with **the remainder on the last installment** (invariant 5).
 
-## Consequências
+## Consequences
 
-- Fica mais fácil: igualdade exata, testes, reconciliação.
-- Fica mais difícil: lembrar de converter na borda (lint rule proibindo `parseFloat` em contexto de dinheiro).
-- Revisitar quando: multi-moeda (v3+): acrescenta `currency` + minor units por moeda; a base em inteiro continua válida.
+- Gets easier: exact equality, tests, reconciliation.
+- Gets harder: remembering to convert at the edge (a lint rule forbidding `parseFloat` in a money context).
+- Revisit when: multi-currency (v3+): add `currency` + minor units per currency; the integer base remains valid.

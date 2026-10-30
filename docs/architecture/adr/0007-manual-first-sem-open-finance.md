@@ -1,29 +1,29 @@
-# ADR-0007: Manual-first — sem Open Finance no MVP
+# ADR-0007: Manual-first — no Open Finance in the MVP
 
-**Status:** Aceito · **Data:** 2026-07-13
+**Status:** Accepted · **Date:** 2026-07-13
 
-## Contexto
+## Context
 
-Open Finance é expectativa de mercado (40M+ consentimentos no Brasil), mas o benchmark mostra: (1) é a maior fonte de reviews negativas dos concorrentes (sync instável, duplicados); (2) cobrar por feature instável gera as piores avaliações; (3) agregadores custam por conexão — pesado pré-receita; (4) sustentar conexões exige time que não existe (solo dev). Em tensão: a fricção do registro manual é a maior causa de abandono da categoria (hipótese H3 endereça isso).
+Open Finance is a market expectation (40M+ consents in Brazil), but the benchmark shows: (1) it is the biggest source of negative reviews for competitors (unstable sync, duplicates); (2) charging for an unstable feature generates the worst ratings; (3) aggregators charge per connection — heavy pre-revenue; (4) sustaining connections requires a team that doesn't exist (solo dev). In tension: manual-entry friction is the biggest cause of abandonment in the category (hypothesis H3 addresses this).
 
-## Opções
+## Options
 
-### A: Open Finance no MVP
+### A: Open Finance in the MVP
 
-**Prós:** menor fricção; paridade de expectativa. **Contras:** custo fixo pré-receita; complexidade regulatória/técnica; herdar a dor nº 1 do mercado sem braço para sustentá-la; atrasa o lançamento em meses.
+**Pros:** lower friction; expectation parity. **Cons:** fixed pre-revenue cost; regulatory/technical complexity; inheriting the market's pain #1 with no capacity to sustain it; delays the launch by months.
 
-### B: Manual-first com IA + import (escolhida)
+### B: Manual-first with AI + import (chosen)
 
-Registro <10s + linguagem natural (IA) no MVP; import CSV/OFX na v1.5; Open Finance na v2+ quando houver receita e evidência.
-**Prós:** lança rápido; testa H3 e H4 de verdade; schema já prevê a chegada do OF sem retrofit (staging `imported_transactions`).
-**Contras:** risco real de churn por fricção (H3); comparação desfavorável com Pierre no quesito automação.
+Entry <10s + natural language (AI) in the MVP; CSV/OFX import in v1.5; Open Finance in v2+ when there's revenue and evidence.
+**Pros:** ships fast; truly tests H3 and H4; the schema already anticipates OF arriving without a retrofit (a staging `imported_transactions`).
+**Cons:** real churn risk from friction (H3); an unfavorable comparison with Pierre on automation.
 
-## Decisão
+## Decision
 
-Opção B. O beta mede H3 explicitamente: se o churn citar fricção de digitação como motivo nº 1, antecipar OF vira prioridade máxima (gatilho documentado em assumptions.md).
+Option B. The beta measures H3 explicitly: if churn cites typing friction as reason #1, bringing OF forward becomes top priority (a documented trigger in assumptions.md).
 
-## Consequências
+## Consequences
 
-- Fica mais fácil: lançar, controlar custo, qualidade percebida.
-- Fica mais difícil: aquisição de quem já espera conexão automática (mensagem da landing deve ancorar no split, não no tracking).
-- Revisitar quando: H3 invalidada OU receita ≥ custo projetado do agregador × 3.
+- Gets easier: shipping, controlling cost, perceived quality.
+- Gets harder: acquiring those who already expect automatic connection (the landing message should anchor on the split, not on tracking).
+- Revisit when: H3 is invalidated OR revenue ≥ the projected aggregator cost × 3.

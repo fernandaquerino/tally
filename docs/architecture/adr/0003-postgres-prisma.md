@@ -1,32 +1,32 @@
 # ADR-0003: PostgreSQL + Prisma
 
-**Status:** Aceito · **Data:** 2026-07-13
+**Status:** Accepted · **Date:** 2026-07-13
 
-## Contexto
+## Context
 
-Dados financeiros exigem transações ACID (o split cria 3-4 registros atomicamente — invariantes do domain-model), integridade referencial e consultas relacionais (fatura ⇄ transações ⇄ contexto).
+Financial data requires ACID transactions (the split atomically creates 3-4 records — domain-model invariants), referential integrity and relational queries (statement ⇄ transactions ⇄ context).
 
-## Opções consideradas
+## Options considered
 
-### A: PostgreSQL + Prisma (escolhida)
+### A: PostgreSQL + Prisma (chosen)
 
-**Prós:** ACID; constraints (CHECKs das invariantes) no banco; Prisma = DX excelente p/ solo dev, migrations versionadas, tipos gerados; ecossistema Nest maduro; jsonb cobre payloads flexíveis (fiscal_rules, evidence).
-**Contras:** Prisma abstrai SQL avançado (mitigável com views/SQL raw parametrizado quando preciso).
+**Pros:** ACID; constraints (CHECKs of the invariants) in the database; Prisma = excellent DX for a solo dev, versioned migrations, generated types; a mature Nest ecosystem; jsonb covers flexible payloads (fiscal_rules, evidence).
+**Cons:** Prisma abstracts advanced SQL (can be mitigated with views/parameterized raw SQL when needed).
 
 ### B: MongoDB
 
-**Contras decisivos:** transações multi-documento piores; sem FKs/CHECKs nativos; modelagem relacional (fatura/parcelas/split) vira aplicação. Descartada.
+**Decisive cons:** worse multi-document transactions; no native FKs/CHECKs; relational modeling (statement/installments/split) becomes application code. Rejected.
 
 ### C: Postgres + TypeORM/Drizzle
 
-TypeORM: manutenção irregular. Drizzle: ótimo, mas Prisma tem curva menor e docs melhores para o objetivo de aprendizado. Escolha reversível (é só a camada de acesso).
+TypeORM: irregular maintenance. Drizzle: great, but Prisma has a smaller learning curve and better docs for the learning goal. A reversible choice (it's only the access layer).
 
-## Decisão
+## Decision
 
-PostgreSQL 16 com Prisma. Invariantes críticas duplicadas como constraints no banco (não só na aplicação).
+PostgreSQL 16 with Prisma. Critical invariants duplicated as database constraints (not only in the application).
 
-## Consequências
+## Consequences
 
-- Fica mais fácil: atomicidade do split, reconciliação, migrations.
-- Fica mais difícil: nada relevante no MVP.
-- Revisitar quando: relatórios pesarem (read replica / views materializadas — já previsto em data-model).
+- Gets easier: split atomicity, reconciliation, migrations.
+- Gets harder: nothing relevant in the MVP.
+- Revisit when: reports get heavy (read replica / materialized views — already anticipated in data-model).

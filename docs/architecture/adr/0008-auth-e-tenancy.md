@@ -1,156 +1,156 @@
-# ADR-0008: Autenticação por cookies e tenancy derivada da sessão
+# ADR-0008: Cookie-based authentication and tenancy derived from the session
 
-**Status:** Aceito · **Data:** 2026-08-04
+**Status:** Accepted · **Date:** 2026-08-04
 
-## Contexto
+## Context
 
-O Tally armazena dados financeiros privados e precisa proteger a área autenticada desde o início. A autenticação deve funcionar entre o Next.js e a API NestJS sem expor credenciais ao JavaScript do browser, enquanto a autorização precisa garantir que nenhuma requisição escolha arbitrariamente o `userId` ou o `householdId` usado nas consultas.
+Tally stores private financial data and needs to protect the authenticated area from the start. Authentication must work between Next.js and the NestJS API without exposing credentials to the browser's JavaScript, while authorization must ensure that no request arbitrarily chooses the `userId` or `householdId` used in queries.
 
-No MVP, cada pessoa começa como `OWNER` de um household individual, mas o modelo já usa `HouseholdMember` para permitir evolução futura sem remover o isolamento multi-tenant. Como web e API são aplicações separadas, a estratégia também precisa tratar cookies, CORS, renovação de sessão, logout e proteção contra roubo ou reutilização de refresh tokens.
+In the MVP, each person starts as the `OWNER` of an individual household, but the model already uses `HouseholdMember` to allow future evolution without removing multi-tenant isolation. Since web and API are separate applications, the strategy must also handle cookies, CORS, session renewal, logout and protection against refresh token theft or reuse.
 
-As forças principais são:
+The main forces are:
 
-- minimizar o impacto do roubo de um access token;
-- impedir acesso cruzado entre households (IDOR/BOLA);
-- manter a sessão após recarregar a página sem usar `localStorage`;
-- permitir revogação e detecção de reuso do refresh token;
-- manter a API como única autoridade de autenticação e autorização;
-- evitar uma infraestrutura de sessão distribuída mais complexa que o necessário para o MVP.
+- minimize the impact of an access token theft;
+- prevent cross-household access (IDOR/BOLA);
+- keep the session after a page reload without using `localStorage`;
+- allow revocation and detection of refresh token reuse;
+- keep the API as the single authority for authentication and authorization;
+- avoid a distributed session infrastructure more complex than needed for the MVP.
 
-## Opções consideradas
+## Options considered
 
-### A: JWT de longa duração armazenado no browser
+### A: Long-lived JWT stored in the browser
 
-O frontend armazenaria um único JWT em `localStorage` ou memória e o enviaria no header `Authorization`.
+The frontend would store a single JWT in `localStorage` or memory and send it in the `Authorization` header.
 
-**Prós:** implementação simples; não exige persistência de sessões no banco.  
-**Contras:** token em `localStorage` fica acessível em caso de XSS; recarregar a página perde tokens mantidos apenas em memória; JWT longo amplia a janela de abuso; logout não oferece revogação efetiva. Descartada por não atender ao nível de confiança exigido por um produto financeiro.
+**Pros:** simple implementation; no need to persist sessions in the database.  
+**Cons:** a token in `localStorage` is accessible in case of XSS; reloading the page loses tokens kept only in memory; a long JWT widens the abuse window; logout offers no effective revocation. Rejected for not meeting the trust level required by a financial product.
 
-### B: JWT curto em cookie e refresh token rotativo (escolhida)
+### B: Short JWT in a cookie and a rotating refresh token (chosen)
 
-A API emite um access token JWT de curta duração e um refresh token opaco. Ambos trafegam somente em cookies `httpOnly`; o refresh token é rotacionado e seu valor original nunca é armazenado no banco.
+The API issues a short-lived JWT access token and an opaque refresh token. Both travel only in `httpOnly` cookies; the refresh token is rotated and its original value is never stored in the database.
 
-**Prós:** reduz exposição a XSS; limita a duração do access token; permite revogação, logout e detecção de reuso; mantém o servidor como autoridade da sessão.  
-**Contras:** exige persistência e transação de rotação; requer cuidado com cookies, CORS, CSRF e requisições concorrentes de refresh; um access token já emitido permanece válido até expirar.
+**Pros:** reduces XSS exposure; limits the access token's lifetime; allows revocation, logout and reuse detection; keeps the server as the session authority.  
+**Cons:** requires persistence and a rotation transaction; requires care with cookies, CORS, CSRF and concurrent refresh requests; an already-issued access token remains valid until it expires.
 
-### C: Sessão opaca consultada no banco em toda requisição
+### C: An opaque session queried in the database on every request
 
-Um único identificador aleatório de sessão seria armazenado em cookie, e cada requisição autenticada consultaria a sessão no PostgreSQL ou Redis.
+A single random session identifier would be stored in a cookie, and each authenticated request would query the session in PostgreSQL or Redis.
 
-**Prós:** revogação imediata e modelo mental simples.  
-**Contras:** adiciona leitura de sessão a toda requisição; aumenta dependência de banco/cache no caminho crítico; não traz benefício suficiente no MVP frente ao JWT curto com refresh persistido.
+**Pros:** immediate revocation and a simple mental model.  
+**Cons:** adds a session read to every request; increases database/cache dependency on the critical path; doesn't bring enough benefit in the MVP versus a short JWT with a persisted refresh.
 
-### D: Autenticação controlada pelo Next.js/Auth.js
+### D: Authentication controlled by Next.js/Auth.js
 
-O Next.js seria responsável pela sessão e repassaria identidade para a API.
+Next.js would be responsible for the session and would pass identity to the API.
 
-**Prós:** integração conveniente com páginas e providers OAuth.  
-**Contras:** cria duas autoridades ou exige confiança adicional entre web e API; dificulta aplicar a mesma política a futuros clientes; desloca a autorização de tenancy para fora da API. Descartada nesta fase. OAuth poderá ser incorporado depois sem transferir a autoridade da sessão para o frontend.
+**Pros:** convenient integration with pages and OAuth providers.  
+**Cons:** creates two authorities or requires additional trust between web and API; makes it harder to apply the same policy to future clients; moves tenancy authorization outside the API. Rejected at this stage. OAuth can be incorporated later without transferring session authority to the frontend.
 
-## Decisão
+## Decision
 
-Adotar a opção B. A API NestJS será a única responsável por validar credenciais, emitir e renovar tokens, definir cookies e derivar a identidade usada pela autorização. O web nunca receberá tokens em JSON, nunca armazenará tokens em `localStorage` ou Zustand e reconstruirá a sessão por um endpoint autenticado `GET /v1/me`.
+Adopt option B. The NestJS API will be solely responsible for validating credentials, issuing and renewing tokens, setting cookies and deriving the identity used by authorization. The web will never receive tokens in JSON, will never store tokens in `localStorage` or Zustand, and will reconstruct the session via an authenticated `GET /v1/me` endpoint.
 
 ### Access token
 
-- Será um JWT assinado e validado exclusivamente pela API.
-- Terá duração padrão de 15 minutos, configurável por ambiente.
-- Conterá somente claims mínimas: identificador do usuário (`sub`), `householdId`, papel no household, identificador do token (`jti`), emissão e expiração, além de `iss` e `aud` validados.
-- Não conterá e-mail, nome, dados fiscais ou financeiros.
-- Será enviado em cookie `httpOnly`, `Secure` em produção e `SameSite=Lax`.
-- O frontend não validará o JWT nem terá acesso ao segredo ou à chave privada da API.
+- It will be a JWT signed and validated exclusively by the API.
+- It will have a default lifetime of 15 minutes, configurable per environment.
+- It will contain only minimal claims: the user identifier (`sub`), `householdId`, role in the household, token identifier (`jti`), issuance and expiration, plus validated `iss` and `aud`.
+- It will not contain email, name, fiscal or financial data.
+- It will be sent in an `httpOnly` cookie, `Secure` in production and `SameSite=Lax`.
+- The frontend will not validate the JWT nor have access to the API's secret or private key.
 
-O access token não terá denylist no MVP. Ao fazer logout ou detectar comprometimento, os refresh tokens são revogados e os cookies são removidos; um access token previamente roubado pode permanecer válido por no máximo sua curta expiração. Se esse risco deixar de ser aceitável, será necessário substituir esta ADR por uma estratégia com sessão consultável ou denylist.
+The access token will not have a denylist in the MVP. On logout or upon detecting compromise, the refresh tokens are revoked and the cookies are removed; a previously stolen access token can remain valid for at most its short expiration. If that risk ceases to be acceptable, this ADR will need to be superseded by a strategy with a queryable session or a denylist.
 
-### Refresh token e rotação
+### Refresh token and rotation
 
-- O refresh token será um valor opaco, criptograficamente aleatório e de alta entropia; não será JWT.
-- Apenas um hash determinístico do token será persistido. O token em claro existirá somente no cookie do cliente.
-- Cada token pertencerá a uma família de rotação e terá expiração, data de revogação e referência suficiente para identificar sua substituição.
-- `POST /v1/auth/refresh` executará, em uma única transação de banco, a validação do token atual, sua revogação e a criação do sucessor.
-- A reutilização de um token já rotacionado revogará todos os refresh tokens ativos da mesma família e exigirá novo login.
-- O cliente deverá executar refresh em fluxo único para evitar rotações concorrentes da mesma sessão.
-- `POST /v1/auth/logout` revogará a família apresentada e removerá os cookies, mesmo quando a resposta de logout puder ser idempotente.
+- The refresh token will be an opaque, cryptographically random, high-entropy value; it will not be a JWT.
+- Only a deterministic hash of the token will be persisted. The plaintext token will exist only in the client's cookie.
+- Each token will belong to a rotation family and will have an expiration, a revocation date and enough reference to identify its replacement.
+- `POST /v1/auth/refresh` will perform, in a single database transaction, the validation of the current token, its revocation and the creation of its successor.
+- Reusing an already-rotated token will revoke all active refresh tokens of the same family and require a new login.
+- The client must perform refresh in a single flow to avoid concurrent rotations of the same session.
+- `POST /v1/auth/logout` will revoke the presented family and remove the cookies, even when the logout response may be idempotent.
 
-O hash de senha e o hash de refresh token têm necessidades diferentes. Senhas serão protegidas com Argon2id e parâmetros configurados e testados para o ambiente. Refresh tokens, por terem entropia gerada pelo servidor, poderão usar hash criptográfico determinístico adequado para busca e comparação, sem armazenar o valor original.
+The password hash and the refresh token hash have different needs. Passwords will be protected with Argon2id and parameters configured and tested for the environment. Refresh tokens, having server-generated entropy, may use a deterministic cryptographic hash suitable for lookup and comparison, without storing the original value.
 
-### Cookies, CORS e CSRF
+### Cookies, CORS and CSRF
 
-- Access e refresh usarão cookies separados, com nomes e durações centralizados na configuração da API.
-- O refresh cookie terá o menor `Path` compatível com os endpoints de refresh e logout; o access cookie precisa alcançar os endpoints autenticados.
-- Cookies serão host-only por padrão. Um domínio compartilhado somente será configurado quando a topologia de produção exigir e estiver documentada.
-- A API aceitará credenciais apenas das origens web explicitamente permitidas; não será usado CORS curinga com credenciais.
-- Endpoints de escrita validarão origem confiável, além de `SameSite=Lax`. Se web e API precisarem operar em contexto cross-site, será obrigatória uma proteção CSRF explícita antes de mudar para `SameSite=None`.
-- Cookies serão limpos usando os mesmos atributos de nome, domínio e caminho usados na criação.
+- Access and refresh will use separate cookies, with names and lifetimes centralized in the API configuration.
+- The refresh cookie will have the narrowest `Path` compatible with the refresh and logout endpoints; the access cookie needs to reach the authenticated endpoints.
+- Cookies will be host-only by default. A shared domain will only be configured when the production topology requires it and it is documented.
+- The API will accept credentials only from explicitly allowed web origins; no wildcard CORS with credentials.
+- Write endpoints will validate a trusted origin, in addition to `SameSite=Lax`. If web and API need to operate cross-site, explicit CSRF protection will be mandatory before switching to `SameSite=None`.
+- Cookies will be cleared using the same name, domain and path attributes used at creation.
 
-### Cadastro e household inicial
+### Sign up and initial household
 
-O cadastro criará atomicamente:
+Sign up will atomically create:
 
-1. o usuário com senha protegida por Argon2id;
-2. um household individual;
-3. o vínculo `HouseholdMember` com papel `OWNER`;
-4. a primeira família de refresh token, caso o cadastro também inicie a sessão.
+1. the user with a password protected by Argon2id;
+2. an individual household;
+3. the `HouseholdMember` link with the `OWNER` role;
+4. the first refresh token family, if sign up also starts the session.
 
-Falha em qualquer etapa desfará toda a operação. O client nunca enviará `userId`, `householdId` ou papel como fonte de autorização.
+Failure at any step will undo the whole operation. The client will never send `userId`, `householdId` or role as an authorization source.
 
-### Autorização e tenancy
+### Authorization and tenancy
 
-- O `AuthGuard` validará assinatura, expiração, emissor e audiência do access token e produzirá uma identidade autenticada tipada.
-- O `TenancyGuard` derivará o contexto de tenancy dessa identidade; parâmetros enviados pelo client nunca substituirão esse contexto.
-- Repositories de domínio exigirão `householdId` recebido do contexto autenticado e aplicarão esse filtro em todas as consultas.
-- Operações sensíveis a papel ou alteração de membership revalidarão a associação no servidor, pois claims de um JWT podem ficar desatualizadas até sua expiração.
-- Recursos ausentes e recursos pertencentes a outro household devem produzir respostas que não permitam enumerar dados de terceiros.
-- Todo endpoint autenticado terá teste de isolamento no qual um usuário tenta acessar um recurso de outro household.
+- The `AuthGuard` will validate the access token's signature, expiration, issuer and audience and produce a typed authenticated identity.
+- The `TenancyGuard` will derive the tenancy context from that identity; parameters sent by the client will never replace that context.
+- Domain repositories will require `householdId` received from the authenticated context and apply that filter to all queries.
+- Role-sensitive operations or membership changes will re-validate the association on the server, since a JWT's claims may become outdated until expiration.
+- Missing resources and resources belonging to another household must produce responses that don't allow enumerating third-party data.
+- Every authenticated endpoint will have an isolation test in which a user tries to access another household's resource.
 
-### Sessão no web
+### Session on the web
 
-- `GET /v1/me` será a fonte de verdade da sessão visível ao web.
-- O estado de sessão será tratado como estado de servidor, preferencialmente via React Query; Zustand poderá guardar apenas estado efêmero de interface.
-- O layout da área `(app)` redirecionará pessoas sem sessão para `/login`, mas essa proteção de navegação não substituirá os guards da API.
-- Login, cadastro, refresh e logout usarão requests com credenciais habilitadas.
-- Após logout, o cache de sessão será removido ou invalidado antes do redirecionamento.
+- `GET /v1/me` will be the source of truth of the session visible to the web.
+- The session state will be treated as server state, preferably via React Query; Zustand may keep only ephemeral interface state.
+- The `(app)` area layout will redirect people without a session to `/login`, but this navigation protection will not replace the API guards.
+- Login, sign up, refresh and logout will use requests with credentials enabled.
+- After logout, the session cache will be removed or invalidated before the redirect.
 
-### Proteções operacionais
+### Operational protections
 
-- Login e cadastro responderão sem revelar detalhes de credenciais e não registrarão senha, token, cookie ou e-mail completo.
-- Endpoints de autenticação terão rate limit por IP e, quando aplicável, por identificador normalizado, com respostas genéricas para credenciais inválidas.
-- Segredos e parâmetros de token serão validados na inicialização e mantidos fora do repositório.
-- Eventos de reuso, revogação e falha de autenticação poderão ser auditados sem registrar o token nem dados financeiros.
+- Login and sign up will respond without revealing credential details and will not log passwords, tokens, cookies or full emails.
+- Authentication endpoints will have rate limiting by IP and, when applicable, by normalized identifier, with generic responses for invalid credentials.
+- Secrets and token parameters will be validated at startup and kept out of the repository.
+- Reuse, revocation and authentication failure events may be audited without logging the token or financial data.
 
-## Consequências
+## Consequences
 
-- Fica mais fácil: restaurar sessão sem expor tokens ao JavaScript; revogar refresh tokens; detectar roubo por reuso; manter uma única autoridade de identidade; aplicar tenancy consistentemente na API.
-- Fica mais difícil: coordenar refresh concorrente; configurar cookies entre web e API; testar expiração, rotação, reuso, logout, CORS e CSRF; tratar o pequeno intervalo em que um access token revogado continua válido.
-- Trade-off aceito: o MVP tolera a validade residual máxima de 15 minutos do access token para evitar uma consulta ou denylist em toda requisição.
-- Revisitar quando: houver múltiplos households selecionáveis por usuário; OAuth/social login; aplicativo nativo; necessidade de revogação imediata; implantação realmente cross-site; ou evidência de que a persistência/rotação no PostgreSQL virou gargalo.
+- Gets easier: restoring the session without exposing tokens to JavaScript; revoking refresh tokens; detecting theft via reuse; keeping a single identity authority; applying tenancy consistently in the API.
+- Gets harder: coordinating concurrent refresh; configuring cookies between web and API; testing expiration, rotation, reuse, logout, CORS and CSRF; handling the small window in which a revoked access token remains valid.
+- Accepted trade-off: the MVP tolerates the access token's maximum residual validity of 15 minutes to avoid a query or denylist on every request.
+- Revisit when: there are multiple households selectable per user; OAuth/social login; a native app; a need for immediate revocation; a truly cross-site deployment; or evidence that PostgreSQL persistence/rotation became a bottleneck.
 
-## Ações
+## Actions
 
-1. [x] Adicionar o modelo de refresh token e uma nova migration Prisma, incluindo família e dados de rotação/revogação.
-2. [x] Criar o módulo de auth no NestJS com Argon2id, emissão de JWT, cookies e rotação transacional.
-3. [x] Criar `AuthGuard`, `TenancyGuard` e o contexto autenticado tipado.
-4. [x] Criar `GET /v1/me` e os contratos compartilhados de autenticação.
-5. [x] Criar páginas de login/cadastro e estado de sessão no web sem persistência local de tokens.
-6. [x] Adicionar rate limit e validação de origem nos endpoints de autenticação.
-7. [ ] Cobrir cadastro atômico, login, refresh, reuso, logout e isolamento entre households com testes automatizados. — _Parcial: **isolamento entre households (IDOR) coberto** (ver nota 2026-08-05); faltam ainda os testes de service/e2e de cadastro/login/refresh/reuso/logout._
+1. [x] Add the refresh token model and a new Prisma migration, including family and rotation/revocation data.
+2. [x] Create the auth module in NestJS with Argon2id, JWT issuance, cookies and transactional rotation.
+3. [x] Create `AuthGuard`, `TenancyGuard` and the typed authenticated context.
+4. [x] Create `GET /v1/me` and the shared authentication contracts.
+5. [x] Create login/sign up pages and session state on the web without local token persistence.
+6. [x] Add rate limiting and origin validation on the authentication endpoints.
+7. [ ] Cover atomic sign up, login, refresh, reuse, logout and cross-household isolation with automated tests. — _Partial: **cross-household isolation (IDOR) covered** (see the 2026-08-05 note); the service/e2e tests for sign up/login/refresh/reuse/logout are still missing._
 
-## Nota de implementação (2026-08-05) — tenancy global (S1-02)
+## Implementation note (2026-08-05) — global tenancy (S1-02)
 
-- `AuthGuard` e `TenancyGuard` passaram a ser **globais** (`APP_GUARD`, ordem `Auth → Tenancy`): toda rota é fail-closed por padrão. Rotas de identidade/health optam por sair com o decorator `@Public()`.
-- Domínios acessam o banco por meio de `TenantScopedRepository` (`common/repositories`), cujo `scope(householdId, where)` injeta o `householdId` da sessão **por último**, tornando impossível forjar o tenant via input. O decorator `@CurrentHousehold()` entrega esse id aos handlers.
-- Isolamento provado por teste A/B de IDOR com Postgres real (`*.int.test.ts`, roda no CI e localmente com `TEST_DATABASE_URL`). O runner de testes da API passou a ser o **Vitest**.
+- `AuthGuard` and `TenancyGuard` became **global** (`APP_GUARD`, order `Auth → Tenancy`): every route is fail-closed by default. Identity/health routes opt out with the `@Public()` decorator.
+- Domains access the database through a `TenantScopedRepository` (`common/repositories`), whose `scope(householdId, where)` injects the session's `householdId` **last**, making it impossible to forge the tenant via input. The `@CurrentHousehold()` decorator hands that id to the handlers.
+- Isolation proven by an A/B IDOR test with a real Postgres (`*.int.test.ts`, runs in CI and locally with `TEST_DATABASE_URL`). The API's test runner became **Vitest**.
 
-## Nota de implementação (2026-08-04)
+## Implementation note (2026-08-04)
 
-- O `PrismaClient` e o schema passaram a viver no pacote workspace **`@tally/db`** (`packages/db`), consumido pela API via `PrismaService` e pelo seed. Decisão de estrutura (não altera a política desta ADR); ver também ADR-0004.
-- Cookie-dica não sensível `tally_session` (host-only, sem token) permite ao middleware do Next saber que há sessão sem ler o access token httpOnly; o refresh silencioso no client renova o access de 15min de forma transparente.
+- The `PrismaClient` and the schema moved to the workspace package **`@tally/db`** (`packages/db`), consumed by the API via `PrismaService` and by the seed. A structural decision (it doesn't change this ADR's policy); see also ADR-0004.
+- A non-sensitive hint cookie `tally_session` (host-only, no token) lets the Next middleware know there's a session without reading the httpOnly access token; the client's silent refresh renews the 15-minute access token transparently.
 
-### OAuth (Google + GitHub) no backend
+### OAuth (Google + GitHub) on the backend
 
-Coerente com a rejeição da Opção D, o login social roda **na API** (Authorization Code flow, implementado sem passport), não no Next.js/Auth.js:
+Consistent with the rejection of Option D, social login runs **on the API** (Authorization Code flow, implemented without passport), not on Next.js/Auth.js:
 
-- `GET /v1/auth/oauth/:provider` → gera `state` (cookie httpOnly single-use, CSRF) e redireciona ao consentimento.
-- `GET /v1/auth/oauth/:provider/callback` → valida o `state`, troca o `code`, lê o perfil e **emite a mesma sessão** (cookies httpOnly + refresh rotativo). Redireciona para `WEB_APP_URL/dashboard`, ou `/login?error=…` em falha.
-- Vínculo de conta: primeiro por **provider id** (`google_id`/`github_id`); se não houver, vincula a uma conta existente **apenas com e-mail verificado** (evita takeover, threat-model S); senão cria conta nova sem senha. E-mail já usado por outra conta sem verificação → erro pedindo login por senha.
-- Providers são **opcionais** (credenciais em env); sem credenciais o endpoint redireciona com `error=oauth_unavailable`. A API segue sendo a única autoridade de sessão — o front só tem âncoras para os endpoints.
+- `GET /v1/auth/oauth/:provider` → generates `state` (a single-use httpOnly cookie, CSRF) and redirects to consent.
+- `GET /v1/auth/oauth/:provider/callback` → validates the `state`, exchanges the `code`, reads the profile and **issues the same session** (httpOnly cookies + rotating refresh). Redirects to `WEB_APP_URL/dashboard`, or `/login?error=…` on failure.
+- Account linking: first by **provider id** (`google_id`/`github_id`); if none, links to an existing account **only with a verified email** (avoids takeover, threat-model S); otherwise creates a new account without a password. An email already used by another account without verification → an error asking to log in with a password.
+- Providers are **optional** (credentials in env); without credentials the endpoint redirects with `error=oauth_unavailable`. The API remains the single session authority — the front only has anchors to the endpoints.

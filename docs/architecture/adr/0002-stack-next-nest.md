@@ -1,32 +1,32 @@
 # ADR-0002: Stack — Next.js (front) + NestJS (API) + TypeScript
 
-**Status:** Aceito · **Data:** 2026-07-13
+**Status:** Accepted · **Date:** 2026-07-13
 
-## Contexto
+## Context
 
-Projeto solo com duplo objetivo: lançar o MVP e praticar Next e Nest (requisito declarado do fundador). TypeScript ponta a ponta reduz classes de bug e permite compartilhar tipos.
+A solo project with a dual goal: ship the MVP and practice Next and Nest (a stated requirement of the founder). End-to-end TypeScript reduces classes of bugs and allows sharing types.
 
-## Opções consideradas
+## Options considered
 
-### A: Next full-stack (API routes/server actions, sem Nest)
+### A: Next full-stack (API routes/server actions, no Nest)
 
-**Prós:** menos código, um deploy. **Contras:** não atende o objetivo de aprender Nest; API acoplada ao front dificulta o app mobile futuro (que consumirá a mesma API); domínio financeiro (invariantes, jobs, filas) se organiza melhor em módulos Nest.
+**Pros:** less code, one deploy. **Cons:** doesn't meet the goal of learning Nest; an API coupled to the front makes the future mobile app harder (it will consume the same API); the financial domain (invariants, jobs, queues) is better organized in Nest modules.
 
-### B: Next + NestJS separados (escolhida)
+### B: Next + NestJS separated (chosen)
 
-**Prós:** objetivo de aprendizado; API independente pronta pro mobile v2; DI/módulos/guards do Nest ajudam nas invariantes e no multi-tenant; BullMQ integra bem.
-**Contras:** duas aplicações para operar; alguma duplicação de validação (mitigada com pacote compartilhado de schemas Zod).
+**Pros:** the learning goal; an independent API ready for mobile v2; Nest's DI/modules/guards help with invariants and multi-tenancy; BullMQ integrates well.
+**Cons:** two applications to operate; some validation duplication (mitigated with a shared package of Zod schemas).
 
-### C: Next + backend em outra linguagem (Go/Elixir)
+### C: Next + a backend in another language (Go/Elixir)
 
-Descartada: fora do objetivo de aprendizado; custo de contexto.
+Rejected: outside the learning goal; context cost.
 
-## Decisão
+## Decision
 
-Next.js (App Router) para o front (landing SSR + app autenticada) e NestJS para a API REST. TypeScript estrito em ambos; validação compartilhada via pacote `@tally/shared` (Zod).
+Next.js (App Router) for the front (SSR landing + authenticated app) and NestJS for the REST API. Strict TypeScript in both; shared validation via the `@tally/shared` package (Zod).
 
-## Consequências
+## Consequences
 
-- Fica mais fácil: mobile futuro (API pronta), organização do domínio, aprendizado.
-- Fica mais difícil: dois deploys, CORS/cookies entre domínios (usar subdomínios app./api. com cookie no domínio raiz).
-- Revisitar quando: nunca provavelmente — decisão também é o objetivo do projeto.
+- Gets easier: future mobile (API ready), domain organization, learning.
+- Gets harder: two deploys, CORS/cookies between domains (use app./api. subdomains with a cookie on the root domain).
+- Revisit when: probably never — the decision is also the project's goal.

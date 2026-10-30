@@ -1,34 +1,34 @@
-# ADR-0001: Web-first — adiar o app mobile nativo
+# ADR-0001: Web-first — defer the native mobile app
 
-**Status:** Aceito · **Data:** 2026-07-13 · **Decisor:** fundador
+**Status:** Accepted · **Date:** 2026-07-13 · **Decider:** founder
 
-## Contexto
+## Context
 
-O MVP precisa ser entregue por 1 dev, que também tem como objetivo explícito praticar Next.js e NestJS. O discovery original recomendava mobile-first (o registro diário de gastos acontece no celular — dado da categoria). Forças em tensão: velocidade de aprendizado/entrega vs. adequação ao hábito de registro móvel.
+The MVP needs to be shipped by 1 dev, who also has the explicit goal of practicing Next.js and NestJS. The original discovery recommended mobile-first (daily expense logging happens on the phone — a category fact). Forces in tension: speed of learning/delivery vs. fit with the mobile logging habit.
 
-## Opções consideradas
+## Options considered
 
 ### A: Mobile-first (React Native/Flutter)
 
-**Prós:** alinhado ao hábito de registro; presença nas lojas.
-**Contras:** stack fora do objetivo de aprendizado; ciclo de release mais lento (review de loja); duas superfícies (app + web admin) para 1 dev; pior para relatórios/visão contador.
+**Pros:** aligned with the logging habit; store presence.
+**Cons:** stack outside the learning goal; slower release cycle (store review); two surfaces (app + web admin) for 1 dev; worse for reports/accountant view.
 
-### B: Web-first responsivo + PWA (escolhida)
+### B: Responsive web-first + PWA (chosen)
 
-**Prós:** uma superfície só; deploy contínuo; stack desejada (Next/Nest); desktop é ótimo p/ relatórios, fechamento de mês e visão do contador — casos fortes da persona PJ; PWA instalável cobre o registro móvel razoavelmente.
-**Contras:** PWA < app nativo em fricção de registro (sem widget, notificações push limitadas no iOS); risco direto sobre H3 (retenção sem baixa fricção).
+**Pros:** a single surface; continuous deploy; the desired stack (Next/Nest); desktop is great for reports, month closing and the accountant view — strong cases for the PJ persona; an installable PWA covers mobile logging reasonably.
+**Cons:** a PWA < a native app in logging friction (no widget, limited push notifications on iOS); a direct risk to H3 (retention without low friction).
 
-### C: Ambos em paralelo
+### C: Both in parallel
 
-Descartada: inviável para 1 dev.
+Rejected: unfeasible for 1 dev.
 
-## Decisão
+## Decision
 
-Web-first com Next.js, com **responsivo mobile + PWA tratados como requisito de primeira classe** (não afterthought): botão de lançamento fixo, formulário de 1 coluna, fila offline de criação, instalável.
+Web-first with Next.js, with **mobile responsive + PWA treated as a first-class requirement** (not an afterthought): a fixed entry button, a 1-column form, an offline creation queue, installable.
 
-## Consequências
+## Consequences
 
-- Fica mais fácil: iterar rápido, aprender a stack, atender relatórios/desktop.
-- Fica mais difícil: competir em fricção de registro móvel com apps nativos; push no iOS.
-- Mitigações: lançamento por linguagem natural (menos toques), e-mail/notificação web para alertas.
-- Revisitar quando: (a) H3 mostrar churn por fricção móvel, ou (b) retenção validada e receita justificar o app (v2). Métrica-sentinela: % de sessões mobile e taxa de registro mobile vs. desktop.
+- Gets easier: iterate fast, learn the stack, serve reports/desktop.
+- Gets harder: competing on mobile logging friction with native apps; push on iOS.
+- Mitigations: natural-language entry (fewer taps), email/web notifications for alerts.
+- Revisit when: (a) H3 shows churn due to mobile friction, or (b) retention is validated and revenue justifies the app (v2). Sentinel metric: % of mobile sessions and the mobile vs. desktop logging rate.
