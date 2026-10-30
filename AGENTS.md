@@ -1,196 +1,197 @@
 # AGENTS.md — Tally
 
-> Instruções persistentes para agentes de IA trabalhando neste repositório.
-> Leia este arquivo antes de qualquer alteração. Ele é o contrato de produto, arquitetura, pastas, escopo e qualidade.
+> Persistent instructions for AI agents working in this repository.
+> Read this file before any change. It is the contract for product, architecture, folders, scope and quality.
+
+> Glossary: **PF** (Pessoa Física) = the person's personal money; **PJ** (Pessoa Jurídica) = their company's money. These two abbreviations are core product concepts and are kept throughout.
 
 ---
 
-## 0. Como usar este arquivo
+## 0. How to use this file
 
-Este arquivo deve orientar qualquer agente de IA, como Codex, Claude Code, Cursor Agent ou ChatGPT, ao trabalhar no projeto **Tally**.
+This file should guide any AI agent, such as Codex, Claude Code, Cursor Agent or ChatGPT, when working on the **Tally** project.
 
-Antes de agir:
+Before acting:
 
-1. Leia este `AGENTS.md`.
-2. Leia a issue ou pedido atual.
-3. Leia os documentos relevantes em `docs/` e as ADRs relacionadas.
-4. Leia os arquivos do repositório antes de editar.
-5. Faça a menor mudança completa possível.
-6. Rode as validações disponíveis.
-7. Explique no final o que mudou, onde mudou, o que foi validado e o que ficou pendente.
+1. Read this `AGENTS.md`.
+2. Read the current issue or request.
+3. Read the relevant documents in `docs/` and the related ADRs.
+4. Read the repository files before editing.
+5. Make the smallest complete change possible.
+6. Run the available checks.
+7. At the end, explain what changed, where it changed, what was validated and what is still pending.
 
-Este projeto é pessoal, mas deve ser tratado como produto real: **production-minded, portfolio-grade, incremental, testável, seguro e financeiramente correto**.
+This project is personal, but it should be treated as a real product: **production-minded, portfolio-grade, incremental, testable, secure and financially correct**.
 
-O Tally trabalha com dinheiro, dados financeiros e decisões sensíveis. Qualquer agente deve priorizar **confiança, integridade, privacidade e auditabilidade** acima de velocidade aparente.
-
----
-
-## 1. Visão do produto
-
-**Nome do produto:** Tally  
-**Repositório:** `fernandaquerino/tally`  
-**Tipo:** web app financeiro para quem vive de CNPJ.  
-**Usuário principal:** pessoa física que também atua como pessoa jurídica — MEI, freelancer, consultor PJ, profissional liberal ou prestador de serviço solo.
-
-O Tally é o app financeiro para quem precisa enxergar **PF e PJ no mesmo lugar, sem misturar os dinheiros**.
-
-Ele ajuda a responder:
-
-- Quanto entrou no mês?
-- Quanto desse faturamento é realmente meu?
-- Quanto preciso separar para imposto?
-- Quanto vai para reserva da empresa?
-- Quanto posso retirar como meu salário?
-- O que está comprometido em cartão, parcelas, metas e dívidas?
-- O que é PF, o que é PJ e o que está misturado?
-- Quais alertas preciso ver antes do susto?
-- Como fechar o mês de forma clara e auditável?
-- Como exportar meus dados para mim ou para meu contador?
-
-A dor central do produto:
-
-> PF e PJ são a mesma pessoa, mas precisam ser dinheiros diferentes.
-
-O momento AHA do produto:
-
-> “Pela primeira vez eu sei quanto do meu faturamento PJ é realmente meu.”
-
-O Tally não é só um CRUD financeiro. Ele é um método embutido para separar faturamento, impostos, reserva, pró-labore, vida pessoal, cartão, metas e dívidas.
+Tally deals with money, financial data and sensitive decisions. Any agent must prioritize **trust, integrity, privacy and auditability** over apparent speed.
 
 ---
 
-## 2. Princípios de produto
+## 1. Product vision
 
-1. **O split é o método.** O diferencial central é transformar recebimento PJ em imposto, reserva e salário pessoal.
-2. **Dez segundos ou nada.** Registrar uma transação deve levar menos de 10 segundos. Se uma tela adiciona fricção ao registro, justifique ou corte.
-3. **PF e PJ sempre visíveis, nunca misturados.** Toda transação, relatório, número e alerta deve deixar claro se é PF, PJ ou ambos.
-4. **O número antes do gráfico.** A pergunta principal é “quanto posso gastar?”, não “qual gráfico ficou bonito?”.
-5. **Números que batem são sagrados.** Todo total precisa ser derivável, auditável e reconciliável.
-6. **IA propõe, humano confirma.** A IA nunca persiste ação silenciosa, nunca calcula imposto e nunca substitui validação de domínio.
-7. **Avisar antes do susto.** O app deve avisar sobre DAS, teto MEI, fatura, dívida e ritmo de gastos antes do problema virar urgência.
-8. **Simples na entrada, profundo sob demanda.** A primeira experiência deve ser leve; relatórios, configurações fiscais e detalhes ficam atrás de “ver mais”.
-9. **Confiança é feature.** Backup, exportação, auditoria e exclusão transparente são parte do produto, não extras técnicos.
-10. **Pago = o que funciona melhor.** Nunca colocar paywall em cima de feature instável.
-11. **Web de verdade.** Desktop deve ter densidade, atalhos e tabelas; mobile PWA deve ter registro rápido e usável com o polegar.
-12. **Linguagem de gente, não de banco.** Use “seu salário” antes de “pró-labore”, “separado para imposto” antes de “provisão tributária”.
-13. **Melhor simples funcionando do que complexo pela metade.** Não superengenheire antes de entregar valor ponta a ponta.
+**Product name:** Tally  
+**Repository:** `fernandaquerino/tally`  
+**Type:** a finance web app for people who live off their own company (CNPJ).  
+**Primary user:** a person who is also a legal entity — a micro-entrepreneur (MEI), freelancer, independent (PJ) consultant, self-employed professional or solo service provider.
+
+Tally is the finance app for people who need to see **personal (PF) and business (PJ) in the same place, without mixing the money**.
+
+It helps answer:
+
+- How much came in this month?
+- How much of that revenue is really mine?
+- How much do I need to set aside for tax?
+- How much goes to the company's reserve?
+- How much can I withdraw as my salary?
+- What's committed in credit cards, installments, goals and debts?
+- What's personal (PF), what's business (PJ) and what's mixed?
+- Which alerts do I need to see before the shock?
+- How do I close the month clearly and auditably?
+- How do I export my data for myself or my accountant?
+
+The product's core pain:
+
+> Personal (PF) and business (PJ) are the same person, but they need to be different money.
+
+The product's AHA moment:
+
+> "For the first time I know how much of my PJ revenue is really mine."
+
+Tally is not just a financial CRUD. It's a built-in method to separate revenue, taxes, reserve, owner's draw, personal life, credit card, goals and debts.
 
 ---
 
-## 3. Escopo do app completo de portfólio
+## 2. Product principles
 
-O roadmap atual é a versão **app completo por telas**, incluindo Dashboard, Transações, Contas, Categorias, Cartões, Metas, Dívidas, Relatórios, Settings, IA e PWA.
+1. **The split is the method.** The central differentiator is turning PJ income into tax, reserve and personal salary.
+2. **Ten seconds or nothing.** Recording a transaction should take under 10 seconds. If a screen adds friction to entry, justify it or cut it.
+3. **PF and PJ always visible, never mixed.** Every transaction, report, number and alert must make clear whether it is PF, PJ or both.
+4. **The number before the chart.** The main question is "how much can I spend?", not "which chart looks nice?".
+5. **Numbers that add up are sacred.** Every total must be derivable, auditable and reconcilable.
+6. **AI proposes, a human confirms.** The AI never silently persists an action, never computes taxes and never replaces domain validation.
+7. **Warn before the shock.** The app must warn about the DAS (monthly tax), the MEI ceiling, the card bill, debt and spending pace before the problem becomes urgent.
+8. **Simple on entry, deep on demand.** The first experience should be light; reports, tax settings and details stay behind "see more".
+9. **Trust is a feature.** Backup, export, auditing and transparent deletion are part of the product, not technical extras.
+10. **Paid = what works best.** Never put a paywall on top of an unstable feature.
+11. **Real web.** Desktop should have density, shortcuts and tables; the mobile PWA should allow quick entry usable with a thumb.
+12. **Human language, not bank language.** Use "your salary" before "owner's draw", "set aside for tax" before "tax provision".
+13. **A simple working thing beats a complex half-done one.** Don't over-engineer before delivering end-to-end value.
 
-A ordem foi organizada para facilitar desenvolvimento no GitHub Projects e demonstrar maturidade fullstack.
+---
 
-### Dentro do escopo planejado
+## 3. Scope of the full portfolio app
 
-- autenticação e usuário;
-- onboarding fiscal e financeiro;
-- app shell autenticado com sidebar;
-- dashboard com 3 números principais;
-- transações PF/PJ;
-- lançamento rápido em menos de 10s;
-- lançamento por linguagem natural com IA;
-- categorias padrão e customizadas;
-- contas PF/PJ;
-- cartão de crédito modelado por fatura;
-- parcelamentos e recorrências;
-- divisor de recebimento PJ;
-- provisões de imposto;
-- pró-labore como ponte PJ → PF;
-- metas financeiras PF/PJ;
-- dívidas, parcelas e priorização;
-- relatórios mensais com filtros PF/PJ/Tudo;
-- exportação CSV/JSON;
-- settings de perfil, segurança, fiscal, split e dados;
-- alertas e resumo semanal;
-- PWA instalável;
-- fila offline mínima para criação de transações;
-- observabilidade mínima;
-- testes unitários, integração e E2E dos fluxos críticos;
-- deploy beta.
+The current roadmap is the **full app by screens** version, including Dashboard, Transactions, Accounts, Categories, Cards, Goals, Debts, Reports, Settings, AI and PWA.
 
-### Fora do escopo sem issue explícita e ADR
+The order was organized to make development easier on GitHub Projects and to demonstrate full-stack maturity.
 
-Não implemente sem uma issue clara e uma ADR aprovada:
+### Within the planned scope
 
-- app mobile nativo;
+- authentication and user;
+- fiscal and financial onboarding;
+- authenticated app shell with a sidebar;
+- dashboard with 3 key numbers;
+- PF/PJ transactions;
+- quick entry in under 10s;
+- natural-language entry with AI;
+- default and custom categories;
+- PF/PJ accounts;
+- credit card modeled by statement;
+- installments and recurrences;
+- PJ income splitter;
+- tax provisions;
+- owner's draw as the PJ → PF bridge;
+- PF/PJ financial goals;
+- debts, installments and prioritization;
+- monthly reports with PF/PJ/All filters;
+- CSV/JSON export;
+- settings for profile, security, fiscal, split and data;
+- alerts and weekly summary;
+- installable PWA;
+- a minimal offline queue for creating transactions;
+- minimal observability;
+- unit, integration and E2E tests of the critical flows;
+- beta deploy.
+
+### Out of scope without an explicit issue and ADR
+
+Don't implement without a clear issue and an approved ADR:
+
+- native mobile app;
 - Open Finance;
-- importação automática via banco;
-- emissão de nota fiscal;
-- pagamento de DAS dentro do app;
-- conta bancária própria;
-- crédito/empréstimo;
-- investimentos avançados;
-- RAG, embeddings ou pgvector;
-- agentes de IA customizáveis;
-- chat financeiro aberto ilimitado;
-- multiusuário avançado/família;
-- visão do contador com permissão granular;
-- marketplace ou comunidade;
-- integrações fiscais regulatórias;
-- OCR de recibos;
-- gamificação complexa.
+- automatic bank import;
+- invoice issuing;
+- paying the DAS inside the app;
+- an own bank account;
+- credit/loans;
+- advanced investments;
+- RAG, embeddings or pgvector;
+- customizable AI agents;
+- unlimited open financial chat;
+- advanced multi-user/family;
+- an accountant view with granular permissions;
+- regulatory fiscal integrations;
+- receipt OCR;
+- complex gamification.
 
-Esses itens são `Future` até uma decisão formal.
+These items are `Future` until a formal decision.
 
 ---
 
-## 4. Stack oficial
+## 4. Official stack
 
-Não adicione bibliotecas fora desta stack sem justificar claramente o trade-off.
+Don't add libraries outside this stack without clearly justifying the trade-off.
 
-| Camada           | Tecnologia                                                     |
+| Layer            | Technology                                                     |
 | ---------------- | -------------------------------------------------------------- |
 | Monorepo         | pnpm workspaces + Turborepo                                    |
 | Frontend         | Next.js 15 App Router                                          |
-| UI               | Tailwind CSS + shadcn/ui + componentes próprios                |
-| Estado servidor  | React Query                                                    |
-| Estado UI        | Zustand para estado efêmero                                    |
-| Formulários      | React Hook Form + Zod                                          |
-| Backend          | NestJS monólito modular                                        |
+| UI               | Tailwind CSS + shadcn/ui + own components                      |
+| Server state     | React Query                                                    |
+| UI state         | Zustand for ephemeral state                                    |
+| Forms            | React Hook Form + Zod                                          |
+| Backend          | NestJS modular monolith                                        |
 | API              | REST `/v1`                                                     |
-| Linguagem        | TypeScript strict                                              |
-| Banco            | PostgreSQL 16                                                  |
+| Language         | TypeScript strict                                              |
+| Database         | PostgreSQL 16                                                  |
 | ORM              | Prisma + Prisma Migrate                                        |
-| Filas/cache leve | Redis + BullMQ                                                 |
-| IA               | LLM via API, chamada apenas pelo backend                       |
-| PWA/offline      | Service worker + IndexedDB para fila mínima                    |
-| Testes           | Vitest, Testing Library, Playwright                            |
-| Infra local      | Docker Compose                                                 |
+| Queues/light cache | Redis + BullMQ                                                |
+| AI               | LLM via API, called only by the backend                        |
+| PWA/offline      | Service worker + IndexedDB for a minimal queue                 |
+| Tests            | Vitest, Testing Library, Playwright                            |
+| Local infra      | Docker Compose                                                 |
 | CI/CD            | GitHub Actions                                                 |
-| Deploy           | Vercel para web; Railway/Fly/Render para API, Postgres e Redis |
+| Deploy           | Vercel for web; Railway/Fly/Render for API, Postgres and Redis |
 
-Antes de instalar qualquer pacote novo, responda no PR ou na issue:
+Before installing any new package, answer in the PR or issue:
 
 ```md
-## Por que preciso deste pacote?
+## Why do I need this package?
 
-- Problema que resolve:
-- Alternativas consideradas:
-- Por que não dá para fazer com o que já existe:
-- Impacto no bundle/manutenção:
-- Riscos de segurança ou privacidade:
+- Problem it solves:
+- Alternatives considered:
+- Why it can't be done with what already exists:
+- Impact on bundle/maintenance:
+- Security or privacy risks:
 ```
 
-Se não houver justificativa, não instale.
+If there's no justification, don't install it.
 
 ---
 
-## 5. Estrutura de pastas esperada
+## 5. Expected folder structure
 
-Estrutura alvo do monorepo:
+The monorepo's target structure:
 
 ```txt
 tally/
 ├── apps/
-│   ├── web/                              # Next.js — landing + app autenticada + PWA
+│   ├── web/                              # Next.js — landing + authenticated app + PWA
 │   │   └── src/
 │   │       ├── app/
 │   │       │   ├── (marketing)/          # landing, blog, SEO
-│   │       │   ├── (auth)/               # login, cadastro, callback, onboarding
-│   │       │   └── (app)/                # rotas autenticadas
+│   │       │   ├── (auth)/               # login, sign up, callback, onboarding
+│   │       │   └── (app)/                # authenticated routes
 │   │       │       ├── dashboard/
 │   │       │       ├── transacoes/
 │   │       │       ├── contas/
@@ -201,10 +202,10 @@ tally/
 │   │       │       ├── relatorios/
 │   │       │       └── settings/
 │   │       ├── components/
-│   │       │   ├── ui/                   # shadcn/primitivos locais se não estiverem em package
+│   │       │   ├── ui/                   # shadcn/local primitives if not in a package
 │   │       │   ├── app/                  # AppShell, Sidebar, Topbar, PageHeader
 │   │       │   ├── feedback/             # EmptyState, LoadingState, ErrorState, Toast
-│   │       │   ├── charts/               # wrappers Recharts
+│   │       │   ├── charts/               # Recharts wrappers
 │   │       │   └── data-display/         # MetricCard, DataTable, ContextBadge
 │   │       ├── features/
 │   │       │   ├── auth/
@@ -224,15 +225,15 @@ tally/
 │   │       │   ├── ai-entry/
 │   │       │   └── insights/
 │   │       ├── lib/                      # api client, auth helpers, money/date formatters
-│   │       ├── stores/                   # Zustand para UI efêmera
-│   │       ├── styles/                   # tokens/css vars se necessário
-│   │       └── pwa/                      # service worker, IndexedDB, fila offline
+│   │       ├── stores/                   # Zustand for ephemeral UI
+│   │       ├── styles/                   # tokens/css vars if needed
+│   │       └── pwa/                      # service worker, IndexedDB, offline queue
 │   │
-│   └── api/                              # NestJS API REST /v1
+│   └── api/                              # NestJS REST API /v1
 │       └── src/
 │           ├── main.ts
 │           ├── app.module.ts
-│           ├── config/                   # env validation/config tipada
+│           ├── config/                   # env validation/typed config
 │           ├── common/                   # guards, filters, interceptors, decorators
 │           ├── prisma/                   # PrismaService
 │           └── modules/
@@ -259,10 +260,10 @@ tally/
 │               └── jobs/
 │
 ├── packages/
-│   ├── shared/                           # schemas Zod, tipos de API, utils de dinheiro/data
-│   └── config/                           # eslint, tsconfig, prettier compartilhados
+│   ├── shared/                           # Zod schemas, API types, money/date utils
+│   └── config/                           # shared eslint, tsconfig, prettier
 │
-├── prisma/                               # schema.prisma, migrations e seed
+├── prisma/                               # schema.prisma, migrations and seed
 ├── docs/
 │   ├── discovery/
 │   ├── product/
@@ -274,7 +275,7 @@ tally/
 │       ├── domain-model.md
 │       ├── data-model.md
 │       └── threat-model.md
-├── scripts/                              # scripts idempotentes
+├── scripts/                              # idempotent scripts
 ├── .github/workflows/                    # CI/CD
 ├── docker-compose.yml
 ├── pnpm-workspace.yaml
@@ -285,22 +286,22 @@ tally/
 └── AGENTS.md
 ```
 
-### Regra de ouro de pastas
+### Golden rule for folders
 
-- Se algo tem domínio de produto, coloque na feature/domínio correspondente.
-- Se algo é primitivo visual genérico, coloque em `components/ui` ou package apropriado.
-- Se algo é contrato compartilhado, coloque em `packages/shared`.
-- Se algo é regra de backend, coloque em `apps/api/src/modules/<domain>`.
-- Se algo fala com banco, deve passar por repository/service do backend, nunca pelo frontend.
-- Se algo é decisão arquitetural, documente ou atualize ADR.
+- If something has product domain, put it in the corresponding feature/domain.
+- If something is a generic visual primitive, put it in `components/ui` or the appropriate package.
+- If something is a shared contract, put it in `packages/shared`.
+- If something is a backend rule, put it in `apps/api/src/modules/<domain>`.
+- If something talks to the database, it must go through a backend repository/service, never through the frontend.
+- If something is an architectural decision, document it or update an ADR.
 
 ---
 
-## 6. O que vai em cada pasta
+## 6. What goes in each folder
 
 ### `apps/api/src/modules/<domain>`
 
-Cada domínio do NestJS deve seguir, sempre que fizer sentido:
+Each NestJS domain should follow, whenever it makes sense:
 
 ```txt
 modules/<domain>/
@@ -310,645 +311,645 @@ modules/<domain>/
 ├── <domain>.repository.ts
 ├── dto/
 ├── mappers/
-├── entities/              # tipos internos do domínio, se necessário
-├── policies/              # regras de autorização específicas, se necessário
+├── entities/              # internal domain types, if needed
+├── policies/              # specific authorization rules, if needed
 └── tests/
 ```
 
-Regras:
+Rules:
 
-- controller é fino;
-- service contém regra de negócio;
-- repository é a única camada do domínio que fala com Prisma;
-- DTO valida entrada;
-- mapper converte banco → resposta;
-- módulo não deve acessar repository de outro domínio diretamente sem service público;
-- toda query de domínio deve receber `householdId` derivado da sessão/token;
-- não aceitar `householdId` ou `userId` como fonte de autorização vinda do client.
+- the controller is thin;
+- the service holds business logic;
+- the repository is the only domain layer that talks to Prisma;
+- the DTO validates input;
+- the mapper converts database → response;
+- a module should not access another domain's repository directly without a public service;
+- every domain query must receive `householdId` derived from the session/token;
+- never accept `householdId` or `userId` as an authorization source coming from the client.
 
 ### `apps/web/src/features/<domain>`
 
-Cada feature do web deve seguir:
+Each web feature should follow:
 
 ```txt
 features/<domain>/
 ├── components/
 ├── hooks/
-├── services/              # chamadas ao api client ou server actions finas
-├── types/                 # tipos locais da UI
-├── utils/                 # util específico da feature
+├── services/              # calls to the api client or thin server actions
+├── types/                 # local UI types
+├── utils/                 # feature-specific util
 └── constants.ts
 ```
 
-Regras:
+Rules:
 
-- componente de feature pode conhecer o domínio;
-- componente de feature não deve virar UI genérica sem motivo;
-- hooks de query/mutation ficam na feature;
-- transformação pesada de dados não fica no JSX;
-- não criar `features/shared` como lixeira;
-- nomes de domínio no código podem ser em inglês, mas a UI deve ser PT-BR.
+- a feature component can know the domain;
+- a feature component should not become generic UI without reason;
+- query/mutation hooks live in the feature;
+- heavy data transformation does not live in the JSX;
+- don't create `features/shared` as a junk drawer;
+- domain names in code can be in English, but the UI must be PT-BR.
 
 ### `packages/shared`
 
-Use para:
+Use for:
 
-- schemas Zod compartilhados;
-- tipos de request/response;
-- enums de domínio;
-- utils puros de dinheiro;
-- utils puros de data;
-- constantes compartilhadas realmente globais.
+- shared Zod schemas;
+- request/response types;
+- domain enums;
+- pure money utils;
+- pure date utils;
+- genuinely global shared constants.
 
-Não coloque aqui:
+Don't put here:
 
 - React;
 - NestJS;
 - PrismaClient;
-- regra de negócio que depende de banco;
-- lógica de renderização.
+- business logic that depends on the database;
+- rendering logic.
 
 ### `prisma/`
 
-Use para:
+Use for:
 
 - `schema.prisma`;
-- migrations versionadas;
-- seed local;
-- scripts relacionados ao banco.
+- versioned migrations;
+- local seed;
+- database-related scripts.
 
-Regras:
+Rules:
 
-- nunca edite migration antiga já aplicada;
-- gere nova migration para mudança de schema;
-- revise migration antes de considerar pronta;
-- seed deve usar dados fictícios e realistas;
-- não coloque dados financeiros pessoais reais em seed.
+- never edit an old, already-applied migration;
+- generate a new migration for a schema change;
+- review a migration before considering it done;
+- the seed must use fictional, realistic data;
+- don't put real personal financial data in the seed.
 
 ### `docs/architecture/adr`
 
-Use para decisões arquiteturais.
+Use for architectural decisions.
 
-ADR não é decoração. Se uma decisão muda, atualize a ADR.
+An ADR is not decoration. If a decision changes, update the ADR.
 
 ---
 
-## 7. Regras de “não fazer de jeito nenhum”
+## 7. "Never do this under any circumstances" rules
 
-Estas regras são obrigatórias.
+These rules are mandatory.
 
-### Produto e escopo
+### Product and scope
 
-- Não transformar o Tally em Mobills genérico.
-- Não transformar o Tally em ERP, emissor de nota ou banco digital.
-- Não implementar Open Finance sem issue explícita e ADR.
-- Não criar chat IA aberto antes da IA v1 enxuta estar estável.
-- Não esconder o contexto PF/PJ do usuário.
-- Não criar dashboard cheio de gráfico antes de responder “quanto posso gastar?”.
-- Não tratar metas e dívidas como enfeite visual; elas afetam comprometido futuro.
-- Não criar telas só com dados mockados e considerar pronto.
-- Não adicionar gamificação infantil em produto financeiro sério.
+- Don't turn Tally into a generic Mobills.
+- Don't turn Tally into an ERP, invoice issuer or digital bank.
+- Don't implement Open Finance without an explicit issue and ADR.
+- Don't create an open AI chat before the lean AI v1 is stable.
+- Don't hide the user's PF/PJ context.
+- Don't create a chart-heavy dashboard before answering "how much can I spend?".
+- Don't treat goals and debts as visual decoration; they affect future commitment.
+- Don't create screens with only mocked data and call them done.
+- Don't add childish gamification in a serious finance product.
 
-### Arquitetura
+### Architecture
 
-- Não colocar regra de negócio dentro de componente React.
-- Não colocar regra de negócio dentro de controller NestJS.
-- Não acessar Prisma pelo frontend.
-- Não duplicar regra financeira no Next e no Nest.
-- Não criar store global monolítica para dados de servidor.
-- Não salvar dados de servidor em Zustand/localStorage como fonte de verdade.
-- Não criar `utils.ts` gigante.
-- Não criar abstração com apenas um uso real.
-- Não refatorar arquitetura inteira durante uma issue pequena.
-- Não implementar microserviços no MVP/app completo de portfólio sem ADR.
+- Don't put business logic inside a React component.
+- Don't put business logic inside a NestJS controller.
+- Don't access Prisma from the frontend.
+- Don't duplicate financial rules across Next and Nest.
+- Don't create one monolithic global store for server data.
+- Don't store server data in Zustand/localStorage as the source of truth.
+- Don't create a giant `utils.ts`.
+- Don't create an abstraction with only one real usage.
+- Don't refactor the whole architecture during a small issue.
+- Don't implement microservices in the MVP/full portfolio app without an ADR.
 
-### Dinheiro e domínio financeiro
+### Money and financial domain
 
-- Não usar `number`, `float`, `double`, `parseFloat` ou cálculo decimal solto para dinheiro.
-- Não armazenar dinheiro em reais como decimal no banco.
-- Não exibir soma que não possa ser auditada.
-- Não salvar saldo como fonte única da verdade.
-- Não editar fatura fechada diretamente.
-- Não tratar cartão de crédito como conta comum.
-- Não misturar competência e caixa sem explicitar.
-- Não calcular imposto via LLM.
-- Não hardcodar alíquota fiscal em componente ou prompt.
-- Não criar split que não feche em soma exata de centavos.
+- Don't use `number`, `float`, `double`, `parseFloat` or loose decimal computation for money.
+- Don't store money in reais as a decimal in the database.
+- Don't display a sum that can't be audited.
+- Don't save a balance as the single source of truth.
+- Don't edit a closed statement directly.
+- Don't treat a credit card as a regular account.
+- Don't mix accrual and cash without making it explicit.
+- Don't compute taxes via an LLM.
+- Don't hardcode a tax rate in a component or prompt.
+- Don't create a split that doesn't add up to an exact sum of cents.
 
-### Segurança e dados
+### Security and data
 
-- Não confiar em `userId` ou `householdId` vindo do client.
-- Não retornar dados de outro household.
-- Não logar token, senha, JWT, cookies, e-mail completo, valores financeiros, descrições de transações ou dados fiscais sensíveis.
-- Não salvar token em localStorage.
-- Não commitar `.env`, secrets, chaves ou credenciais.
-- Não expor stack trace em response de produção.
-- Não ignorar autorização em update/delete.
-- Não renderizar texto de IA sem sanitização quando houver risco de HTML/markdown inseguro.
+- Don't trust `userId` or `householdId` coming from the client.
+- Don't return another household's data.
+- Don't log tokens, passwords, JWTs, cookies, full emails, financial values, transaction descriptions or sensitive fiscal data.
+- Don't store tokens in localStorage.
+- Don't commit `.env`, secrets, keys or credentials.
+- Don't expose stack traces in production responses.
+- Don't skip authorization on update/delete.
+- Don't render AI text without sanitization when there's a risk of unsafe HTML/markdown.
 
-### Banco
+### Database
 
-- Não editar migration aplicada manualmente.
-- Não criar tabela de domínio sem `householdId`, salvo tabela global justificada.
-- Não fazer hard delete por padrão em dados financeiros.
-- Não usar JSON/JSONB como atalho para evitar modelagem sem ADR.
-- Não remover campos/tabelas sem migration e sem ajustar consumers.
-- Não fazer cascade destrutivo em dados financeiros sem entender impacto.
+- Don't manually edit an applied migration.
+- Don't create a domain table without `householdId`, except for a justified global table.
+- Don't hard delete financial data by default.
+- Don't use JSON/JSONB as a shortcut to avoid modeling without an ADR.
+- Don't remove fields/tables without a migration and without adjusting consumers.
+- Don't do a destructive cascade on financial data without understanding the impact.
 
 ### Frontend
 
-- Não usar `any` para calar TypeScript.
-- Não usar `// @ts-ignore` sem explicação e issue de follow-up.
-- Não criar Client Component se Server Component resolve.
-- Não remover focus outline sem substituir por focus visível.
-- Não deixar tela com dados remotos sem loading/error/empty.
-- Não usar texto hardcoded em inglês na UI, exceto termos técnicos inevitáveis.
-- Não usar cor como único diferenciador entre PF/PJ.
-- Não esconder ação principal.
-- Não criar formulário que perde dados ao falhar submit.
+- Don't use `any` to silence TypeScript.
+- Don't use `// @ts-ignore` without an explanation and a follow-up issue.
+- Don't create a Client Component when a Server Component solves it.
+- Don't remove the focus outline without replacing it with a visible focus.
+- Don't leave a screen with remote data without loading/error/empty.
+- Don't use hardcoded English text in the UI, except for unavoidable technical terms.
+- Don't use color as the only differentiator between PF/PJ.
+- Don't hide the primary action.
+- Don't create a form that loses data when submit fails.
 
-### Testes e qualidade
+### Tests and quality
 
-- Não remover teste para passar build sem explicar.
-- Não pular lint/typecheck se o comando existe.
-- Não deixar `console.log` solto.
-- Não engolir erro com `catch {}` vazio.
-- Não finalizar issue dizendo que está pronta se não rodou validação ou não explicou por que não rodou.
+- Don't remove a test to make the build pass without explaining.
+- Don't skip lint/typecheck if the command exists.
+- Don't leave stray `console.log`.
+- Don't swallow errors with an empty `catch {}`.
+- Don't finish an issue saying it's done if you didn't run the checks or explain why not.
 
 ---
 
-## 8. Domínios do produto
+## 8. Product domains
 
-### 8.1 Auth e usuário
+### 8.1 Auth and user
 
-Responsável por:
+Responsible for:
 
-- cadastro;
+- sign up;
 - login;
 - logout;
-- refresh de sessão;
-- perfil;
+- session refresh;
+- profile;
 - timezone;
-- preferências;
-- segurança da conta.
+- preferences;
+- account security.
 
-Regras:
+Rules:
 
-- `userId` sempre vem da sessão/token.
-- Rotas privadas exigem autenticação.
-- Não retornar hash de senha.
-- Sessão deve usar cookie httpOnly/Secure/SameSite quando aplicável.
-- Tokens sensíveis nunca vão para localStorage.
+- `userId` always comes from the session/token.
+- Private routes require authentication.
+- Don't return the password hash.
+- The session must use an httpOnly/Secure/SameSite cookie when applicable.
+- Sensitive tokens never go to localStorage.
 
-### 8.2 Household e tenancy
+### 8.2 Household and tenancy
 
-Mesmo que no início exista apenas uma pessoa, o modelo deve nascer preparado para `household`.
+Even if there's only one person at first, the model must be born prepared for a `household`.
 
-Responsável por:
+Responsible for:
 
-- isolar dados financeiros;
-- permitir futuro família/contador sem refatoração brutal;
-- garantir que toda query de domínio filtre por `householdId`.
+- isolating financial data;
+- allowing a future family/accountant without a brutal refactor;
+- ensuring every domain query filters by `householdId`.
 
-Regras:
+Rules:
 
-- `householdId` vem do servidor.
-- O client nunca decide o household autoritativo.
-- Toda tabela financeira deve ter `householdId`.
-- Testes de IDOR são obrigatórios para endpoints autenticados.
+- `householdId` comes from the server.
+- The client never decides the authoritative household.
+- Every financial table must have `householdId`.
+- IDOR tests are mandatory for authenticated endpoints.
 
-### 8.3 Onboarding fiscal e financeiro
+### 8.3 Fiscal and financial onboarding
 
-Responsável por coletar dados mínimos para entregar valor:
+Responsible for collecting the minimum data to deliver value:
 
-- perfil: PF, MEI, Simples, PJ prestador de serviço;
-- faixa/regime fiscal simplificado;
-- percentual de imposto/reserva;
-- contas iniciais;
-- cartão inicial opcional;
-- meta inicial opcional;
-- dívida inicial opcional.
+- profile: PF, MEI, Simples, PJ service provider;
+- simplified fiscal bracket/regime;
+- tax/reserve percentage;
+- initial accounts;
+- optional initial card;
+- optional initial goal;
+- optional initial debt.
 
-Regras:
+Rules:
 
-- Progressive disclosure: não transformar onboarding em formulário de contador.
-- Pedir o mínimo para gerar os 3 números principais.
-- Dados fiscais são configuração, não cálculo por IA.
+- Progressive disclosure: don't turn onboarding into an accountant's form.
+- Ask the minimum to generate the 3 key numbers.
+- Fiscal data is configuration, not computation by AI.
 
 ### 8.4 Dashboard
 
-Responsável por responder rápido:
+Responsible for answering quickly:
 
-- resultado PJ;
-- disponível pessoal;
-- comprometido futuro;
-- painel PJ;
-- próximas provisões;
-- alertas;
-- últimas transações;
-- metas em andamento;
-- dívidas relevantes.
+- PJ result;
+- personal available;
+- future committed;
+- PJ panel;
+- upcoming provisions;
+- alerts;
+- latest transactions;
+- goals in progress;
+- relevant debts.
 
-Regras:
+Rules:
 
-- Home prioriza números, não gráficos.
-- Todo número deve ser clicável ou auditável.
-- Mostrar PF/PJ claramente.
-- Não criar cards decorativos sem ação ou explicação.
+- The home prioritizes numbers, not charts.
+- Every number must be clickable or auditable.
+- Show PF/PJ clearly.
+- Don't create decorative cards with no action or explanation.
 
-### 8.5 Transações
+### 8.5 Transactions
 
-Core operacional do app.
+The operational core of the app.
 
-Tipos esperados:
+Expected types:
 
-- receita;
-- despesa;
-- transferência;
-- ajuste;
-- pagamento de fatura;
-- pagamento de dívida;
-- contribuição em meta;
-- provisão;
+- income;
+- expense;
+- transfer;
+- adjustment;
+- statement payment;
+- debt payment;
+- goal contribution;
+- provision;
 - split.
 
-Regras:
+Rules:
 
-- criação em menos de 10s;
-- toda transação tem contexto PF/PJ;
-- toda transação tem fonte: `form`, `ai`, `import`, `system`;
-- toda transação precisa pertencer a uma conta ou fatura, respeitando regras do domínio;
-- mutações críticas devem ser auditáveis;
-- excluir deve ser soft delete quando houver histórico financeiro relevante.
+- creation in under 10s;
+- every transaction has a PF/PJ context;
+- every transaction has a source: `form`, `ai`, `import`, `system`;
+- every transaction must belong to an account or statement, respecting the domain rules;
+- critical mutations must be auditable;
+- deleting must be a soft delete when there's relevant financial history.
 
-### 8.6 Categorias
+### 8.6 Categories
 
-Responsável por classificar transações.
+Responsible for classifying transactions.
 
-Regras:
+Rules:
 
-- categorias padrão existem para PF e PJ;
-- categorias customizadas pertencem ao household;
-- categoria pode ter contexto PF, PJ ou ambos;
-- última categoria usada pode melhorar velocidade do lançamento;
-- IA pode sugerir categoria, mas usuário confirma.
+- default categories exist for PF and PJ;
+- custom categories belong to the household;
+- a category can have a PF, PJ or both context;
+- the last-used category can speed up entry;
+- the AI can suggest a category, but the user confirms.
 
-### 8.7 Contas
+### 8.7 Accounts
 
-Responsável por dinheiro em caixa.
+Responsible for cash on hand.
 
-Tipos possíveis:
+Possible types:
 
-- conta corrente PF;
-- conta corrente PJ;
-- carteira;
-- reserva;
-- poupança;
-- conta manual.
+- PF checking account;
+- PJ checking account;
+- wallet;
+- reserve;
+- savings;
+- manual account.
 
-Regras:
+Rules:
 
-- saldo exibido é derivado das transações;
-- saldo materializado, se existir, é cache/reconciliação, não fonte da verdade;
-- transferência entre contas deve gerar duas pernas auditáveis;
-- pró-labore é ponte PJ → PF;
-- não misturar conta com cartão de crédito.
+- the displayed balance is derived from transactions;
+- a materialized balance, if it exists, is cache/reconciliation, not the source of truth;
+- a transfer between accounts must generate two auditable legs;
+- the owner's draw is the PJ → PF bridge;
+- don't mix an account with a credit card.
 
-### 8.8 Cartões e faturas
+### 8.8 Cards and statements
 
-Cartão de crédito deve ser modelado corretamente.
+The credit card must be modeled correctly.
 
-Entidades esperadas:
+Expected entities:
 
 - card;
 - invoice;
 - invoice payment;
 - installment group;
-- transactions vinculadas à fatura.
+- transactions linked to the statement.
 
-Regras:
+Rules:
 
-- fatura é agrupador de competência;
-- pagamento de fatura é caixa;
-- compra parcelada cria parcelas nas faturas corretas;
-- fatura aberta tem total derivado;
-- fatura fechada congela total e fica imutável;
-- correção de fatura fechada deve ocorrer via ajuste auditado;
-- cartão misto PF/PJ precisa separar relatórios por contexto.
+- a statement is an accrual grouping;
+- paying a statement is cash;
+- an installment purchase creates installments in the correct statements;
+- an open statement has a derived total;
+- a closed statement freezes the total and becomes immutable;
+- correcting a closed statement must happen via an audited adjustment;
+- a mixed PF/PJ card must separate reports by context.
 
-### 8.9 Split de recebimento PJ
+### 8.9 PJ income split
 
-O split é o coração do Tally.
+The split is the heart of Tally.
 
-Quando entra uma receita PJ, o app deve sugerir:
+When PJ income comes in, the app should suggest:
 
-- imposto/DAS/IR/reserva fiscal;
-- reserva da empresa;
-- salário/pró-labore;
-- valor disponível.
+- tax/DAS/IR/fiscal reserve;
+- company reserve;
+- salary/owner's draw;
+- available amount.
 
-Regras:
+Rules:
 
-- split deve rodar em transação atômica no banco;
-- todas as pernas devem referenciar `splitId`;
-- percentuais são configuráveis;
-- fiscal rules são versionadas;
-- LLM nunca calcula imposto;
-- arredondamento em centavos deve fechar exatamente.
+- the split must run in an atomic database transaction;
+- all legs must reference `splitId`;
+- percentages are configurable;
+- fiscal rules are versioned;
+- the LLM never computes taxes;
+- cent rounding must add up exactly.
 
-### 8.10 Provisões
+### 8.10 Provisions
 
-Responsável por dinheiro separado para obrigação futura.
+Responsible for money set aside for a future obligation.
 
-Exemplos:
+Examples:
 
 - DAS;
 - IR;
-- contador;
-- reserva mensal;
-- impostos configuráveis.
+- accountant;
+- monthly reserve;
+- configurable taxes.
 
-Regras:
+Rules:
 
-- provisão tem status: pendente, paga, cancelada;
-- provisão tem vencimento;
-- lembrete D-7 e D-1 quando aplicável;
-- pagar provisão gera transação ou marca baixa com auditoria.
+- a provision has a status: pending, paid, canceled;
+- a provision has a due date;
+- a D-7 and D-1 reminder when applicable;
+- paying a provision generates a transaction or marks it settled with auditing.
 
-### 8.11 Metas
+### 8.11 Goals
 
-Tela real do app completo.
+A real screen of the full app.
 
-Exemplos:
+Examples:
 
-- reserva de emergência;
-- trocar notebook;
-- férias;
-- quitar dívida;
-- reserva de imposto;
-- meta PJ de caixa mínimo.
+- emergency reserve;
+- replace a laptop;
+- vacation;
+- pay off a debt;
+- tax reserve;
+- a PJ minimum-cash goal.
 
-Campos esperados:
+Expected fields:
 
-- nome;
-- contexto PF/PJ;
-- valor alvo em centavos;
-- valor atual/contribuído;
-- data alvo opcional;
+- name;
+- PF/PJ context;
+- target amount in cents;
+- current/contributed amount;
+- optional target date;
 - status;
-- prioridade;
-- contribuições vinculadas a transações.
+- priority;
+- contributions linked to transactions.
 
-Regras:
+Rules:
 
-- meta não é só card visual;
-- contribuições devem ser auditáveis;
-- meta afeta planejamento, mas não deve mentir sobre saldo;
-- metas PF e PJ podem coexistir;
-- dashboard pode mostrar widget compacto.
+- a goal is not just a visual card;
+- contributions must be auditable;
+- a goal affects planning, but must not lie about the balance;
+- PF and PJ goals can coexist;
+- the dashboard can show a compact widget.
 
-### 8.12 Dívidas
+### 8.12 Debts
 
-Tela real do app completo.
+A real screen of the full app.
 
-Exemplos:
+Examples:
 
-- cartão atrasado;
-- empréstimo;
-- financiamento;
-- dívida com pessoa física;
-- imposto parcelado;
-- dívida PJ.
+- an overdue card;
+- a loan;
+- financing;
+- a debt to an individual;
+- an installment tax;
+- a PJ debt.
 
-Campos esperados:
+Expected fields:
 
-- credor;
-- contexto PF/PJ;
-- principal em centavos;
-- saldo atual em centavos;
-- taxa de juros opcional;
-- parcelas;
-- vencimento;
-- prioridade;
+- creditor;
+- PF/PJ context;
+- principal in cents;
+- current balance in cents;
+- optional interest rate;
+- installments;
+- due date;
+- priority;
 - status;
-- pagamentos vinculados.
+- linked payments.
 
-Regras:
+Rules:
 
-- dívida impacta comprometido futuro;
-- pagamentos reduzem saldo;
-- parcelas futuras devem aparecer em projeção;
-- priorização deve ser explicável;
-- não prometer aconselhamento financeiro profissional;
-- mostrar critérios: juros, vencimento, valor, risco.
+- a debt impacts future commitment;
+- payments reduce the balance;
+- future installments must appear in projection;
+- prioritization must be explainable;
+- don't promise professional financial advice;
+- show the criteria: interest, due date, amount, risk.
 
-### 8.13 Relatórios
+### 8.13 Reports
 
-Responsável por fechamento e análise.
+Responsible for closing and analysis.
 
-Relatórios esperados:
+Expected reports:
 
-- relatório mensal;
-- categorias;
-- PF/PJ/Tudo;
-- fluxo de caixa;
-- faturas;
-- metas;
-- dívidas;
-- exportação CSV/JSON;
-- drill-down dos números.
+- monthly report;
+- categories;
+- PF/PJ/All;
+- cash flow;
+- statements;
+- goals;
+- debts;
+- CSV/JSON export;
+- drill-down of the numbers.
 
-Regras:
+Rules:
 
-- relatório deve ser auditável;
-- filtros relevantes ficam na URL quando fizer sentido;
-- gráfico é detalhe expansível;
-- exportação deve respeitar household e autorização;
-- export não deve vazar dados de outro usuário.
+- a report must be auditable;
+- relevant filters go in the URL when it makes sense;
+- a chart is an expandable detail;
+- export must respect the household and authorization;
+- an export must not leak another user's data.
 
 ### 8.14 Settings
 
-Responsável por:
+Responsible for:
 
-- perfil;
-- preferências de tema;
-- configurações fiscais;
-- regras de split;
-- categorias padrão;
-- segurança;
-- exportação;
-- exclusão de conta;
+- profile;
+- theme preferences;
+- fiscal settings;
+- split rules;
+- default categories;
+- security;
+- export;
+- account deletion;
 - LGPD;
-- plano/assinatura no futuro.
+- plan/subscription in the future.
 
-Regras:
+Rules:
 
-- configurações sensíveis exigem autorização;
-- exclusão de conta deve ser explícita;
-- exportação completa deve ser fácil;
-- alterar regra fiscal não deve reescrever histórico sem fluxo claro.
+- sensitive settings require authorization;
+- account deletion must be explicit;
+- a full export must be easy;
+- changing a fiscal rule must not rewrite history without a clear flow.
 
-### 8.15 IA e alertas
+### 8.15 AI and alerts
 
-IA v1 é enxuta e proativa.
+AI v1 is lean and proactive.
 
-Pode conter:
+It may contain:
 
-- parsing de lançamento por linguagem natural;
-- categorização sugerida;
-- resumo semanal;
-- explicação de alertas;
-- insights com evidências.
+- natural-language entry parsing;
+- suggested categorization;
+- weekly summary;
+- explanation of alerts;
+- insights with evidence.
 
-Não deve conter sem ADR:
+It must not contain without an ADR:
 
-- chat aberto ilimitado;
-- agentes customizáveis;
+- unlimited open chat;
+- customizable agents;
 - RAG;
 - embeddings;
-- recomendação financeira complexa;
-- cálculo fiscal por LLM.
+- complex financial recommendations;
+- fiscal computation by an LLM.
 
-Regras:
+Rules:
 
-- IA retorna proposta;
-- proposta passa por schema Zod;
-- usuário confirma antes de persistir;
-- timeout tem fallback para formulário;
-- prompts versionados;
-- testes com modelo mockado;
-- custos medidos por usuário/dia quando implementado.
+- the AI returns a proposal;
+- the proposal goes through a Zod schema;
+- the user confirms before persisting;
+- a timeout falls back to a form;
+- versioned prompts;
+- tests with a mocked model;
+- costs measured per user/day when implemented.
 
-### 8.16 PWA e offline
+### 8.16 PWA and offline
 
-Escopo mínimo:
+Minimum scope:
 
-- app instalável;
+- installable app;
 - service worker;
-- fila offline apenas para criação de transações;
+- an offline queue only for creating transactions;
 - IndexedDB;
-- flush com `Idempotency-Key`;
-- leitura offline como snapshot desatualizado.
+- flush with `Idempotency-Key`;
+- offline reading as a stale snapshot.
 
-Fora do escopo inicial:
+Out of the initial scope:
 
-- edição offline;
-- resolução complexa de conflitos;
-- sync completo;
-- push notification avançado.
+- offline editing;
+- complex conflict resolution;
+- full sync;
+- advanced push notifications.
 
 ---
 
-## 9. Roadmap por sprint
+## 9. Roadmap per sprint
 
-### Sprint 0 — Fundação
+### Sprint 0 — Foundation
 
-Foco: infraestrutura, base técnica e ADRs.
+Focus: infrastructure, technical base and ADRs.
 
-Entregável: app roda local, API responde healthcheck, banco sobe, CI valida, design system mínimo existe.
+Deliverable: the app runs locally, the API responds to a healthcheck, the database comes up, CI validates, a minimal design system exists.
 
-Issues típicas:
+Typical issues:
 
-- monorepo com pnpm workspaces;
+- monorepo with pnpm workspaces;
 - Turborepo;
-- Docker Compose com Postgres 16 e Redis;
-- setup base do Next.js;
-- setup base do NestJS;
-- Prisma inicial;
+- Docker Compose with Postgres 16 and Redis;
+- Next.js base setup;
+- NestJS base setup;
+- initial Prisma;
 - `.env.example`;
-- CI com lint, typecheck e test;
-- design system mínimo;
-- ADRs iniciais.
+- CI with lint, typecheck and test;
+- minimal design system;
+- initial ADRs.
 
 ### Sprint 1 — App Shell + Auth
 
-Entregável: usuário consegue registrar/logar, passar pelo onboarding inicial e ver layout autenticado com sidebar completa.
+Deliverable: the user can register/log in, go through initial onboarding and see the authenticated layout with the full sidebar.
 
-Inclui:
+Includes:
 
 - auth;
-- sessão;
+- session;
 - tenancy;
-- onboarding fiscal;
+- fiscal onboarding;
 - AppShell;
 - Sidebar;
 - Topbar;
-- rotas vazias das telas principais;
-- guards de rota;
-- testes básicos de autorização.
+- empty routes of the main screens;
+- route guards;
+- basic authorization tests.
 
 ### Sprint 2 — Dashboard
 
-Entregável: dashboard inicial com 3 números, painel PJ, alertas e últimas transações.
+Deliverable: an initial dashboard with 3 numbers, a PJ panel, alerts and latest transactions.
 
-Inclui:
+Includes:
 
-- cards principais;
-- painel PJ;
-- widget de comprometido futuro;
-- últimas transações;
-- próximos alertas;
+- main cards;
+- PJ panel;
+- future-committed widget;
+- latest transactions;
+- upcoming alerts;
 - empty/loading/error;
-- APIs agregadas.
+- aggregated APIs.
 
-### Sprint 3 — Transações
+### Sprint 3 — Transactions
 
-Entregável: CRUD de transações PF/PJ com lançamento rápido, filtros, recorrências, parcelamentos e divisor de recebimento PJ.
+Deliverable: PF/PJ transaction CRUD with quick entry, filters, recurrences, installments and the PJ income splitter.
 
-Inclui:
+Includes:
 
-- tela de lista;
-- modal/form de nova transação;
-- filtros;
-- detalhe;
+- list screen;
+- new-transaction modal/form;
+- filters;
+- detail;
 - split;
-- recorrência;
-- parcelamento;
-- testes de invariantes.
+- recurrence;
+- installments;
+- invariant tests.
 
-### Sprint 4 — Contas
+### Sprint 4 — Accounts
 
-Entregável: contas PF/PJ, saldos derivados, transferências, pró-labore e reconciliação.
+Deliverable: PF/PJ accounts, derived balances, transfers, owner's draw and reconciliation.
 
-### Sprint 5 — Categorias
+### Sprint 5 — Categories
 
-Entregável: categorias padrão e customizadas por contexto, usadas no lançamento e relatórios.
+Deliverable: default and custom categories per context, used in entry and reports.
 
-### Sprint 6 — Cartões
+### Sprint 6 — Cards
 
-Entregável: cartões, faturas, compra parcelada, fechamento e pagamento de fatura.
+Deliverable: cards, statements, installment purchases, closing and statement payment.
 
-### Sprint 7 — Metas
+### Sprint 7 — Goals
 
-Entregável: metas PF/PJ com progresso, contribuições e widget no dashboard.
+Deliverable: PF/PJ goals with progress, contributions and a dashboard widget.
 
-### Sprint 8 — Dívidas
+### Sprint 8 — Debts
 
-Entregável: dívidas com parcelas, pagamentos, prioridade e impacto no comprometido futuro.
+Deliverable: debts with installments, payments, priority and impact on future commitment.
 
-### Sprint 9 — Relatórios
+### Sprint 9 — Reports
 
-Entregável: relatório mensal PF/PJ/Tudo, gráficos expansíveis, drill-down e exportação.
+Deliverable: a monthly PF/PJ/All report, expandable charts, drill-down and export.
 
 ### Sprint 10 — Settings
 
-Entregável: perfil, fiscal, regras de split, segurança, dados, exportação e exclusão de conta.
+Deliverable: profile, fiscal, split rules, security, data, export and account deletion.
 
-### Sprint 11 — IA + Alertas
+### Sprint 11 — AI + Alerts
 
-Entregável: lançamento por linguagem natural, categorização, feedback, insights, alertas e resumo semanal.
+Deliverable: natural-language entry, categorization, feedback, insights, alerts and weekly summary.
 
 ### Sprint 12 — PWA + Beta
 
-Entregável: PWA instalável, fila offline, idempotência, observabilidade, testes E2E, deploy, backup/restore e checklist beta.
+Deliverable: installable PWA, offline queue, idempotency, observability, E2E tests, deploy, backup/restore and a beta checklist.
 
 ---
 
-## 10. ADRs obrigatórias
+## 10. Mandatory ADRs
 
-Escreva ou atualize ADRs em `docs/architecture/adr`.
+Write or update ADRs in `docs/architecture/adr`.
 
-ADRs esperadas ou sugeridas:
+Expected or suggested ADRs:
 
 - `0001-web-first.md`
 - `0002-stack-next-nest.md`
@@ -964,33 +965,33 @@ ADRs esperadas ou sugeridas:
 Template:
 
 ```md
-# ADR-0000 — Título
+# ADR-0000 — Title
 
 ## Status
 
-Proposta | Aceita | Substituída
+Proposed | Accepted | Superseded
 
-## Contexto
+## Context
 
-Explique o problema e as forças envolvidas.
+Explain the problem and the forces involved.
 
-## Opções consideradas
+## Options considered
 
-- Opção A
-- Opção B
+- Option A
+- Option B
 
-## Decisão
+## Decision
 
-Explique a escolha.
+Explain the choice.
 
-## Consequências
+## Consequences
 
-- Positivas
-- Negativas
+- Positive
+- Negative
 - Trade-offs
 ```
 
-Não implemente solução contrária à ADR aceita sem atualizar a ADR.
+Don't implement a solution that contradicts an accepted ADR without updating the ADR.
 
 ---
 
@@ -998,52 +999,52 @@ Não implemente solução contrária à ADR aceita sem atualizar a ADR.
 
 ### Controllers
 
-Controllers devem:
+Controllers should:
 
-- validar sessão/autorização;
-- receber parâmetros;
-- validar input;
-- chamar service;
-- retornar resposta padronizada.
+- validate session/authorization;
+- receive parameters;
+- validate input;
+- call the service;
+- return a standardized response.
 
-Controllers não devem:
+Controllers should not:
 
-- conter regra de negócio;
-- montar query Prisma complexa;
-- decidir lógica financeira;
-- fazer transformação pesada.
+- contain business logic;
+- assemble complex Prisma queries;
+- decide financial logic;
+- do heavy transformation.
 
 ### Services
 
-Services devem:
+Services should:
 
-- concentrar regra de negócio;
-- orquestrar repositories;
-- aplicar invariantes financeiras;
-- usar transações do Prisma quando necessário;
-- ser testáveis.
+- concentrate business logic;
+- orchestrate repositories;
+- apply financial invariants;
+- use Prisma transactions when needed;
+- be testable.
 
-Exemplos de regra de service:
+Examples of service rules:
 
-- split de recebimento;
-- fechamento de fatura;
-- pagamento de fatura;
-- contribuição em meta;
-- pagamento de dívida;
-- baixa de provisão;
-- geração de relatório.
+- income split;
+- statement closing;
+- statement payment;
+- goal contribution;
+- debt payment;
+- settling a provision;
+- report generation.
 
 ### Repositories
 
-Repositories devem:
+Repositories should:
 
-- ser a única camada do domínio que fala diretamente com Prisma;
-- sempre filtrar por `householdId`;
-- retornar apenas dados necessários;
-- não conter regra complexa de produto;
-- não aceitar `householdId` arbitrário do client.
+- be the only domain layer that talks directly to Prisma;
+- always filter by `householdId`;
+- return only the needed data;
+- not contain complex product rules;
+- not accept an arbitrary `householdId` from the client.
 
-Exemplo conceitual:
+Conceptual example:
 
 ```ts
 await repository.findTransactionById({
@@ -1052,20 +1053,20 @@ await repository.findTransactionById({
 });
 ```
 
-Nunca:
+Never:
 
 ```ts
 await repository.findTransactionById(transactionId);
 ```
 
-### DTOs e validação
+### DTOs and validation
 
-- Valide input no backend sempre.
-- Se schema for compartilhado com frontend, use `packages/shared`.
-- Rejeite input inválido com erro estruturado.
-- Valide saída da IA com Zod antes de usar.
+- Always validate input on the backend.
+- If the schema is shared with the frontend, use `packages/shared`.
+- Reject invalid input with a structured error.
+- Validate AI output with Zod before using it.
 
-Envelope sugerido:
+Suggested envelope:
 
 ```ts
 {
@@ -1073,7 +1074,7 @@ Envelope sugerido:
 }
 ```
 
-Erro sugerido:
+Suggested error:
 
 ```ts
 {
@@ -1085,22 +1086,22 @@ Erro sugerido:
 }
 ```
 
-### Status HTTP
+### HTTP status
 
-- `200` leitura/atualização OK;
-- `201` criação OK;
-- `204` delete sem body;
-- `400` request malformada;
-- `401` não autenticado;
-- `403` sem permissão;
-- `404` recurso não encontrado ou não pertence ao household;
-- `409` conflito de domínio;
-- `422` validação de input;
-- `500` erro inesperado sem detalhes sensíveis.
+- `200` read/update OK;
+- `201` creation OK;
+- `204` delete with no body;
+- `400` malformed request;
+- `401` not authenticated;
+- `403` no permission;
+- `404` resource not found or not belonging to the household;
+- `409` domain conflict;
+- `422` input validation;
+- `500` unexpected error with no sensitive details.
 
-### Rotas REST esperadas
+### Expected REST routes
 
-Use prefixo `/v1` desde o início.
+Use the `/v1` prefix from the start.
 
 ```txt
 POST   /v1/auth/register
@@ -1168,178 +1169,178 @@ PATCH  /v1/settings
 DELETE /v1/account
 ```
 
-### Idempotência
+### Idempotency
 
-POSTs de escrita que podem ser repetidos devem aceitar `Idempotency-Key`, especialmente:
+Write POSTs that may be repeated must accept an `Idempotency-Key`, especially:
 
-- criação offline de transação;
+- offline transaction creation;
 - split;
-- pagamento de fatura;
-- pagamento de dívida;
-- contribuição em meta.
+- statement payment;
+- debt payment;
+- goal contribution.
 
 ---
 
 ## 12. Frontend guidelines — Next.js
 
-### Server Components por padrão
+### Server Components by default
 
-Use Server Components quando:
+Use Server Components when:
 
-- a tela apenas carrega dados;
-- não há estado local interativo;
-- não usa browser API;
-- não usa eventos do usuário.
+- the screen only loads data;
+- there's no local interactive state;
+- it doesn't use a browser API;
+- it doesn't use user events.
 
-Use Client Components quando:
+Use Client Components when:
 
-- há formulário;
-- há filtros interativos;
-- há modal/dropdown controlado;
-- há estado local;
-- há React Query mutation;
-- há acesso a IndexedDB/service worker;
-- há gráfico interativo.
+- there's a form;
+- there are interactive filters;
+- there's a controlled modal/dropdown;
+- there's local state;
+- there's a React Query mutation;
+- there's access to IndexedDB/service worker;
+- there's an interactive chart.
 
-Marque `"use client"` no menor componente possível, nunca na página inteira sem necessidade.
+Mark `"use client"` on the smallest possible component, never on the whole page without need.
 
-### Organização de páginas
+### Page organization
 
-Páginas em `app/` devem ser finas. Elas podem:
+Pages in `app/` should be thin. They can:
 
-- montar layout;
-- buscar dados iniciais;
-- chamar componentes de feature;
-- definir metadata.
+- assemble layout;
+- fetch initial data;
+- call feature components;
+- define metadata.
 
-Páginas não devem:
+Pages should not:
 
-- conter JSX gigante;
-- conter regra de domínio;
-- conter transformação complexa;
-- espalhar `fetch()` sem camada.
+- contain giant JSX;
+- contain domain logic;
+- contain complex transformation;
+- scatter `fetch()` without a layer.
 
 ### API client
 
-Centralize chamadas HTTP em:
+Centralize HTTP calls in:
 
 ```txt
 apps/web/src/lib/api/
 ```
 
-ou em services por feature:
+or in services per feature:
 
 ```txt
 features/transactions/services/transactions-api.ts
 ```
 
-Não espalhe `fetch()` bruto por vários componentes.
+Don't scatter raw `fetch()` across many components.
 
 ### React Query
 
-Use para dados de servidor:
+Use for server data:
 
-- transações;
-- contas;
-- cartões;
-- categorias;
-- metas;
-- dívidas;
-- relatórios;
+- transactions;
+- accounts;
+- cards;
+- categories;
+- goals;
+- debts;
+- reports;
 - settings.
 
-Regras:
+Rules:
 
-- query keys devem ser previsíveis;
-- filtros relevantes entram na query key;
-- mutations invalidam queries afetadas;
-- optimistic update só quando rollback for claro;
-- não duplique dados do servidor em Zustand.
+- query keys must be predictable;
+- relevant filters go into the query key;
+- mutations invalidate the affected queries;
+- optimistic update only when rollback is clear;
+- don't duplicate server data in Zustand.
 
 ### Zustand
 
-Use apenas para UI efêmera:
+Use only for ephemeral UI:
 
-- modal aberto;
-- contexto visual selecionado;
-- sidebar colapsada;
-- rascunho temporário não sensível;
-- filtros locais antes de aplicar.
+- open modal;
+- selected visual context;
+- collapsed sidebar;
+- temporary non-sensitive draft;
+- local filters before applying.
 
-Não use Zustand como banco local autoritativo.
+Don't use Zustand as an authoritative local database.
 
-### Formulários
+### Forms
 
 - React Hook Form + Zod.
-- Validação client melhora UX; backend é fonte final.
-- Erros aparecem perto do campo.
-- Submit tem loading.
-- Formulário não deve limpar se request falhar.
-- Dinheiro deve entrar/sair como centavos, com formatação na borda.
+- Client validation improves UX; the backend is the final source.
+- Errors appear near the field.
+- Submit has a loading state.
+- A form must not clear if the request fails.
+- Money must enter/leave as cents, with formatting at the edge.
 
-### Listas e tabelas
+### Lists and tables
 
-Toda lista com dados remotos precisa de:
+Every list with remote data needs:
 
 - loading;
 - error;
 - empty;
-- paginação ou cursor quando crescer;
-- filtros claros;
-- estado de busca sem resultado.
+- pagination or cursor when it grows;
+- clear filters;
+- a no-results search state.
 
-### Acessibilidade
+### Accessibility
 
-Obrigatório:
+Mandatory:
 
-- labels em inputs;
-- botões com texto acessível;
-- focus visível;
-- navegação por teclado;
-- contraste AA mínimo;
-- `aria-describedby` para erro de campo;
-- modais com focus trap;
-- PF/PJ com ícone + texto, não apenas cor.
+- labels on inputs;
+- buttons with accessible text;
+- visible focus;
+- keyboard navigation;
+- minimum AA contrast;
+- `aria-describedby` for field errors;
+- modals with focus trap;
+- PF/PJ with icon + text, not only color.
 
 ---
 
-## 13. Design system e UI
+## 13. Design system and UI
 
-O design deve ser:
+The design should be:
 
-- profissional-leve;
-- claro;
-- moderno;
-- calmo;
-- útil;
-- confiável;
-- denso no desktop e simples no mobile;
-- com hierarquia visual forte;
-- sem poluição de dashboard.
+- light-professional;
+- clear;
+- modern;
+- calm;
+- useful;
+- trustworthy;
+- dense on desktop and simple on mobile;
+- with strong visual hierarchy;
+- without dashboard clutter.
 
-Referências visuais:
+Visual references:
 
 - Linear;
 - Copilot Money;
 - Raycast;
 - Stripe Dashboard;
 - Vercel Dashboard;
-- Nubank para linguagem simples;
-- Notion para organização;
-- Cursor para IA contextual.
+- Nubank for simple language;
+- Notion for organization;
+- Cursor for contextual AI.
 
-Anti-referências:
+Anti-references:
 
-- dashboard corporativo cinza;
-- gráfico demais sem ação;
-- gamificação infantil;
-- app financeiro que parece planilha abandonada;
-- interface bancária cheia de jargão.
+- a gray corporate dashboard;
+- too many charts with no action;
+- childish gamification;
+- a finance app that looks like an abandoned spreadsheet;
+- a bank interface full of jargon.
 
-### Tokens sugeridos
+### Suggested tokens
 
 ```txt
-Background: #F8FAFC ou #FAFAFB
+Background: #F8FAFC or #FAFAFB
 Surface: #FFFFFF
 Surface subtle: #F3F4F6
 Text primary: #111827
@@ -1347,14 +1348,14 @@ Text secondary: #6B7280
 Primary: #7C6FF7
 Primary dark: #5B4FE8
 Border: #E5E7EB
-Success: verde suave
-Warning: amarelo suave
-Danger: vermelho apenas para alerta real
-PJ: azul/ícone + label
-PF: verde/ícone + label
+Success: soft green
+Warning: soft yellow
+Danger: red only for a real alert
+PJ: blue/icon + label
+PF: green/icon + label
 ```
 
-### Componentes mínimos
+### Minimum components
 
 - `Button`
 - `Input`
@@ -1379,7 +1380,7 @@ PF: verde/ícone + label
 - `LoadingState`
 - `ErrorState`
 
-### Componentes de produto importantes
+### Important product components
 
 - `QuickEntryModal`
 - `AIEntryField`
@@ -1394,133 +1395,133 @@ PF: verde/ícone + label
 - `MonthlyReport`
 - `ExportPanel`
 
-`SplitPanel` é componente crítico do produto. Deve ser simples, auditável e testado.
+`SplitPanel` is a critical product component. It must be simple, auditable and tested.
 
 ### Microcopy
 
-Use frases como:
+Use phrases like (kept in Brazilian Portuguese — product UI copy):
 
-- “Quanto desse dinheiro é realmente seu?”
-- “Separado para imposto”
-- “Seu salário estimado”
-- “Dinheiro da empresa”
-- “Dinheiro pessoal”
-- “Comprometido futuro”
-- “Ver de onde veio esse número”
-- “A IA sugeriu. Você confirma.”
-- “Exportar meus dados”
+- "Quanto desse dinheiro é realmente seu?"
+- "Separado para imposto"
+- "Seu salário estimado"
+- "Dinheiro da empresa"
+- "Dinheiro pessoal"
+- "Comprometido futuro"
+- "Ver de onde veio esse número"
+- "A IA sugeriu. Você confirma."
+- "Exportar meus dados"
 
-Evite:
+Avoid:
 
-- “provisão tributária” sem explicação;
-- “cashflow statement”;
-- “forecast financeiro avançado”;
-- tom de banco;
-- excesso de emojis;
-- linguagem que pareça promessa de consultoria financeira.
+- "provisão tributária" with no explanation;
+- "cashflow statement";
+- "advanced financial forecast";
+- a bank tone;
+- too many emojis;
+- language that sounds like a promise of financial consulting.
 
 ---
 
-## 14. Banco de dados e Prisma
+## 14. Database and Prisma
 
-### Convenções
+### Conventions
 
-- Prisma é a fonte oficial do schema físico.
-- Migrations ficam versionadas em `prisma/migrations`.
-- Nomes de tabelas/colunas no banco podem usar padrão Prisma, mas mantenha consistência.
-- Dinheiro deve ser armazenado em centavos com `BigInt`/`bigint`.
-- Toda entidade financeira deve ter `householdId`.
-- Toda entidade principal deve ter `createdAt`, `updatedAt` e, quando fizer sentido, `deletedAt`.
-- Use constraints e índices para invariantes importantes.
+- Prisma is the official source of the physical schema.
+- Migrations are versioned in `prisma/migrations`.
+- Table/column names in the database can use the Prisma convention, but keep consistency.
+- Money must be stored in cents with `BigInt`/`bigint`.
+- Every financial entity must have `householdId`.
+- Every main entity must have `createdAt`, `updatedAt` and, when it makes sense, `deletedAt`.
+- Use constraints and indexes for important invariants.
 
-### Regras obrigatórias
+### Mandatory rules
 
-- Toda query de domínio filtra por `householdId`.
-- Não aceitar `householdId` do client como fonte de autorização.
-- Não criar tabela financeira sem FK para household.
-- Não editar migration antiga aplicada.
-- Não usar JSON como desculpa para evitar modelagem.
-- Não remover dados em cascata sem entender impacto.
-- Não criar PrismaClient novo em cada repository. Reutilize `PrismaService`.
-- SQL raw só com justificativa, tipagem e cuidado com injection.
+- Every domain query filters by `householdId`.
+- Don't accept `householdId` from the client as an authorization source.
+- Don't create a financial table without an FK to a household.
+- Don't edit an old applied migration.
+- Don't use JSON as an excuse to avoid modeling.
+- Don't cascade-delete data without understanding the impact.
+- Don't create a new PrismaClient in each repository. Reuse `PrismaService`.
+- Raw SQL only with justification, typing and care about injection.
 
-### Dinheiro
+### Money
 
-- Valores monetários sempre em centavos.
-- API pode serializar centavos como string para evitar perda de precisão.
-- Formatação só na borda com `Intl.NumberFormat`.
-- Nunca usar float para cálculo financeiro.
-- Split proporcional deve distribuir resto de centavos de forma determinística.
+- Monetary values always in cents.
+- The API may serialize cents as a string to avoid precision loss.
+- Formatting only at the edge with `Intl.NumberFormat`.
+- Never use a float for financial computation.
+- A proportional split must distribute the remaining cents deterministically.
 
-### Invariantes importantes
+### Important invariants
 
-- Transação pertence a uma conta ou fatura, não às duas sem regra explícita.
-- Fatura fechada não é editável diretamente.
-- Saldo é derivado de transações.
-- Split deve fechar exatamente no total original.
-- Transferência deve ter pernas vinculadas.
-- Pagamento de fatura deve conectar caixa e competência.
-- Pagamento de dívida deve reduzir saldo da dívida e gerar histórico.
-- Contribuição em meta deve ser auditável.
+- A transaction belongs to an account or a statement, not both without an explicit rule.
+- A closed statement is not directly editable.
+- A balance is derived from transactions.
+- A split must add up exactly to the original total.
+- A transfer must have linked legs.
+- A statement payment must connect cash and accrual.
+- A debt payment must reduce the debt balance and generate history.
+- A goal contribution must be auditable.
 
 ### Soft delete
 
-Preferir `deletedAt` para:
+Prefer `deletedAt` for:
 
-- transações;
-- contas;
-- categorias customizadas;
-- cartões;
-- metas;
-- dívidas;
-- provisões;
-- settings históricos importantes.
+- transactions;
+- accounts;
+- custom categories;
+- cards;
+- goals;
+- debts;
+- provisions;
+- important historical settings.
 
-Hard delete apenas em fluxo explícito de exclusão de conta/purge LGPD.
+Hard delete only in an explicit account-deletion / LGPD-purge flow.
 
 ### Seeds
 
-Seeds devem criar dados fictícios e realistas, por exemplo:
+Seeds must create fictional, realistic data, for example:
 
-- usuário “Rafael”;
-- conta PJ;
-- conta PF;
-- cartão misto;
-- receita PJ de cliente;
-- split aplicado;
-- meta de reserva;
-- dívida parcelada;
-- relatório mensal com dados auditáveis.
+- user "Rafael";
+- a PJ account;
+- a PF account;
+- a mixed card;
+- PJ income from a client;
+- an applied split;
+- a reserve goal;
+- an installment debt;
+- a monthly report with auditable data.
 
-Não colocar dados reais da usuária.
+Don't put the user's real data.
 
 ---
 
-## 15. Autenticação e autorização
+## 15. Authentication and authorization
 
-Arquitetura esperada:
+Expected architecture:
 
-- Auth/session no Next.js quando aplicável;
-- JWT/sessão validada pelo NestJS;
-- cookies httpOnly/Secure/SameSite para tokens sensíveis;
-- `userId` e `householdId` extraídos no servidor;
-- `AuthGuard` → `TenancyGuard` → `PlanGuard`, quando houver planos.
+- Auth/session in Next.js when applicable;
+- JWT/session validated by NestJS;
+- httpOnly/Secure/SameSite cookies for sensitive tokens;
+- `userId` and `householdId` extracted on the server;
+- `AuthGuard` → `TenancyGuard` → `PlanGuard`, when there are plans.
 
-### Regras
+### Rules
 
-- Toda rota privada exige autenticação.
-- Toda mutação verifica propriedade do recurso.
-- Nunca confiar em ids enviados pelo client para autorização.
-- Ao buscar recurso por `id`, também filtrar por `householdId`.
-- IDOR deve ser testado nos endpoints autenticados.
+- Every private route requires authentication.
+- Every mutation checks resource ownership.
+- Never trust ids sent by the client for authorization.
+- When fetching a resource by `id`, also filter by `householdId`.
+- IDOR must be tested on authenticated endpoints.
 
-Exemplo conceitual:
+Conceptual example:
 
 ```ts
 findDebtById({ id, householdId });
 ```
 
-Nunca:
+Never:
 
 ```ts
 findDebtById(id);
@@ -1528,147 +1529,147 @@ findDebtById(id);
 
 ---
 
-## 16. Segurança e privacidade
+## 16. Security and privacy
 
-O Tally armazena dados financeiros sensíveis.
+Tally stores sensitive financial data.
 
-Nunca logar:
+Never log:
 
-- senha;
-- hash de senha;
-- JWT;
+- passwords;
+- password hashes;
+- JWTs;
 - cookies;
-- refresh token;
-- e-mail completo;
-- valores financeiros;
-- descrições completas de transações;
-- dados fiscais;
-- dados de cartão;
-- conteúdo integral enviado à IA;
+- refresh tokens;
+- full emails;
+- financial values;
+- full transaction descriptions;
+- fiscal data;
+- card data;
+- the full content sent to the AI;
 - secrets.
 
 ### LocalStorage
 
-Não use localStorage para:
+Don't use localStorage for:
 
-- token;
-- sessão;
-- dados financeiros;
-- transações;
-- saldos;
-- metas;
-- dívidas;
-- dados fiscais.
+- tokens;
+- session;
+- financial data;
+- transactions;
+- balances;
+- goals;
+- debts;
+- fiscal data.
 
-Pode ser usado apenas para UI efêmera não sensível, se necessário.
+It may be used only for non-sensitive ephemeral UI, if needed.
 
 ### Env
 
-- `.env` nunca deve ser commitado.
-- `.env.example` contém nomes de variáveis sem valores reais.
-- Validar envs na inicialização quando possível.
+- `.env` should never be committed.
+- `.env.example` contains variable names without real values.
+- Validate envs at startup when possible.
 
-### Erros
+### Errors
 
-- Em produção, responses não vazam stack trace.
-- Mensagens para usuário são claras, mas sem detalhes internos.
-- Logs estruturados devem usar `requestId`.
+- In production, responses don't leak stack traces.
+- Messages for the user are clear, but without internal details.
+- Structured logs must use `requestId`.
 
 ### LGPD
 
-- Exportação completa precisa existir.
-- Exclusão de conta deve ter fluxo claro.
-- Purge real deve ser documentado.
-- Dados devem ser minimizados.
-- Evite coletar CPF/CNPJ completo no MVP/app inicial se não for necessário.
+- A full export must exist.
+- Account deletion must have a clear flow.
+- A real purge must be documented.
+- Data must be minimized.
+- Avoid collecting full CPF/CNPJ in the MVP/initial app if it isn't needed.
 
 ---
 
-## 17. IA — regras do Tally
+## 17. AI — Tally's rules
 
-IA faz parte do app, mas com limites rígidos.
+AI is part of the app, but with strict limits.
 
-### Permitido na IA v1
+### Allowed in AI v1
 
-- parsing de transação por linguagem natural;
-- sugestão de categoria;
-- resumo semanal baseado em números calculados por SQL;
-- insight textual com evidências;
-- alertas determinísticos explicados em linguagem simples.
+- natural-language transaction parsing;
+- category suggestion;
+- weekly summary based on numbers computed by SQL;
+- textual insight with evidence;
+- deterministic alerts explained in simple language.
 
-### Proibido sem ADR
+### Forbidden without an ADR
 
-- chat aberto ilimitado;
-- agentes autônomos;
+- unlimited open chat;
+- autonomous agents;
 - RAG;
 - embeddings;
 - pgvector;
-- execução de ações sem confirmação;
-- cálculo fiscal por LLM;
-- recomendação de investimento/crédito;
-- envio de extrato completo para prompt;
-- tool calling que altera dados sem confirmação explícita.
+- executing actions without confirmation;
+- fiscal computation by an LLM;
+- investment/credit recommendations;
+- sending a full statement to the prompt;
+- tool calling that changes data without explicit confirmation.
 
-### Regras obrigatórias
+### Mandatory rules
 
-- LLM nunca persiste dados diretamente.
-- Toda saída vira proposta.
-- Proposta passa por schema Zod.
-- Usuário confirma ou edita.
-- Timeout tem fallback para formulário.
-- Prompt deve separar instruções do conteúdo do usuário.
-- Prompts versionados em `apps/api/src/modules/ai/prompts` ou equivalente.
-- Testes usam modelo mockado.
-- Conteúdo de prompt deve ser minimizado.
-- Alíquotas e regras fiscais vêm do banco/configuração, nunca do modelo.
+- The LLM never persists data directly.
+- Every output becomes a proposal.
+- The proposal goes through a Zod schema.
+- The user confirms or edits.
+- A timeout falls back to a form.
+- The prompt must separate instructions from the user's content.
+- Prompts are versioned in `apps/api/src/modules/ai/prompts` or equivalent.
+- Tests use a mocked model.
+- Prompt content must be minimized.
+- Tax rates and fiscal rules come from the database/configuration, never from the model.
 
 ---
 
-## 18. Testes
+## 18. Tests
 
-Priorize testes onde há risco real:
+Prioritize tests where there's real risk:
 
-- isolamento por household;
-- cálculos financeiros;
-- split de recebimento;
-- fatura por competência;
-- pagamento de fatura;
-- pagamento de dívida;
-- contribuição em meta;
-- relatório mensal;
-- exportação;
-- auth/autorização;
-- IA parse fallback;
-- PWA offline/idempotência.
+- per-household isolation;
+- financial computations;
+- income split;
+- statement by accrual;
+- statement payment;
+- debt payment;
+- goal contribution;
+- monthly report;
+- export;
+- auth/authorization;
+- AI parse fallback;
+- PWA offline/idempotency.
 
 ### Unit tests
 
-Use para:
+Use for:
 
 - money utils;
 - split;
 - fiscal rules;
-- cálculo de comprometido futuro;
-- cálculo de progresso de metas;
-- cálculo de saldo de dívida;
+- future-committed computation;
+- goal-progress computation;
+- debt-balance computation;
 - mappers;
 - validators.
 
 ### Integration tests
 
-Use para:
+Use for:
 
 - service + repository;
-- Prisma com banco de teste;
-- autorização por household;
-- criação/listagem de transações;
-- fechamento de fatura;
-- exportação;
-- relatórios.
+- Prisma with a test database;
+- per-household authorization;
+- transaction creation/listing;
+- statement closing;
+- export;
+- reports.
 
 ### Component tests
 
-Use para:
+Use for:
 
 - `MoneyInput`;
 - `QuickEntryModal`;
@@ -1681,35 +1682,35 @@ Use para:
 
 ### E2E
 
-Fluxos críticos:
+Critical flows:
 
-1. cadastro/login;
-2. onboarding fiscal;
-3. abrir dashboard;
-4. criar conta PF/PJ;
-5. criar categoria;
-6. registrar transação em menos de 10s;
-7. registrar recebimento PJ;
-8. aplicar split;
-9. ver dashboard atualizado;
-10. criar cartão e compra parcelada;
-11. fechar/pagar fatura;
-12. criar meta e contribuição;
-13. criar dívida e pagamento;
-14. abrir relatório mensal;
-15. exportar dados.
+1. sign up/login;
+2. fiscal onboarding;
+3. open the dashboard;
+4. create a PF/PJ account;
+5. create a category;
+6. record a transaction in under 10s;
+7. record PJ income;
+8. apply a split;
+9. see the updated dashboard;
+10. create a card and an installment purchase;
+11. close/pay a statement;
+12. create a goal and a contribution;
+13. create a debt and a payment;
+14. open the monthly report;
+15. export data.
 
-### Regra de regressão
+### Regression rule
 
-Bug corrigido deve virar teste quando possível.
+A fixed bug should become a test whenever possible.
 
 ---
 
-## 19. Comandos esperados
+## 19. Expected commands
 
-Antes de assumir comando, verifique `package.json`.
+Before assuming a command, check `package.json`.
 
-Comandos desejados:
+Desired commands:
 
 ```bash
 pnpm install
@@ -1721,7 +1722,7 @@ pnpm test
 pnpm test:e2e
 ```
 
-Banco:
+Database:
 
 ```bash
 docker compose up -d
@@ -1730,9 +1731,9 @@ pnpm db:seed
 pnpm db:studio
 ```
 
-Se um comando não existir e a issue pedir setup, crie o script no `package.json` adequado.
+If a command doesn't exist and the issue asks for setup, create the script in the appropriate `package.json`.
 
-Antes de finalizar uma alteração, rode o máximo possível:
+Before finishing a change, run as much as possible:
 
 ```bash
 pnpm lint
@@ -1741,43 +1742,43 @@ pnpm test
 pnpm build
 ```
 
-Se não rodar, explique o motivo.
+If it doesn't run, explain why.
 
 ---
 
-## 20. Workflow do agente
+## 20. Agent workflow
 
-Ao receber uma tarefa:
+When you receive a task:
 
-1. Identifique a sprint e o domínio.
-2. Leia a issue/pedido completo.
-3. Leia arquivos relevantes.
-4. Verifique ADRs relacionadas.
-5. Faça um plano curto antes de mudanças grandes.
-6. Implemente a menor alteração completa.
-7. Não altere arquivos fora de escopo sem necessidade.
-8. Atualize testes e documentação se o contrato mudou.
-9. Rode validações.
-10. Finalize com resumo objetivo.
+1. Identify the sprint and the domain.
+2. Read the full issue/request.
+3. Read the relevant files.
+4. Check the related ADRs.
+5. Make a short plan before big changes.
+6. Implement the smallest complete change.
+7. Don't change files outside the scope without need.
+8. Update tests and documentation if the contract changed.
+9. Run the checks.
+10. Finish with an objective summary.
 
-### Final response esperada após implementação
+### Expected final response after implementation
 
 ```md
-## O que foi feito
+## What was done
 
 - ...
 
-## Arquivos alterados
+## Files changed
 
-- `path/file.ts` — motivo
+- `path/file.ts` — reason
 
-## Validações
+## Checks
 
 - `pnpm lint` ✅
 - `pnpm typecheck` ✅
-- `pnpm test` não rodei porque ...
+- `pnpm test` didn't run because ...
 
-## Observações
+## Notes
 
 - Risk: ...
 - Decision Needed: ...
@@ -1786,11 +1787,11 @@ Ao receber uma tarefa:
 
 ---
 
-## 21. Git, branches e commits
+## 21. Git, branches and commits
 
 ### Branches
 
-Formato sugerido:
+Suggested format:
 
 ```txt
 sprint-0/setup-monorepo
@@ -1803,7 +1804,7 @@ sprint-8/debts
 
 ### Commits
 
-Use Conventional Commits simples:
+Use simple Conventional Commits:
 
 ```txt
 feat: configure pnpm workspace
@@ -1816,24 +1817,24 @@ docs: add ADR for card invoices
 chore: add lint workflow
 ```
 
-### Não misturar no mesmo commit
+### Don't mix in the same commit
 
-- feature + refactor grande;
+- feature + big refactor;
 - schema + redesign;
-- auth + dashboard complexo;
-- lint massivo + alteração funcional;
-- dependência nova + várias features;
-- IA + mudança de schema financeira sem teste.
+- auth + complex dashboard;
+- mass lint + functional change;
+- a new dependency + several features;
+- AI + a financial schema change without a test.
 
 ---
 
-## 22. Issues e labels
+## 22. Issues and labels
 
-Use issues pequenas e rastreáveis.
+Use small, traceable issues.
 
-Labels esperadas:
+Expected labels:
 
-- `sprint-0` até `sprint-12`;
+- `sprint-0` through `sprint-12`;
 - `domain:auth`;
 - `domain:onboarding`;
 - `domain:dashboard`;
@@ -1867,146 +1868,146 @@ Labels esperadas:
 Template:
 
 ```md
-## Contexto
+## Context
 
-Por que essa issue existe e qual problema resolve.
+Why this issue exists and what problem it solves.
 
-## Escopo
+## Scope
 
-- [ ] Item concreto
-- [ ] Item concreto
+- [ ] Concrete item
+- [ ] Concrete item
 
-## Fora do escopo
+## Out of scope
 
-- O que não entra agora
+- What doesn't enter now
 
-## Critérios de aceite
+## Acceptance criteria
 
-- Dado que...
-- Quando...
-- Então...
+- Given that...
+- When...
+- Then...
 
-## Notas técnicas
+## Technical notes
 
 - Endpoint:
-- Componentes:
+- Components:
 - Schema:
-- Testes:
+- Tests:
 ```
 
 ---
 
-## 23. Qualidade de código
+## 23. Code quality
 
 ### TypeScript
 
-- `strict` ligado.
-- Não usar `any` sem justificativa.
-- Preferir tipos explícitos nas bordas.
-- Usar inferência dentro de funções quando claro.
-- Não usar `as unknown as` para forçar tipo.
+- `strict` on.
+- Don't use `any` without justification.
+- Prefer explicit types at the edges.
+- Use inference inside functions when it's clear.
+- Don't use `as unknown as` to force a type.
 
-### Funções
+### Functions
 
-- Funções pequenas.
-- Nome que explica intenção.
-- Evitar boolean trap com muitos booleans.
-- Preferir objeto de parâmetros quando função cresce.
-- Separar cálculo puro de efeito colateral.
+- Small functions.
+- A name that explains intent.
+- Avoid the boolean trap with many booleans.
+- Prefer a params object when a function grows.
+- Separate pure computation from side effects.
 
-### Componentes
+### Components
 
-- Componentes pequenos e coesos.
-- Props tipadas.
-- Evitar componente com 300 linhas.
-- Separar container/data fetching de apresentação quando melhorar clareza.
-- Componentes de domínio ficam na feature.
-- Componentes genéricos ficam no design system.
+- Small, cohesive components.
+- Typed props.
+- Avoid a 300-line component.
+- Separate container/data fetching from presentation when it improves clarity.
+- Domain components live in the feature.
+- Generic components live in the design system.
 
-### Erros
+### Errors
 
-- Tratar erros previsíveis.
-- Não engolir erro silenciosamente.
-- Usar mensagens úteis.
-- Log estruturado no backend sem dados sensíveis.
+- Handle predictable errors.
+- Don't swallow errors silently.
+- Use useful messages.
+- Structured logging on the backend with no sensitive data.
 
 ---
 
 ## 24. Performance
 
-Não otimizar cedo, mas evitar decisões ruins.
+Don't optimize early, but avoid bad decisions.
 
-- Não buscar lista gigante sem paginação.
-- Não recalcular transformação pesada no render sem necessidade.
-- Não colocar tudo como Client Component.
-- Não carregar biblioteca pesada sem justificar.
-- Não renderizar gráficos complexos sem fallback.
-- Não fazer N+1 queries no backend.
-- Não gerar relatório mensal com múltiplas queries desnecessárias sem medir.
-- Não chamar LLM em render ou carregamento inicial.
+- Don't fetch a giant list without pagination.
+- Don't recompute heavy transformation on render without need.
+- Don't put everything as a Client Component.
+- Don't load a heavy library without justification.
+- Don't render complex charts without a fallback.
+- Don't do N+1 queries on the backend.
+- Don't generate the monthly report with multiple unnecessary queries without measuring.
+- Don't call the LLM on render or initial load.
 
-Use paginação/filtros para:
+Use pagination/filters for:
 
-- transações;
-- faturas;
-- metas;
-- dívidas;
-- relatórios detalhados;
+- transactions;
+- statements;
+- goals;
+- debts;
+- detailed reports;
 - insights.
 
 ---
 
-## 25. Observabilidade mínima
+## 25. Minimum observability
 
-Mesmo em side project, registre:
+Even in a side project, record:
 
-- erro de API com request id;
-- falhas de autenticação sem dados sensíveis;
-- falhas de validação agregadas quando útil;
-- tempo de endpoints críticos;
-- custo/latência de IA quando IA existir;
-- divergência de reconciliação;
-- falha de job;
-- falha de exportação;
-- falha de fila offline.
+- API errors with a request id;
+- authentication failures with no sensitive data;
+- aggregated validation failures when useful;
+- timing of critical endpoints;
+- AI cost/latency when AI exists;
+- reconciliation divergence;
+- job failure;
+- export failure;
+- offline queue failure.
 
-Ferramentas esperadas:
+Expected tools:
 
-- logs estruturados;
+- structured logs;
 - Sentry front/API;
 - healthcheck;
-- métricas simples;
-- alertas básicos no deploy.
+- simple metrics;
+- basic alerts on deploy.
 
-Não implementar observabilidade avançada antes da fundação, salvo issue específica.
-
----
-
-## 26. Definição de pronto
-
-Uma issue só está pronta quando:
-
-- compila;
-- lint passa ou falha está documentada;
-- typecheck passa ou falha está documentada;
-- teste relevante foi criado/atualizado quando aplicável;
-- fluxo principal foi validado manualmente ou por teste;
-- UI tem loading/error/empty quando busca dados;
-- dados são filtrados por usuário/household autenticado;
-- dinheiro é tratado em centavos;
-- números exibidos são auditáveis;
-- documentação/ADR foi atualizada quando contrato mudou;
-- não há alteração fora de escopo;
-- não há `console.log`, `any` injustificado ou TODO vago;
-- riscos e pendências foram sinalizados.
+Don't implement advanced observability before the foundation, except for a specific issue.
 
 ---
 
-## 27. Prioridade atual
+## 26. Definition of done
 
-No começo do projeto, priorize a Sprint 0 e a Sprint 1.
+An issue is only done when:
 
-Ordem recomendada:
+- it compiles;
+- lint passes or the failure is documented;
+- typecheck passes or the failure is documented;
+- a relevant test was created/updated when applicable;
+- the main flow was validated manually or by a test;
+- the UI has loading/error/empty when it fetches data;
+- data is filtered by the authenticated user/household;
+- money is handled in cents;
+- displayed numbers are auditable;
+- documentation/ADR was updated when the contract changed;
+- there's no out-of-scope change;
+- there's no `console.log`, unjustified `any` or vague TODO;
+- risks and pending items were flagged.
+
+---
+
+## 27. Current priority
+
+At the start of the project, prioritize Sprint 0 and Sprint 1.
+
+Recommended order:
 
 1. monorepo;
 2. Docker Compose;
@@ -2014,54 +2015,54 @@ Ordem recomendada:
 4. NestJS base;
 5. Prisma/Postgres base;
 6. Redis base;
-7. packages compartilhados;
+7. shared packages;
 8. CI;
-9. design system mínimo;
+9. minimal design system;
 10. auth;
 11. tenancy;
 12. onboarding;
 13. AppShell/Sidebar;
 14. ADRs.
 
-Não pule para IA, Open Finance, gráficos sofisticados ou telas avançadas antes de a fundação estar estável.
+Don't jump to AI, Open Finance, sophisticated charts or advanced screens before the foundation is stable.
 
 ---
 
-## 28. Modo mentoria sênior
+## 28. Senior mentorship mode
 
-Este projeto também serve para evolução técnica da usuária. O agente deve atuar como mentor sênior.
+This project also serves the user's technical growth. The agent should act as a senior mentor.
 
-Comportamentos esperados:
+Expected behaviors:
 
-- explicar trade-offs;
-- apontar riscos;
-- sugerir alternativas;
-- separar `Risk`, `Decision Needed` e `Future`;
-- não decidir arquitetura silenciosamente;
-- ensinar o padrão usado;
-- sugerir testes relevantes;
-- ajudar a transformar decisão técnica em explicação de PR/entrevista;
-- manter foco em entrega incremental;
-- lembrar que clareza e confiança importam mais que complexidade.
+- explain trade-offs;
+- point out risks;
+- suggest alternatives;
+- separate `Risk`, `Decision Needed` and `Future`;
+- don't silently decide architecture;
+- teach the pattern used;
+- suggest relevant tests;
+- help turn a technical decision into a PR/interview explanation;
+- keep the focus on incremental delivery;
+- remember that clarity and trust matter more than complexity.
 
-Sinalização:
+Signaling:
 
-- `Risk` — pode quebrar produção, segurança, performance, dinheiro ou confiança.
-- `Decision Needed` — escolha arquitetural/produto precisa de validação.
-- `Future` — melhoria válida, mas fora do escopo atual.
+- `Risk` — can break production, security, performance, money or trust.
+- `Decision Needed` — an architectural/product choice needs validation.
+- `Future` — a valid improvement, but out of the current scope.
 
 ---
 
-## 29. Lembrete final
+## 29. Final reminder
 
-O Tally deve ajudar uma pessoa que vive de CNPJ a saber quanto do dinheiro é da empresa, quanto é imposto, quanto é reserva e quanto é dela de verdade.
+Tally should help a person who lives off their own company (CNPJ) know how much of the money is the company's, how much is tax, how much is reserve and how much is really theirs.
 
-Sempre que houver dúvida entre uma solução chamativa e uma solução confiável, escolha a confiável.
+Whenever in doubt between a flashy solution and a trustworthy one, choose the trustworthy one.
 
-Sempre que houver dúvida entre um gráfico bonito e um número auditável, escolha o número auditável.
+Whenever in doubt between a pretty chart and an auditable number, choose the auditable number.
 
-Sempre que houver dúvida entre IA mágica e fluxo confirmável, escolha o fluxo confirmável.
+Whenever in doubt between magic AI and a confirmable flow, choose the confirmable flow.
 
-Sempre que houver dúvida entre abstração sofisticada e implementação simples que funciona, escolha a simples.
+Whenever in doubt between a sophisticated abstraction and a simple implementation that works, choose the simple one.
 
-O objetivo não é parecer complexo. O objetivo é ser útil, seguro e difícil de quebrar.
+The goal is not to look complex. The goal is to be useful, secure and hard to break.
