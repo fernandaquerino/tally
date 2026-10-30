@@ -1,182 +1,183 @@
 # 💰 Tally
 
-> **O app financeiro para quem vive de CNPJ.** Controle o PJ e o pessoal no mesmo lugar, com IA que te diz quanto do seu faturamento é realmente seu.
+> **The finance app for people who live off their own company (CNPJ).** Manage business and personal money in the same place, with AI that tells you how much of your revenue is actually yours.
 
-**Status:** 🚧 em desenvolvimento — discovery concluído e backlog do app completo em mapeamento. Ainda não há release utilizável.
+**Status:** 🚧 in development — discovery done and the full app backlog being mapped. There is no usable release yet.
 
 ---
 
-## O problema
+## The problem
 
-Milhões de brasileiros vivem de CNPJ próprio — MEIs, freelancers, consultores PJ. A vida financeira deles tem uma característica que nenhum app atende: **PF e PJ são a mesma pessoa, mas precisam ser dinheiros diferentes.**
+Millions of Brazilians live off their own company (CNPJ) — micro-entrepreneurs (MEIs), freelancers, independent consultants. Their financial life has a trait no app addresses: **personal and business are the same person, but they need to be different money.**
 
-O resultado: ~60% dos MEIs já usaram dinheiro pessoal pra pagar dívidas da empresa (Sebrae), o DAS vem como susto, e "faturei R$ 12 mil, por que não sobrou nada?" é a pergunta sem resposta. Os apps de finanças pessoais (Mobills, Organizze, Pierre) ignoram o PJ; as ferramentas PJ (Cora, MEI Fácil) ignoram a vida pessoal.
+The result: ~60% of MEIs have already used personal money to pay company debts (Sebrae), the monthly tax (DAS) comes as a shock, and "I billed R$ 12k, why is there nothing left?" is the unanswered question. Personal finance apps (Mobills, Organizze, Pierre) ignore the business side; business tools (Cora, MEI Fácil) ignore personal life.
 
-## A solução
+## The solution
 
-O Tally trata as duas vidas juntas, sem misturá-las:
+Tally handles both lives together, without mixing them:
 
-- 🧾 **Divisor de recebimento** — entrou R$ 5.000 de um cliente? O Tally separa na hora: imposto, reserva, e o que é de fato o seu salário
-- 🟦🟩 **PF/PJ em 1 clique** — toda transação tem contexto; cartão misto é separado nos relatórios
-- 💳 **Cartão modelado certo** — fatura por competência, parcelas projetadas, saldo que bate
-- 🤖 **IA que trabalha, não que enrola** — lançamento por linguagem natural ("almoço com cliente 45, empresa"), categorização que aprende, resumo semanal em 3 frases e avisos antes do susto (DAS em 7 dias, teto MEI a 85%)
-- 📤 **Seus dados são seus** — exportação completa em 1 clique, sempre
+- 🧾 **Income splitter** — got R$ 5,000 from a client? Tally splits it right away: tax, reserve, and what's actually your salary
+- 🟦🟩 **Personal/business in one click** — every transaction has context; a mixed card is separated in the reports
+- 💳 **Credit card modeled correctly** — statement by billing period, projected installments, a balance that adds up
+- 🤖 **AI that works, not that stalls** — natural-language entry ("lunch with client 45, company"), categorization that learns, a 3-sentence weekly summary and warnings before the shock (DAS in 7 days, MEI ceiling at 85%)
+- 📤 **Your data is yours** — full export in one click, always
 
 ## Stack
 
-| Camada   | Tecnologia                                                                                |
-| -------- | ----------------------------------------------------------------------------------------- |
-| Frontend | Next.js 15 (App Router) · React Query · Zustand · Tailwind + shadcn/ui                    |
-| Backend  | NestJS (monólito modular) · REST `/v1`                                                    |
-| Dados    | PostgreSQL 16 · Prisma · Redis (BullMQ)                                                   |
-| IA       | LLM via API (parsing, categorização, resumos) — validação estrita, humano sempre confirma |
-| Infra    | Vercel (web) · Railway/Fly (api+db) · GitHub Actions                                      |
-| Monorepo | pnpm workspaces + Turborepo                                                               |
+| Layer    | Technology                                                                              |
+| -------- | --------------------------------------------------------------------------------------- |
+| Frontend | Next.js 15 (App Router) · React Query · Zustand · Tailwind + shadcn/ui                   |
+| Backend  | NestJS (modular monolith) · REST `/v1`                                                   |
+| Data     | PostgreSQL 16 · Prisma · Redis (BullMQ)                                                  |
+| AI       | LLM via API (parsing, categorization, summaries) — strict validation, human always confirms |
+| Infra    | Vercel (web) · Railway/Fly (api+db) · GitHub Actions                                     |
+| Monorepo | pnpm workspaces + Turborepo                                                              |
 
-Decisões registradas em ADRs: [web-first](docs/architecture/adr/0001-web-first.md) · [Next+Nest](docs/architecture/adr/0002-stack-next-nest.md) · [Postgres+Prisma](docs/architecture/adr/0003-postgres-prisma.md) · [cartão por fatura](docs/architecture/adr/0005-cartao-por-fatura.md) · [dinheiro em centavos](docs/architecture/adr/0006-dinheiro-em-centavos.md) · [manual-first sem Open Finance](docs/architecture/adr/0007-manual-first-sem-open-finance.md)
+Decisions recorded as ADRs: [web-first](docs/architecture/adr/0001-web-first.md) · [Next+Nest](docs/architecture/adr/0002-stack-next-nest.md) · [Postgres+Prisma](docs/architecture/adr/0003-postgres-prisma.md) · [card by statement](docs/architecture/adr/0005-cartao-por-fatura.md) · [money in cents](docs/architecture/adr/0006-dinheiro-em-centavos.md) · [manual-first, no Open Finance](docs/architecture/adr/0007-manual-first-sem-open-finance.md)
 
-## Estrutura do repositório
+## Repository structure
 
 ```
 tally/
 ├── apps/
-│   ├── web/          # Next.js — landing + app autenticada (PWA)
-│   └── api/          # NestJS — API REST /v1
+│   ├── web/          # Next.js — landing + authenticated app (PWA)
+│   └── api/          # NestJS — REST API /v1
 ├── packages/
-│   ├── shared/       # schemas Zod, tipos da API, utils de dinheiro
-│   └── config/       # eslint, tsconfig compartilhados
+│   ├── shared/       # Zod schemas, API types, money utils
+│   └── config/       # shared eslint, tsconfig
 ├── prisma/           # schema, migrations, seed
-└── docs/             # 📚 discovery, produto, UX e arquitetura
+└── docs/             # 📚 discovery, product, UX and architecture
 ```
 
-## Rodando localmente
+## Running locally
 
-> ⚠️ O código ainda está em construção (milestone M0).
+> ⚠️ The code is still being built (milestone M0).
 
 ```bash
-# pré-requisitos: Node 20+, pnpm, Docker
+# prerequisites: Node 20+, pnpm, Docker
 
 git clone https://github.com/<user>/tally.git
 cd tally
 pnpm install
 
-cp .env.example .env        # valores locais prontos para desenvolvimento
+cp .env.example .env        # local values ready for development
 
 docker compose up -d        # Postgres + Redis
 
-pnpm dev                    # web em :3000, api em :3001
+pnpm dev                    # web on :3000, api on :3001
 ```
 
-### Infraestrutura local
+### Local infrastructure
 
 ```bash
-# subir Postgres e Redis em segundo plano
+# start Postgres and Redis in the background
 docker compose up -d
 
-# consultar estado e healthchecks
+# check state and healthchecks
 docker compose ps
 
-# derrubar os containers preservando os dados
+# stop the containers, keeping the data
 docker compose down
 
-# reset completo: derruba containers e apaga os volumes locais
+# full reset: stop containers and delete the local volumes
 docker compose down -v
 ```
 
-O volume nomeado `tally_postgres_data` mantém os dados do PostgreSQL entre
-reinícios e execuções de `docker compose down`. O comando de reset com `-v` é
-destrutivo e deve ser usado somente quando for necessário recriar o ambiente.
-Por padrão, os serviços são publicados em `localhost:5433` (PostgreSQL) e
-`localhost:6380` (Redis), evitando conflito com instalações locais nas portas
-padrão; ambos podem ser alterados no arquivo `.env`.
+The named volume `tally_postgres_data` keeps PostgreSQL data across restarts and
+`docker compose down` runs. The reset command with `-v` is destructive and should
+only be used when you need to recreate the environment. By default, the services
+are published on `localhost:5433` (PostgreSQL) and `localhost:6380` (Redis),
+avoiding conflicts with local installations on the default ports; both can be
+changed in the `.env` file.
 
-Scripts úteis: `pnpm lint` · `pnpm typecheck` · `pnpm test` · `pnpm test:e2e` · `pnpm build` · `pnpm format`
+Useful scripts: `pnpm lint` · `pnpm typecheck` · `pnpm test` · `pnpm test:e2e` · `pnpm build` · `pnpm format`
 
-### Qualidade e git hooks
+### Quality and git hooks
 
-O projeto usa [Husky](https://typicode.github.io/husky) + [lint-staged](https://github.com/lint-staged/lint-staged)
-para validar cada commit, e um workflow de CI que roda em todo pull request.
+The project uses [Husky](https://typicode.github.io/husky) + [lint-staged](https://github.com/lint-staged/lint-staged)
+to validate each commit, plus a CI workflow that runs on every pull request.
 
-**Instalação:** os hooks são configurados automaticamente após `pnpm install`
-(script `prepare`, que executa `husky`). Não é preciso nenhum passo manual — se
-você já instalou as dependências, o hook de `pre-commit` já está ativo.
+**Installation:** the hooks are configured automatically after `pnpm install`
+(the `prepare` script, which runs `husky`). No manual step is needed — if you've
+already installed the dependencies, the `pre-commit` hook is already active.
 
-**O que roda no `pre-commit`:** apenas verificações rápidas sobre os arquivos
-_staged_ (via `lint-staged`):
+**What runs on `pre-commit`:** only fast checks on the staged files (via
+`lint-staged`):
 
 - `*.{ts,tsx,js,jsx,mjs,cjs}` → `eslint --fix` + `prettier --write`
 - `*.{json,md,yml,yaml,css}` → `prettier --write`
 
-Erros de lint que não podem ser corrigidos automaticamente **bloqueiam o commit**.
-`typecheck`, testes completos e `build` ficam por conta da CI, para não deixar o
-commit local lento.
+Lint errors that can't be auto-fixed **block the commit**. `typecheck`, the full
+test suite and `build` are left to CI, so the local commit stays fast.
 
 ```bash
-# formatar todo o repositório manualmente, se necessário
+# format the whole repo manually, if needed
 pnpm format
 
-# pular os hooks em uma emergência (evite usar no dia a dia)
+# skip the hooks in an emergency (avoid in day-to-day use)
 git commit --no-verify
 ```
 
-**CI:** o workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) roda em
-pull requests (e em pushes para `main`) e executa, em sequência, `pnpm format:check`,
-`pnpm lint`, `pnpm typecheck`, `pnpm test` e `pnpm build`. Qualquer falha reprova a checagem.
+**CI:** the [`.github/workflows/ci.yml`](.github/workflows/ci.yml) workflow runs on
+pull requests (and on pushes to `main`) and runs, in sequence, `pnpm format:check`,
+`pnpm lint`, `pnpm typecheck`, `pnpm test` and `pnpm build`. Any failure fails the check.
 
-## Documentação
+## Documentation
 
-| Área                                                                        | Onde                                                                                                           |
-| --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| 🧭 Discovery (pesquisa, análise competitiva, hipóteses)                     | [`docs/discovery/`](docs/discovery/)                                                                           |
-| 🎯 Produto (visão, público, escopo do MVP, métricas)                        | [`docs/product/`](docs/product/)                                                                               |
-| 🎨 UX (jornadas, fluxos, princípios de design)                              | [`docs/ux/`](docs/ux/)                                                                                         |
-| 🏗️ Arquitetura (system design, modelo de domínio/dados, threat model, ADRs) | [`docs/architecture/`](docs/architecture/) — comece por [`architecture.md`](docs/architecture/architecture.md) |
+| Area                                                                 | Where                                                                                                          |
+| -------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| 🧭 Discovery (research, competitive analysis, hypotheses)            | [`docs/discovery/`](docs/discovery/)                                                                           |
+| 🎯 Product (vision, audience, MVP scope, metrics)                    | [`docs/product/`](docs/product/)                                                                               |
+| 🎨 UX (journeys, flows, design principles)                           | [`docs/ux/`](docs/ux/)                                                                                         |
+| 🏗️ Architecture (system design, domain/data model, threat model, ADRs) | [`docs/architecture/`](docs/architecture/) — start with [`architecture.md`](docs/architecture/architecture.md) |
 
-## Telas principais
+> The internal documentation under `docs/` is written in Brazilian Portuguese.
 
-O roadmap foi organizado por telas/domínios para facilitar o desenvolvimento no GitHub Projects:
+## Main screens
 
-- **Dashboard** — visão geral, 3 números principais, painel PJ e alertas
-- **Transações** — lançamento rápido, PF/PJ, recorrências, parcelamentos e split de recebimento
-- **Contas** — contas PF/PJ, saldos derivados, transferências e auditoria de saldo
-- **Categorias** — categorias padrão e customizadas por contexto
-- **Cartões** — cartões, faturas por competência, parcelas, fechamento e pagamento
-- **Metas** — objetivos financeiros PF/PJ, progresso e contribuições
-- **Dívidas** — dívidas, parcelas, prioridade de pagamento e comprometido futuro
-- **Relatórios** — fechamento mensal, filtros PF/PJ/Tudo, drill-down e exportação
-- **Settings** — perfil, fiscal, regras de split, segurança, dados e preferências
+The roadmap is organized by screens/domains to make development on GitHub Projects easier:
+
+- **Dashboard** — overview, 3 key numbers, business panel and alerts
+- **Transactions** — quick entry, personal/business, recurrences, installments and income split
+- **Accounts** — personal/business accounts, derived balances, transfers and balance audit
+- **Categories** — default and custom categories per context
+- **Cards** — cards, statements by billing period, installments, closing and payment
+- **Goals** — personal/business financial goals, progress and contributions
+- **Debts** — debts, installments, payment priority and future commitment
+- **Reports** — monthly closing, personal/business/all filters, drill-down and export
+- **Settings** — profile, tax, split rules, security, data and preferences
 
 ## Roadmap (milestones)
 
-- [ ] **Sprint 0 — Fundação:** monorepo, Next.js, NestJS, PostgreSQL, Redis, Prisma, CI, seed, design system mínimo e ADRs
-- [ ] **Sprint 1 — App Shell + Auth:** registro/login, sessão, tenancy, onboarding fiscal, layout autenticado e sidebar com todas as telas
-- [ ] **Sprint 2 — Dashboard:** home com 3 números, painel PJ, próximos alertas e últimas transações
-- [ ] **Sprint 3 — Transações:** CRUD, lançamento em menos de 10s, filtros, recorrências, parcelamentos e divisor de recebimento PJ
-- [ ] **Sprint 4 — Contas:** contas PF/PJ, saldos derivados, transferências, pró-labore e reconciliação
-- [ ] **Sprint 5 — Categorias:** categorias por contexto, categorias padrão/customizadas e sugestão de última categoria usada
-- [ ] **Sprint 6 — Cartões:** cartões, faturas, compra parcelada, fechamento automático e pagamento de fatura
-- [ ] **Sprint 7 — Metas:** metas PF/PJ, progresso, contribuições e widget compacto no dashboard
-- [ ] **Sprint 8 — Dívidas:** cadastro de dívidas, parcelas, pagamentos, priorização e impacto no comprometido futuro
-- [ ] **Sprint 9 — Relatórios:** relatório mensal, filtros PF/PJ/Tudo, gráficos expansíveis, drill-down e export CSV/JSON
-- [ ] **Sprint 10 — Settings:** perfil, configurações fiscais, regras de split, segurança, exportação, exclusão de conta e preferências
-- [ ] **Sprint 11 — IA + Alertas:** lançamento por linguagem natural, categorização com feedback, insights, alertas e resumo semanal
-- [ ] **Sprint 12 — PWA + Beta:** PWA instalável, fila offline, idempotência, observabilidade, E2E, deploy, backup/restore e checklist beta
+- [ ] **Sprint 0 — Foundation:** monorepo, Next.js, NestJS, PostgreSQL, Redis, Prisma, CI, seed, minimal design system and ADRs
+- [ ] **Sprint 1 — App Shell + Auth:** register/login, session, tenancy, tax onboarding, authenticated layout and sidebar with all screens
+- [ ] **Sprint 2 — Dashboard:** home with 3 numbers, business panel, upcoming alerts and latest transactions
+- [ ] **Sprint 3 — Transactions:** CRUD, entry in under 10s, filters, recurrences, installments and the business income splitter
+- [ ] **Sprint 4 — Accounts:** personal/business accounts, derived balances, transfers, owner's draw and reconciliation
+- [ ] **Sprint 5 — Categories:** per-context categories, default/custom categories and last-used category suggestion
+- [ ] **Sprint 6 — Cards:** cards, statements, installment purchases, automatic closing and statement payment
+- [ ] **Sprint 7 — Goals:** personal/business goals, progress, contributions and a compact dashboard widget
+- [ ] **Sprint 8 — Debts:** debt registry, installments, payments, prioritization and impact on future commitment
+- [ ] **Sprint 9 — Reports:** monthly report, personal/business/all filters, expandable charts, drill-down and CSV/JSON export
+- [ ] **Sprint 10 — Settings:** profile, tax settings, split rules, security, export, account deletion and preferences
+- [ ] **Sprint 11 — AI + Alerts:** natural-language entry, categorization with feedback, insights, alerts and weekly summary
+- [ ] **Sprint 12 — PWA + Beta:** installable PWA, offline queue, idempotency, observability, E2E, deploy, backup/restore and beta checklist
 
-> Observação: o MVP original priorizava o momento AHA do split PJ. Este roadmap é a versão **app completo de portfólio**, já incluindo Metas e Dívidas como telas planejadas desde o começo.
+> Note: the original MVP prioritized the AHA moment of the business income split. This roadmap is the **full portfolio app** version, already including Goals and Debts as screens planned from the start.
 
-Pós-beta: import CSV/OFX, visão do contador, conta família, Open Finance e integrações com emissores de NF/contabilidade.
+Post-beta: CSV/OFX import, accountant view, family account, Open Finance and integrations with invoicing/accounting providers.
 
-## Princípios inegociáveis
+## Non-negotiable principles
 
-1. **Números que batem são sagrados** — todo total é auditável; saldo é derivado, nunca "verdade" armazenada
-2. **Isolamento por tenant em toda query** — testes de IDOR são gate de release
-3. **IA propõe, humano confirma** — a LLM nunca persiste nada e nunca calcula imposto
-4. **A saída é fácil** — exportar tudo em 1 minuto é feature, não risco
+1. **Numbers that add up are sacred** — every total is auditable; a balance is derived, never a stored "truth"
+2. **Tenant isolation in every query** — IDOR tests are a release gate
+3. **AI proposes, a human confirms** — the LLM never persists anything and never computes taxes
+4. **The exit is easy** — exporting everything in one minute is a feature, not a risk
 
-## Licença
+## License
 
-📝 A definir antes do repositório se tornar público (ver `Decision Needed` em [`docs/architecture/architecture.md`](docs/architecture/architecture.md#13-documentação-do-repositório)).
+[MIT](LICENSE) © fernandaquerino
 
 ---
 
-_Projeto solo em construção pública — feito também para praticar Next.js e NestJS a fundo. Feedback e ideias são bem-vindos via issues._
+_A solo project built in public — also made to practice Next.js and NestJS deeply. Feedback and ideas are welcome via issues._

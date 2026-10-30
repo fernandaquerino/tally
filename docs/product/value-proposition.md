@@ -1,69 +1,69 @@
-# Proposta de Valor — Tally
+# Value Proposition — Tally
 
-## Frase de posicionamento
+## Positioning statement
 
-> "O Tally é o app financeiro para **quem vive de CNPJ**: controla o PJ e o pessoal no mesmo lugar, com **IA que te diz quanto do seu faturamento é realmente seu** — diferente dos **apps de finanças pessoais** que ignoram sua empresa e dos **ERPs** que ignoram sua vida."
+> "Tally is the finance app for **people who live off a CNPJ**: it manages the business and the personal in the same place, with **AI that tells you how much of your revenue is really yours** — unlike the **personal finance apps** that ignore your company and the **ERPs** that ignore your life."
 
 ## Value Proposition Canvas
 
-### Perfil do usuário (Rafael, PJ híbrido)
+### User profile (Rafael, PJ hybrid)
 
 **Jobs**
 
-- Saber quanto do faturamento é dele de verdade
-- Nunca mais tomar susto com imposto
-- Separar PF de PJ sem esforço
-- Planejar com renda variável
-- (v2) Alinhar finanças com a família
+- Know how much of the revenue is really his
+- Never be shocked by taxes again
+- Separate PF from PJ effortlessly
+- Plan with variable income
+- (v2) Align finances with the family
 
 **Pains**
 
-- "Faturei bem e não sobrou nada"
-- DAS/IR como surpresa
-- Sopa PF/PJ no cartão e no Pix
-- Apps que abandonou por fricção ou por não entenderem PJ
-- Saldo que nunca bate (cartão mal modelado)
+- "I billed well and nothing was left"
+- The DAS/IR as a surprise
+- PF/PJ soup in the card and in Pix
+- Apps he abandoned due to friction or because they didn't understand PJ
+- A balance that never adds up (a poorly modeled card)
 
 **Gains**
 
-- Paz fiscal (provisão automática)
-- "Salário" previsível apesar da renda variável
-- Uma ferramenta só, não três
-- Sensação de profissionalismo ("agora sou uma empresa de verdade")
+- Fiscal peace (automatic provisioning)
+- A predictable "salary" despite variable income
+- One tool, not three
+- A feeling of professionalism ("now I'm a real company")
 
-### Mapa de valor (Tally)
+### Value map (Tally)
 
-**Produtos e serviços**
+**Products and services**
 
-- Web app (Next.js) com registro em <10s e por linguagem natural (IA)
-- Divisor de recebimento (split imposto/reserva/pró-labore)
-- Painel PJ (faturamento, provisionado, disponível, teto MEI)
-- Cartão por fatura (competência vs. caixa)
-- Resumo semanal proativo + alertas
+- A web app (Next.js) with entry in <10s and by natural language (AI)
+- Income splitter (tax/reserve/owner's-draw split)
+- PJ panel (revenue, provisioned, available, MEI ceiling)
+- Card by statement (accrual vs. cash)
+- Proactive weekly summary + alerts
 
 **Pain relievers**
 
-- Split automático → fim do "não sobrou nada" sem explicação
-- Provisão + lembrete → fim do susto de DAS
-- Toggle PF/PJ em 1 clique + cartão misto separado nos relatórios → fim da sopa
-- Modelo de fatura correto → saldo que bate
-- IA que registra por texto → fricção mínima sem depender de Open Finance
+- Automatic split → the end of "nothing was left" with no explanation
+- Provision + reminder → the end of the DAS shock
+- 1-click PF/PJ toggle + a mixed card separated in reports → the end of the soup
+- A correct statement model → a balance that adds up
+- AI that records by text → minimal friction without depending on Open Finance
 
 **Gain creators**
 
-- "Seu salário deste mês: R$ X" → previsibilidade emocional
-- Alerta de teto MEI → tranquilidade regulatória
-- Exportação p/ contador → profissionalismo
-- Resumo semanal em 3 frases → sensação de controle sem esforço
+- "Your salary this month: R$ X" → emotional predictability
+- MEI ceiling alert → regulatory peace of mind
+- Export for the accountant → professionalism
+- A weekly summary in 3 sentences → a feeling of effortless control
 
-## Diferenciais defensáveis (vs. benchmark)
+## Defensible differentiators (vs. the benchmark)
 
-1. **Contexto híbrido PF+PJ** — nenhum dos 12 concorrentes tem; exige modelo de domínio pensado pra isso desde o dia 1
-2. **IA fiscal-pessoal** — Pierre tem IA melhor, mas cega pra PJ; nosso dado de contexto é a vantagem
-3. **Confiabilidade como marca** — integridade de dados onde todos falham
+1. **Hybrid PF+PJ context** — none of the 12 competitors have it; it requires a domain model designed for this from day 1
+2. **Fiscal-personal AI** — Pierre has better AI, but blind to PJ; our context data is the advantage
+3. **Reliability as a brand** — data integrity where everyone fails
 
-## Mensagens por canal (testar na landing)
+## Messages per channel (to test on the landing — kept in PT-BR as product copy)
 
-- Dor: "Faturou R$ 12 mil. Por que não sobrou nada?"
-- Método: "Todo Pix que entra já sai dividido: imposto, reserva, seu salário."
-- Medo: "O DAS nunca mais vai te pegar de surpresa."
+- Pain: "Faturou R$ 12 mil. Por que não sobrou nada?"
+- Method: "Todo Pix que entra já sai dividido: imposto, reserva, seu salário."
+- Fear: "O DAS nunca mais vai te pegar de surpresa."

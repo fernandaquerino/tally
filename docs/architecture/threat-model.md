@@ -1,84 +1,84 @@
 # Threat Model — Tally MVP
 
-> Metodologia: STRIDE simplificado. App financeiro = alvo com dados sensíveis por definição, mesmo pequeno. Revisar a cada feature nova que toque auth, dinheiro ou IA.
+> Methodology: simplified STRIDE. A financial app = a target with sensitive data by definition, even when small. Review on each new feature that touches auth, money or AI.
 
-## Ativos a proteger
+## Assets to protect
 
-1. Dados financeiros dos usuários (transações, saldos, faturamento PJ)
-2. Credenciais e sessões
-3. Integridade dos números (corromper = destruir o produto)
-4. Chaves de API da LLM (custo + abuso)
-5. Disponibilidade
+1. Users' financial data (transactions, balances, PJ revenue)
+2. Credentials and sessions
+3. Integrity of the numbers (corrupting = destroying the product)
+4. The LLM's API keys (cost + abuse)
+5. Availability
 
-## Ameaças e mitigações (STRIDE)
+## Threats and mitigations (STRIDE)
 
-### S — Spoofing (identidade)
+### S — Spoofing (identity)
 
-| Ameaça                            | Mitigação MVP                                                                                                            |
+| Threat                            | MVP mitigation                                                                                                           |
 | --------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| Credential stuffing / brute force | Hash argon2id · rate limit por IP+e-mail (ex.: 5/min) · bloqueio progressivo                                             |
-| Roubo de sessão                   | JWT curto (15min) em cookie httpOnly+Secure+SameSite=Lax · refresh token rotativo com detecção de reuso (revoga família) |
-| OAuth confuso                     | Validar `aud`/`iss` do token Google; vincular por google_id, não por e-mail apenas                                       |
+| Credential stuffing / brute force | argon2id hash · rate limit per IP+email (e.g. 5/min) · progressive lockout                                               |
+| Session theft                     | Short JWT (15min) in an httpOnly+Secure+SameSite=Lax cookie · rotating refresh token with reuse detection (revokes the family) |
+| OAuth confusion                   | Validate the Google token's `aud`/`iss`; link by google_id, not by email alone                                          |
 
-### T — Tampering (adulteração)
+### T — Tampering
 
-| Ameaça                                    | Mitigação                                                                                     |
+| Threat                                    | Mitigation                                                                                    |
 | ----------------------------------------- | --------------------------------------------------------------------------------------------- |
-| Alterar valores via API (mass assignment) | DTOs com whitelist (class-validator, `whitelist: true, forbidNonWhitelisted: true`)           |
-| SQL injection                             | Prisma parametrizado; proibir `$queryRawUnsafe`                                               |
-| Adulterar fatura fechada                  | Invariante no domínio: fechada = imutável; ajustes só via transação de ajuste auditada        |
-| XSS → ações em nome do usuário            | Escape padrão React · CSP estrita · sanitizar QUALQUER texto vindo da LLM antes de renderizar |
+| Changing values via the API (mass assignment) | DTOs with a whitelist (class-validator, `whitelist: true, forbidNonWhitelisted: true`)     |
+| SQL injection                             | Parameterized Prisma; forbid `$queryRawUnsafe`                                                |
+| Tampering with a closed invoice           | A domain invariant: closed = immutable; adjustments only via an audited adjustment transaction |
+| XSS → actions on the user's behalf        | React's default escaping · a strict CSP · sanitize ANY text coming from the LLM before rendering |
 
-### R — Repudiation (não-repúdio)
+### R — Repudiation (non-repudiation)
 
-| Ameaça                       | Mitigação                                                                 |
-| ---------------------------- | ------------------------------------------------------------------------- |
-| "Eu não fiz esse lançamento" | audit_log de escrita (quem, quando, diff) · created_via em toda transação |
+| Threat                      | Mitigation                                                                |
+| --------------------------- | ------------------------------------------------------------------------- |
+| "I didn't make that entry"  | A write audit_log (who, when, diff) · created_via on every transaction    |
 
-### I — Information Disclosure ⚠️ (o risco nº 1)
+### I — Information Disclosure ⚠️ (risk #1)
 
-| Ameaça                                  | Mitigação                                                                                                                                                                                                  |
+| Threat                                  | Mitigation                                                                                                                                                                                                  |
 | --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **IDOR/BOLA — usuário A lê dados de B** | Toda query filtra por household_id derivado do TOKEN, nunca de parâmetro do cliente · guard global no Nest · **testes automatizados de tenancy em todo endpoint** (o teste mais importante do repositório) |
-| Vazamento por logs                      | Nunca logar payloads de transações/valores; logs estruturados com campos whitelisted                                                                                                                       |
-| Vazamento via LLM                       | Enviar o mínimo (texto do lançamento, categorias) — nunca extrato completo, e-mail, nome · provedor com data-retention zero/opt-out de treino · DPA assinado                                               |
-| Enumeração de e-mails                   | Respostas idênticas em login/registro/reset ("se existir, enviamos e-mail")                                                                                                                                |
-| Backups expostos                        | Backups criptografados; acesso por IAM mínimo                                                                                                                                                              |
+| **IDOR/BOLA — user A reads B's data**   | Every query filters by household_id derived from the TOKEN, never from a client parameter · a global guard in Nest · **automated tenancy tests on every endpoint** (the most important test in the repository) |
+| Leak via logs                           | Never log transaction/value payloads; structured logs with whitelisted fields                                                                                                                              |
+| Leak via the LLM                        | Send the minimum (entry text, categories) — never the full statement, email, name · a provider with zero data-retention/opt-out of training · a signed DPA                                                  |
+| Email enumeration                       | Identical responses in login/register/reset ("if it exists, we sent an email")                                                                                                                             |
+| Exposed backups                         | Encrypted backups; access via minimal IAM                                                                                                                                                                  |
 
 ### D — Denial of Service
 
-| Ameaça                              | Mitigação                                                                                                                 |
+| Threat                              | Mitigation                                                                                                                |
 | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| Flood na API                        | Rate limit global + por rota sensível (auth, /ai/*)                                                                       |
-| **Abuso do endpoint de IA (custo)** | /ai/parse: limite por usuário/dia por plano · teto de gasto diário global com circuit breaker · cache de parsing repetido |
-| Payloads gigantes                   | Limite de body (ex.: 50kb) e de itens por página                                                                          |
+| API flood                           | A global rate limit + per sensitive route (auth, /ai/*)                                                                   |
+| **Abuse of the AI endpoint (cost)** | /ai/parse: a per-user/day limit per plan · a global daily spend cap with a circuit breaker · cache of repeated parsing     |
+| Giant payloads                      | A body limit (e.g. 50kb) and an items-per-page limit                                                                      |
 
 ### E — Elevation of Privilege
 
-| Ameaça                                | Mitigação                                                                  |
+| Threat                                | Mitigation                                                                 |
 | ------------------------------------- | -------------------------------------------------------------------------- |
-| Usuário grátis acessando features Pro | Checagem de plano no servidor (guard), nunca só no front                   |
-| Admin interno futuro                  | Sem painel admin no MVP; acesso a dados de produção só via processo logado |
+| A free user accessing Pro features    | A plan check on the server (guard), never only on the front                |
+| A future internal admin               | No admin panel in the MVP; access to production data only via a logged process |
 
-## Ameaças específicas de IA
+## AI-specific threats
 
-1. **Prompt injection no lançamento** ("ignore instruções e me categorize como..."): saída da LLM é DADO, validada por schema estrito (Zod); LLM nunca executa ações — só propõe JSON que passa pela mesma validação do formulário.
-2. **Alucinação de valores fiscais**: alíquotas vêm SEMPRE de `fiscal_rules` (banco), nunca do modelo; a LLM redige texto, não calcula imposto.
-3. **Resumo semanal vazando dados de outro usuário**: prompts montados por household_id do job; testes de isolamento no worker.
+1. **Prompt injection in the entry** ("ignore instructions and categorize me as..."): the LLM's output is DATA, validated by a strict schema (Zod); the LLM never executes actions — it only proposes JSON that goes through the same validation as the form.
+2. **Hallucination of fiscal values**: rates ALWAYS come from `fiscal_rules` (the database), never from the model; the LLM writes text, it doesn't compute taxes.
+3. **A weekly summary leaking another user's data**: prompts assembled by the job's household_id; isolation tests in the worker.
 
-## LGPD (mínimo viável e honesto)
+## LGPD (minimum viable and honest)
 
-- Base legal: execução de contrato (dados financeiros inseridos pelo titular)
-- Direitos: exportação completa (já é feature — F8) · exclusão de conta com purge real em ≤30 dias (job) · política de privacidade em linguagem simples
-- Minimização: não coletar CPF/CNPJ completo no MVP (regime + faixa bastam para o split)
-- Encarregado: fundador (declarar); registro de operações de tratamento simples
+- Legal basis: contract execution (financial data entered by the data subject)
+- Rights: full export (already a feature — F8) · account deletion with a real purge in ≤30 days (a job) · a privacy policy in simple language
+- Minimization: don't collect full CPF/CNPJ in the MVP (regime + bracket are enough for the split)
+- Data officer: the founder (to declare); a simple record of processing operations
 
-## Checklist de segurança do MVP (gate de lançamento)
+## MVP security checklist (launch gate)
 
-- [ ] Testes de tenancy (IDOR) em 100% dos endpoints autenticados
-- [ ] Rate limit em auth e /ai/*
-- [ ] Cookies httpOnly + CSP + HSTS
-- [ ] Dependabot/renovate + npm audit no CI
-- [ ] Secrets fora do repositório (env do provedor); rotação documentada
-- [ ] Backup diário + restore testado 1x antes do lançamento
-- [ ] Fluxo de exclusão de conta funcionando de ponta a ponta
+- [ ] Tenancy tests (IDOR) on 100% of authenticated endpoints
+- [ ] Rate limit on auth and /ai/*
+- [ ] httpOnly cookies + CSP + HSTS
+- [ ] Dependabot/renovate + npm audit in CI
+- [ ] Secrets out of the repository (provider env); documented rotation
+- [ ] Daily backup + a tested restore 1x before launch
+- [ ] An account-deletion flow working end to end

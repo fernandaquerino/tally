@@ -1,8 +1,8 @@
-# Modelo de Dados — Tally MVP (PostgreSQL + Prisma)
+# Data Model — Tally MVP (PostgreSQL + Prisma)
 
-> Convenções: `id` uuid v7 · timestamps `created_at/updated_at` em tudo · dinheiro `bigint` em centavos (ADR-0006) · soft-delete via `deleted_at` onde indicado · todas as tabelas de dados do usuário têm `household_id` (multi-tenant desde o dia 1).
+> Conventions: `id` uuid v7 · `created_at/updated_at` timestamps on everything · money as `bigint` in cents (ADR-0006) · soft-delete via `deleted_at` where indicated · all user-data tables have `household_id` (multi-tenant from day 1).
 
-## Tabelas
+## Tables
 
 ```sql
 households (
@@ -11,7 +11,7 @@ households (
 
 users (
   id uuid PK, household_id FK→households,
-  email citext UNIQUE, password_hash text NULL,      -- NULL se OAuth
+  email citext UNIQUE, password_hash text NULL,      -- NULL if OAuth
   google_id text NULL UNIQUE, github_id text NULL UNIQUE, name text,
   created_at, updated_at
 )
@@ -23,15 +23,15 @@ contexts (
 )
 
 fiscal_profiles (
-  id uuid PK, context_id FK UNIQUE,                   -- só contexto PJ
+  id uuid PK, context_id FK UNIQUE,                   -- PJ context only
   regime enum('MEI','SIMPLES'), simples_annex text NULL,
   effective_tax_bp int,                               -- basis points: 600 = 6%
   reserve_bp int DEFAULT 1500,
-  annual_ceiling_cents bigint,                        -- teto MEI
-  rules_version text                                  -- FK lógica p/ fiscal_rules
+  annual_ceiling_cents bigint,                        -- MEI ceiling
+  rules_version text                                  -- logical FK to fiscal_rules
 )
 
-fiscal_rules (                                        -- config versionada (reforma!)
+fiscal_rules (                                        -- versioned config (the reform!)
   id uuid PK, regime text, version text,
   valid_from date, valid_to date NULL, payload jsonb
 )
@@ -53,12 +53,12 @@ invoices (
   id uuid PK, card_id FK,
   cycle_start date, cycle_end date, due_date date,
   status enum('open','closed','partially_paid','paid'),
-  closed_total_cents bigint NULL,                     -- congelado no fechamento
+  closed_total_cents bigint NULL,                     -- frozen at closing
   UNIQUE(card_id, cycle_start)
 )
 
 categories (
-  id uuid PK, household_id FK NULL,                   -- NULL = default de sistema
+  id uuid PK, household_id FK NULL,                   -- NULL = system default
   context_kind enum('PF','PJ','BOTH'), name text, icon text,
   parent_id FK NULL, deleted_at NULL
 )
@@ -67,13 +67,13 @@ transactions (
   id uuid PK, household_id FK, context_id FK,
   type enum('income','expense','transfer'),
   amount_cents bigint CHECK != 0,                     -- income +, expense −
-  description text, occurred_on date,                 -- competência
+  description text, occurred_on date,                 -- accrual
   category_id FK NULL,
   account_id FK NULL, invoice_id FK NULL,
-  CHECK (num_nonnulls(account_id, invoice_id) = 1),   -- conta XOR fatura
-  transfer_id uuid NULL,                              -- liga as 2 pernas
+  CHECK (num_nonnulls(account_id, invoice_id) = 1),   -- account XOR invoice
+  transfer_id uuid NULL,                              -- links the 2 legs
   installment_group_id uuid NULL, installment_no int NULL, installment_of int NULL,
-  split_id FK NULL,                                   -- veio de um split?
+  split_id FK NULL,                                   -- came from a split?
   created_via enum('form','ai','import','system'),
   idempotency_key text NULL UNIQUE,
   deleted_at NULL
@@ -81,7 +81,7 @@ transactions (
 
 splits (
   id uuid PK, household_id FK,
-  source_transaction_id FK→transactions,              -- a receita PJ
+  source_transaction_id FK→transactions,              -- the PJ income
   tax_bp int, reserve_bp int,
   applied_at timestamptz
 )
@@ -91,30 +91,30 @@ provisions (
   kind enum('DAS','IR','OTHER'), amount_cents bigint,
   due_date date, status enum('pending','paid','cancelled'),
   split_id FK NULL,
-  paid_transaction_id FK NULL                         -- despesa gerada ao pagar
+  paid_transaction_id FK NULL                         -- expense generated on payment
 )
 
 invoice_payments (
-  id uuid PK, invoice_id FK, transaction_id FK,       -- perna de caixa
+  id uuid PK, invoice_id FK, transaction_id FK,       -- cash leg
   amount_cents bigint
 )
 
 insights (
   id uuid PK, household_id FK, user_id FK,
   kind enum('weekly_summary','provision_reminder','anomaly','mei_ceiling'),
-  title text, body text, evidence jsonb,              -- ids das transações-fonte
+  title text, body text, evidence jsonb,              -- ids of the source transactions
   read_at NULL, created_at
 )
 
 ai_feedback (
   id uuid PK, user_id FK,
-  input_text text, proposed jsonb, accepted jsonb,    -- correção = sinal
+  input_text text, proposed jsonb, accepted jsonb,    -- correction = signal
   created_at
 )
 
 refresh_tokens (
   id uuid PK, user_id FK, family_id uuid, token_hash text UNIQUE,
-  expires_at, revoked_at NULL, replaced_by_id uuid NULL,   -- rotação + reuse detection (ADR-0008)
+  expires_at, revoked_at NULL, replaced_by_id uuid NULL,   -- rotation + reuse detection (ADR-0008)
   user_agent text, ip text
 )
 
@@ -124,7 +124,7 @@ audit_log (
 )
 ```
 
-## Índices críticos
+## Critical indexes
 
 ```sql
 transactions: (household_id, occurred_on DESC), (invoice_id), (context_id, occurred_on),
@@ -134,17 +134,17 @@ provisions:   (household_id, status, due_date)
 insights:     (user_id, read_at)
 ```
 
-## Derivações (nunca armazenar como verdade)
+## Derivations (never store as truth)
 
-- Saldo de conta = Σ transactions da conta → **view materializada `account_balances`** com refresh no commit de escrita (ou trigger); job diário de reconciliação compara e loga divergência.
-- Total da fatura aberta = Σ transactions da invoice; congela em `closed_total_cents` no fechamento (invariante 6: fatura fechada imutável).
-- "Comprometido futuro" = provisions pending + parcelas de faturas futuras.
+- Account balance = Σ the account's transactions → a **materialized view `account_balances`** refreshed on a write commit (or a trigger); a daily reconciliation job compares and logs divergence.
+- Open invoice total = Σ the invoice's transactions; frozen in `closed_total_cents` at closing (invariant 6: a closed invoice is immutable).
+- "Future committed" = pending provisions + installments of future invoices.
 
-## Regras de migração
+## Migration rules
 
-- Prisma Migrate; migrations no repositório; nunca editar migration aplicada.
-- Toda mudança destrutiva em 2 passos (expand → contract) — mesmo solo, cria o hábito.
+- Prisma Migrate; migrations in the repository; never edit an applied migration.
+- Every destructive change in 2 steps (expand → contract) — even solo, it builds the habit.
 
-## Decisões deliberadas (ver ADRs)
+## Deliberate decisions (see the ADRs)
 
-- Centavos em bigint (ADR-0006) · fatura como entidade (ADR-0005) · household desde o dia 1 (v2 barata) · sem Open Finance no schema do MVP — quando vier, entra como `connections` + `imported_transactions` staging sem tocar o core (ADR-0007).
+- Cents in bigint (ADR-0006) · the invoice as an entity (ADR-0005) · household from day 1 (a cheap v2) · no Open Finance in the MVP schema — when it comes, it enters as a `connections` + `imported_transactions` staging without touching the core (ADR-0007).

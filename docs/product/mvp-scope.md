@@ -1,84 +1,84 @@
-# Escopo do MVP — Tally (web-first)
+# MVP Scope — Tally (web-first)
 
-## Princípio de corte
+## Cutting principle
 
-MVP = a menor fatia que entrega o momento AHA do Rafael: **"pela primeira vez eu sei quanto do meu faturamento é meu"**. Tudo que não serve a esse momento sai.
+MVP = the smallest slice that delivers Rafael's AHA moment: **"for the first time I know how much of my revenue is mine"**. Everything that doesn't serve that moment is cut.
 
-## Decisão de plataforma
+## Platform decision
 
-**Web app responsivo (Next.js) — sem app mobile no MVP.** Racional e trade-offs no ADR-0001. Implicações no escopo:
+**Responsive web app (Next.js) — no mobile app in the MVP.** Rationale and trade-offs in ADR-0001. Scope implications:
 
-- Experiência mobile via **responsivo caprichado + PWA** (instalável, ícone na home) — o registro diário acontece no celular
-- Atalhos de teclado e densidade de informação no desktop (vantagem do web: relatórios, mês fechado, visão contador)
+- A mobile experience via **a polished responsive layout + PWA** (installable, a home-screen icon) — daily logging happens on the phone
+- Keyboard shortcuts and information density on desktop (the web advantage: reports, closed month, accountant view)
 
-## ✅ Dentro do MVP
+## ✅ Within the MVP
 
-### 1. Fundação de registro
+### 1. Entry foundation
 
-- [ ] Lançamento de receita/despesa em <10s (defaults inteligentes, última categoria usada, atalho de teclado no desktop)
-- [ ] Lançamento por linguagem natural via IA ("almoço com cliente 45 reais, empresa")
-- [ ] Toggle PF/PJ em 1 clique em qualquer transação
-- [ ] Recorrências e parcelamentos (12x é o modelo mental brasileiro)
-- [ ] Categorias padrão + customizadas, por contexto PF/PJ
+- [ ] Income/expense entry in <10s (smart defaults, last-used category, a keyboard shortcut on desktop)
+- [ ] Natural-language entry via AI ("lunch with client 45 reais, company")
+- [ ] 1-click PF/PJ toggle on any transaction
+- [ ] Recurrences and installments (12x is the Brazilian mental model)
+- [ ] Default + custom categories, per PF/PJ context
 
-### 2. Cartão de crédito modelado certo (ADR-0005)
+### 2. Credit card modeled correctly (ADR-0005)
 
-- [ ] Fatura como agrupador; competência vs. caixa; fechamento e vencimento
-- [ ] Parcelas futuras projetadas nas faturas certas
-- [ ] Cartão misto (gastos PF e PJ) com separação nos relatórios
+- [ ] A statement as a grouping; accrual vs. cash; closing and due date
+- [ ] Future installments projected in the correct statements
+- [ ] A mixed card (PF and PJ purchases) with separation in reports
 
-### 3. Coração PJ (o diferencial)
+### 3. The PJ heart (the differentiator)
 
-- [ ] Cadastro de regime (MEI / Simples com faixa) → alíquotas básicas como configuração versionada
-- [ ] **Divisor de recebimento**: a cada receita PJ, split sugerido imposto/reserva/pró-labore (percentuais configuráveis)
-- [ ] Provisão de DAS/imposto com lembrete de vencimento
-- [ ] Pró-labore como ponte PJ→PF
-- [ ] Painel PJ: faturamento do mês, provisionado, disponível, alerta de teto MEI
+- [ ] Regime registration (MEI / Simples with a bracket) → basic rates as versioned configuration
+- [ ] **Income splitter**: on each PJ income, a suggested tax/reserve/owner's-draw split (configurable percentages)
+- [ ] A DAS/tax provision with a due-date reminder
+- [ ] Owner's draw as the PJ→PF bridge
+- [ ] PJ panel: the month's revenue, provisioned, available, MEI ceiling alert
 
-### 4. IA v1 (enxuta e proativa)
+### 4. AI v1 (lean and proactive)
 
-- [ ] Parsing de linguagem natural para lançamento
-- [ ] Categorização automática com aprendizado das correções
-- [ ] Resumo semanal proativo (3 frases, e-mail + in-app)
-- [ ] Alertas: vencimento de provisão, gasto fora do padrão, ritmo de gastos vs. mês
-- ❌ Fora da IA v1: chat aberto ilimitado, agentes customizáveis
+- [ ] Natural-language parsing for entry
+- [ ] Automatic categorization that learns from corrections
+- [ ] A proactive weekly summary (3 sentences, email + in-app)
+- [ ] Alerts: provision due date, spending outside the pattern, spending pace vs. the month
+- ❌ Out of AI v1: unlimited open chat, customizable agents
 
-### 5. Visão mensal unificada
+### 5. Unified monthly view
 
-- [ ] Home com 3 números: resultado PJ · disponível pessoal · comprometido futuro
-- [ ] Relatório mensal por categoria com filtro PF/PJ/tudo
-- [ ] Exportação CSV (confiança + contador)
+- [ ] Home with 3 numbers: PJ result · personal available · future committed
+- [ ] A monthly report by category with a PF/PJ/all filter
+- [ ] CSV export (trust + accountant)
 
-### 6. Fundação de confiabilidade (invisível, inegociável)
+### 6. Reliability foundation (invisible, non-negotiable)
 
-- [ ] API como fonte única de verdade (sem estado divergente cliente/servidor — anti-lição Mobills)
-- [ ] Backup automático + exportação completa pelo usuário
-- [ ] Auth segura (ver threat-model.md)
+- [ ] The API as the single source of truth (no divergent client/server state — anti-Mobills lesson)
+- [ ] Automatic backup + a full export by the user
+- [ ] Secure auth (see threat-model.md)
 
-## ❌ Fora do MVP
+## ❌ Out of the MVP
 
-| Feature                  | Racional                                                                   | Destino                |
+| Feature                  | Rationale                                                                  | Destination            |
 | ------------------------ | -------------------------------------------------------------------------- | ---------------------- |
-| App mobile nativo        | Web-first (ADR-0001); PWA cobre o registro no celular                      | v2                     |
-| Open Finance             | Instável no mercado, caro, paywall sobre feature instável = piores reviews | v2+ (ADR-0007)         |
-| Conta família            | Complexidade de permissões; Rafael não precisa pro AHA                     | v2 — motivo de upgrade |
-| Módulo de dívidas        | Persona terciária; MVP mostra dívidas como comprometido                    | v2–3                   |
-| Plano financeiro longo   | MVP entrega o plano do mês; plano de vida vem após o hábito                | v2                     |
-| Chat IA aberto / agentes | Custo alto; território Pierre — entrar depois com vantagem de contexto     | v1.5 (limitado no Pro) |
-| NF / DAS in-app          | Território Cora/MEI Fácil; regulatório                                     | Parceria, talvez nunca |
-| Investimentos            | Saldo manual basta                                                         | v3 / parceria          |
-| OCR de recibos           | Linguagem natural resolve 80%                                              | v1.5                   |
+| Native mobile app        | Web-first (ADR-0001); the PWA covers logging on the phone                  | v2                     |
+| Open Finance             | Unstable in the market, expensive, a paywall over an unstable feature = the worst reviews | v2+ (ADR-0007)         |
+| Family account           | Permission complexity; Rafael doesn't need it for the AHA                  | v2 — an upgrade reason  |
+| Debt module              | Tertiary persona; the MVP shows debts as committed                        | v2–3                   |
+| Long financial plan      | The MVP delivers the month's plan; the life plan comes after the habit    | v2                     |
+| Open AI chat / agents    | High cost; Pierre territory — enter later with a context advantage         | v1.5 (limited in Pro)  |
+| In-app invoice / DAS     | Cora/MEI Fácil territory; regulatory                                      | A partnership, maybe never |
+| Investments             | A manual balance is enough                                                 | v3 / a partnership     |
+| Receipt OCR              | Natural language solves 80%                                                | v1.5                   |
 
-## Monetização — [HIPÓTESE H2]
+## Monetization — [HYPOTHESIS H2]
 
-- **Grátis:** registro ilimitado, 1 contexto PJ, 1 cartão, relatório mensal, IA de registro
-- **Tally Pro (R$ 14,90–19,90/mês):** divisor automático, alertas proativos, resumo semanal IA, múltiplos cartões/contas, exportações
-- Trial de 30 dias · grandfathering para early users
+- **Free:** unlimited entry, 1 PJ context, 1 card, monthly report, entry AI
+- **Tally Pro (R$ 14.90–19.90/month):** automatic splitter, proactive alerts, AI weekly summary, multiple cards/accounts, exports
+- A 30-day trial · grandfathering for early users
 
-## Critérios de sucesso (90 dias)
+## Success criteria (90 days)
 
-- Ativação: ≥50% registram 5+ transações na 1ª semana
-- AHA: ≥40% usam o divisor no primeiro recebimento PJ
-- Retenção S4: ≥25%
-- Conversão grátis→pago: ≥5%
-- Qualitativo: usuários descrevem o Tally como "app pra quem é PJ"
+- Activation: ≥50% record 5+ transactions in the 1st week
+- AHA: ≥40% use the splitter on the first PJ income
+- W4 retention: ≥25%
+- Free→paid conversion: ≥5%
+- Qualitative: users describe Tally as "the app for people who are PJ"

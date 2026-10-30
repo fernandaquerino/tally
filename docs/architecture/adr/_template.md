@@ -1,38 +1,38 @@
-# ADR-NNNN: [Título]
+# ADR-NNNN: [Title]
 
-**Status:** Proposto | Aceito | Deprecado | Superseded por ADR-XXXX
-**Data:** AAAA-MM-DD
-**Decisor:** [nome]
+**Status:** Proposed | Accepted | Deprecated | Superseded by ADR-XXXX
+**Date:** YYYY-MM-DD
+**Decider:** [name]
 
-## Contexto
+## Context
 
-[Situação e forças em jogo. Constraints explícitas: prazo, time, custo, requisitos não-funcionais.]
+[Situation and forces at play. Explicit constraints: deadline, team, cost, non-functional requirements.]
 
-## Opções consideradas
+## Options considered
 
-### Opção A: [nome]
+### Option A: [name]
 
-| Dimensão                 | Avaliação        |
+| Dimension                | Assessment       |
 | ------------------------ | ---------------- |
-| Complexidade             | baixa/média/alta |
-| Custo                    |                  |
-| Familiaridade do time    |                  |
-| **Prós:** · **Contras:** |
+| Complexity               | low/medium/high  |
+| Cost                     |                  |
+| Team familiarity         |                  |
+| **Pros:** · **Cons:**    |
 
-### Opção B: [nome]
+### Option B: [name]
 
-[mesmo formato]
+[same format]
 
-## Decisão
+## Decision
 
-[O que foi decidido e por quê, em 2-4 frases.]
+[What was decided and why, in 2-4 sentences.]
 
-## Consequências
+## Consequences
 
-- Fica mais fácil: …
-- Fica mais difícil: …
-- Revisitar quando: …
+- Gets easier: …
+- Gets harder: …
+- Revisit when: …
 
-## Ações
+## Actions
 
 1. [ ] …

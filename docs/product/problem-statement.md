@@ -1,39 +1,39 @@
 # Problem Statement — Tally
 
-## O problema
+## The problem
 
-Milhões de brasileiros vivem de CNPJ próprio (MEIs, freelancers, consultores pejotizados). A vida financeira deles tem uma característica que nenhuma ferramenta atende: **PF e PJ são a mesma pessoa, mas precisam ser dinheiros diferentes.**
+Millions of Brazilians live off their own company/CNPJ (MEIs, freelancers, "pejotizado" consultants). Their financial life has a trait no tool addresses: **PF (personal) and PJ (business) are the same person, but they need to be different money.**
 
-Sem uma ferramenta que entenda isso, essa pessoa:
+Without a tool that understands this, this person:
 
-- Mistura os dinheiros (Sebrae: ~60% dos MEIs já usaram dinheiro pessoal para pagar dívidas da empresa)
-- Não sabe quanto do faturamento é dela de verdade (esquece imposto, reserva, custo)
-- Toma susto com DAS/IR porque não provisiona
-- Usa 2–3 ferramentas desconexas (app PF + planilha PJ) ou nenhuma
-- Não consegue planejar com renda variável
+- Mixes the money (Sebrae: ~60% of MEIs have already used personal money to pay company debts)
+- Doesn't know how much of the revenue is really theirs (forgets tax, reserve, cost)
+- Gets shocked by the DAS/IR because they don't set money aside
+- Uses 2–3 disconnected tools (a PF app + a PJ spreadsheet) or none
+- Can't plan with variable income
 
-## Formato clássico
+## Classic format
 
-> **O [PJ de uma pessoa só]** precisa de **[uma forma de separar automaticamente o dinheiro da empresa do dinheiro pessoal e saber quanto pode gastar]** porque **[sua renda é variável, os impostos são invisíveis até o vencimento e as ferramentas existentes tratam PF e PJ como mundos separados]** — o que hoje resulta em **[mistura de contas, sustos fiscais e a sensação de faturar bem e não sobrar nada]**.
+> **The [one-person PJ]** needs **[a way to automatically separate company money from personal money and know how much they can spend]** because **[their income is variable, taxes are invisible until the due date, and the existing tools treat PF and PJ as separate worlds]** — which today results in **[mixed accounts, fiscal shocks, and the feeling of billing well and having nothing left]**.
 
-## Por que as alternativas atuais falham
+## Why the current alternatives fail
 
-| Alternativa                             | Falha                                                 |
+| Alternative                             | Failure                                               |
 | --------------------------------------- | ----------------------------------------------------- |
-| Apps PF (Mobills, Organizze, Pierre)    | Ignoram o PJ; "conta PJ" é rótulo sem lógica fiscal   |
-| Ferramentas PJ (Cora, MEI Fácil, Bling) | Ignoram a vida pessoal e a família                    |
-| Planilha                                | Fricção alta → abandono; sem alertas nem inteligência |
-| Bancos                                  | Só enxergam o que passa dentro deles                  |
+| PF apps (Mobills, Organizze, Pierre)    | Ignore the PJ; a "PJ account" is a label with no fiscal logic |
+| PJ tools (Cora, MEI Fácil, Bling)       | Ignore personal life and family                       |
+| Spreadsheet                             | High friction → abandonment; no alerts or intelligence|
+| Banks                                   | Only see what passes through them                     |
 
-## Por que agora
+## Why now
 
-- Pejotização crescente = mercado em expansão
-- IA barateou a camada de inteligência (registro por linguagem natural, insights)
-- Incumbentes de PF estão presos ao próprio posicionamento; os de PJ, ao fiscal
-- Open Finance virou commodity — a briga migrou para a camada de inteligência
+- Growing "pejotização" = an expanding market
+- AI made the intelligence layer cheap (natural-language entry, insights)
+- PF incumbents are stuck in their own positioning; the PJ ones, in the fiscal side
+- Open Finance became a commodity — the fight moved to the intelligence layer
 
-## O que NÃO é o problema (escopo negativo)
+## What is NOT the problem (negative scope)
 
-- Emitir nota fiscal (resolvido por outros)
-- Gerir investimentos
-- Crédito/empréstimo
+- Issuing invoices (solved by others)
+- Managing investments
+- Credit/loans

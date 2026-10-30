@@ -1,53 +1,53 @@
-# Público-Alvo — Tally
+# Target Audience — Tally
 
-## Estratégia: beachhead único
+## Strategy: a single beachhead
 
-Três públicos possíveis; **um** escolhido para o lançamento. Tentar os três dilui produto e mensagem.
+Three possible audiences; **one** chosen for the launch. Trying all three dilutes the product and the message.
 
-## 🥇 Persona primária (beachhead): Rafael, "o PJ que se vira" — [HIPÓTESE H1]
+## 🥇 Primary persona (beachhead): Rafael, "the PJ who gets by" — [HYPOTHESIS H1]
 
-**Demografia**
+**Demographics**
 
-- 25–45 anos · MEI ou PJ no Simples · fatura R$ 3k–25k/mês, renda variável
-- Profissões: dev/designer freelancer, consultor, profissional de saúde/beleza, prestador de serviços
+- 25–45 years old · MEI or PJ in the Simples regime · bills R$ 3k–25k/month, variable income
+- Occupations: freelance dev/designer, consultant, health/beauty professional, service provider
 
-**Comportamento financeiro**
+**Financial behavior**
 
-- Emite nota, paga DAS/imposto, faz (ou deveria fazer) pró-labore
-- Pix o dia todo; 2+ cartões; às vezes o mesmo cartão pra tudo
-- Conta PJ existe (Cora/Inter/Nubank PJ) mas o dinheiro "vaza" pra PF sem critério
-- Já tentou Mobills/Organizze e abandonou; planilha meio morta
+- Issues invoices, pays the DAS/tax, does (or should do) an owner's draw
+- Pix all day; 2+ cards; sometimes the same card for everything
+- A PJ account exists (Cora/Inter/Nubank PJ) but the money "leaks" to PF with no criteria
+- Has already tried Mobills/Organizze and abandoned them; a half-dead spreadsheet
 
-**Dores (ordenadas)**
+**Pains (ordered)**
 
-1. "Faturei R$ 12 mil e não sei por que não sobrou nada"
-2. Susto com DAS/IR — não provisiona
-3. Mistura PF/PJ impossível de desfazer depois
-4. Renda variável sem plano: mês bom vira gasto, mês ruim vira aperto
+1. "I billed R$ 12k and I don't know why nothing was left"
+2. A shock with the DAS/IR — doesn't set money aside
+3. PF/PJ mixing impossible to undo later
+4. Variable income with no plan: a good month becomes spending, a bad month becomes a squeeze
 
-**Gatilhos de busca por solução**
+**Solution-seeking triggers**
 
-- Levou multa/juros de imposto · fechou um mês no vermelho apesar de faturar bem · contador pediu organização · virou PJ recentemente (pejotização)
+- Got a tax fine/interest · closed a month in the red despite billing well · the accountant asked for organization · recently became a PJ ("pejotização")
 
-**Por que ele primeiro**
+**Why him first**
 
-- Dor mais aguda + zero concorrência direta (benchmark)
-- Paga com menos fricção: app vira "custo do negócio" (âncoras: contador R$ 100–300/mês, Cora Pro R$ 45/mês)
-- Founder-market fit: o fundador é o usuário
+- The sharpest pain + zero direct competition (benchmark)
+- Pays with less friction: the app becomes a "cost of business" (anchors: accountant R$ 100–300/month, Cora Pro R$ 45/month)
+- Founder-market fit: the founder is the user
 
-## 🥈 Persona secundária (v2): Ana & Bruno, "a casa compartilhada"
+## 🥈 Secondary persona (v2): Ana & Bruno, "the shared household"
 
-- Casal que divide contas; acerto via transferência + WhatsApp
-- Dor: visão conjunta sem abrir mão da privacidade individual
-- Papel no funil: motivo de **upgrade** do Rafael (H5), não aquisição inicial
+- A couple splitting bills; settling via transfer + WhatsApp
+- Pain: a joint view without giving up individual privacy
+- Role in the funnel: an **upgrade** reason for Rafael (H5), not initial acquisition
 
-## 🥉 Persona terciária (não perseguir): "quem perdeu o controle"
+## 🥉 Tertiary persona (don't pursue): "those who lost control"
 
-- Público genérico dos apps PF — oceano vermelho (Mobills, Pierre, bancos)
-- Atendida "de tabela" pelo módulo PF; nunca é a mensagem de marketing
+- The generic audience of PF apps — a red ocean (Mobills, Pierre, banks)
+- Served "by default" through the PF module; never the marketing message
 
 ## Anti-personas
 
-- Empresa com funcionários/estoque/sócios → ERP (Bling, Conta Azul)
-- Investidor sofisticado → Kinvo/corretoras
-- Quem só quer emitir nota → MEI Fácil/Cora
+- A company with employees/inventory/partners → an ERP (Bling, Conta Azul)
+- A sophisticated investor → Kinvo/brokers
+- Someone who just wants to issue invoices → MEI Fácil/Cora

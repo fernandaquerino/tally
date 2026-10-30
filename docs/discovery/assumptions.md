@@ -1,33 +1,33 @@
-# Premissas e Hipóteses — Tally
+# Assumptions and Hypotheses — Tally
 
-> Toda decisão relevante do produto está apoiada em uma premissa. Se a premissa cair, a decisão é revisitada.
+> Every relevant product decision rests on an assumption. If the assumption falls, the decision is revisited.
 
-## Hipóteses de produto (testáveis)
+## Product hypotheses (testable)
 
-| ID  | Hipótese                                                                 | Teste                               | Critério de invalidação                 | Status         |
+| ID  | Hypothesis                                                               | Test                                | Invalidation criterion                  | Status         |
 | --- | ------------------------------------------------------------------------ | ----------------------------------- | --------------------------------------- | -------------- |
-| H1  | O PJ híbrido sente a dor PF/PJ com intensidade para trocar de ferramenta | 10–12 entrevistas                   | <60% relatam a dor espontaneamente      | 🔴 não testada |
-| H2  | Ele paga R$ 15–30/mês                                                    | Entrevistas + landing com preço     | Âncora dominante = "só grátis"          | 🔴 não testada |
-| H3  | Registro manual excelente + IA sustenta uso sem Open Finance             | Beta; retenção S4 + motivo de churn | Churn cita fricção de digitar como nº 1 | 🔴 não testada |
-| H4  | O divisor de recebimento é o momento AHA                                 | Teste de protótipo                  | Reação morna generalizada               | 🔴 não testada |
-| H5  | Conta família é motivo de upgrade, não de aquisição                      | Entrevistas + ranking na waitlist   | Família aparece como dor nº 1           | 🔴 não testada |
-| H6  | IA proativa (avisa) > IA chat (responde)                                 | A/B no beta                         | Uso/retenção maior no grupo chat        | 🔴 não testada |
+| H1  | The PJ hybrid feels the PF/PJ pain intensely enough to switch tools      | 10–12 interviews                    | <60% report the pain spontaneously      | 🔴 not tested  |
+| H2  | They pay R$ 15–30/month                                                  | Interviews + a landing with a price | The dominant anchor = "free only"       | 🔴 not tested  |
+| H3  | Excellent manual entry + AI sustains use without Open Finance            | Beta; W4 retention + churn reason   | Churn cites typing friction as #1       | 🔴 not tested  |
+| H4  | The income splitter is the AHA moment                                    | Prototype test                      | A generalized lukewarm reaction         | 🔴 not tested  |
+| H5  | The family account is an upgrade reason, not an acquisition one          | Interviews + waitlist ranking       | Family appears as pain #1               | 🔴 not tested  |
+| H6  | Proactive AI (warns) > chat AI (answers)                                 | A/B in the beta                     | Higher use/retention in the chat group  | 🔴 not tested  |
 
-## Premissas de negócio
+## Business assumptions
 
-- P1: O mercado de PJs "de uma pessoa só" (MEI + Simples unipessoal) é grande o suficiente (milhões de CNPJs ativos) e cresce com a pejotização. **Risco: baixo.**
-- P2: Pierre/CloudWalk não lança contexto PJ nos próximos ~12 meses. **Risco: médio — monitorar trimestralmente.**
-- P3: Regras MEI/Simples básicas permanecem estáveis o suficiente durante a transição da reforma tributária. **Mitigação: regras como configuração versionada, não hardcode (ver domain-model).**
+- P1: The market of "one-person" PJs (MEI + single-owner Simples) is large enough (millions of active CNPJs) and growing with "pejotização". **Risk: low.**
+- P2: Pierre/CloudWalk won't launch PJ context in the next ~12 months. **Risk: medium — monitor quarterly.**
+- P3: Basic MEI/Simples rules remain stable enough during the tax reform transition. **Mitigation: rules as versioned configuration, not hardcode (see domain-model).**
 
-## Premissas técnicas
+## Technical assumptions
 
-- T1: Next.js + NestJS dão velocidade suficiente para um dev solo entregar o MVP (é também objetivo de aprendizado). — ADR-0002
-- T2: Um web app responsivo bem feito é aceitável para registro no celular até o app nativo existir. **Risco: médio — o registro diário acontece no celular; PWA mitiga.** — ADR-0001
-- T3: Custo de IA por usuário fica controlável limitando a IA v1 a categorização + resumo semanal (sem chat livre).
-- T4: PostgreSQL atende todo o MVP sem necessidade de outros stores (Redis opcional para filas). — ADR-0003
+- T1: Next.js + NestJS give enough speed for a solo dev to ship the MVP (it's also a learning goal). — ADR-0002
+- T2: A well-made responsive web app is acceptable for logging on the phone until the native app exists. **Risk: medium — daily logging happens on the phone; the PWA mitigates it.** — ADR-0001
+- T3: AI cost per user stays controllable by limiting AI v1 to categorization + weekly summary (no free chat).
+- T4: PostgreSQL serves the whole MVP without needing other stores (Redis optional for queues). — ADR-0003
 
-## Registro de invalidações
+## Invalidation log
 
-| Data | Premissa | O que aconteceu | Decisão tomada |
-| ---- | -------- | --------------- | -------------- |
-| —    | —        | —               | —              |
+| Date | Assumption | What happened | Decision taken |
+| ---- | ---------- | ------------- | -------------- |
+| —    | —          | —             | —              |

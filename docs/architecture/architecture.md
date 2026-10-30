@@ -1,42 +1,42 @@
 # Tally — Technical Architecture
 
-> Perspectiva: Tech Lead / Staff Engineer.
-> Versão: 0.1 · Status: living document
-> Decisões formais em `adr/` (referenciadas como ADR-NNNN). Modelo de dados detalhado em `data-model.md`; domínio em `domain-model.md`; ameaças em `threat-model.md`.
+> Perspective: Tech Lead / Staff Engineer.
+> Version: 0.1 · Status: living document
+> Formal decisions in `adr/` (referenced as ADR-NNNN). Detailed data model in `data-model.md`; domain in `domain-model.md`; threats in `threat-model.md`.
 
 ---
 
-## 1. Arquitetura técnica (visão geral)
+## 1. Technical architecture (overview)
 
-Tally é composto por **duas aplicações num monorepo** (ADR-0004): um frontend Next.js 15 (App Router) na Vercel e uma API NestJS (monólito modular, ADR-0002) com PostgreSQL como fonte única da verdade (ADR-0003) e Redis para filas (BullMQ) e rate limit. A IA v1 é enxuta e proativa: parsing de linguagem natural, categorização e resumo semanal — sem chat aberto no MVP.
+Tally is made of **two applications in a monorepo** (ADR-0004): a Next.js 15 frontend (App Router) on Vercel and a NestJS API (modular monolith, ADR-0002) with PostgreSQL as the single source of truth (ADR-0003) and Redis for queues (BullMQ) and rate limiting. AI v1 is lean and proactive: natural-language parsing, categorization and weekly summary — no open chat in the MVP.
 
-Princípios:
+Principles:
 
-- **API como fonte única de verdade:** nenhum estado autoritativo no cliente. Anti-lição direta do benchmark (divergência web ≠ app do Mobills destruiu confiança de usuários).
-- **Isolamento por household em toda query** — a camada de repositório sempre recebe e filtra por `householdId` derivado do token, nunca de parâmetro do cliente (threat-model: IDOR é o risco nº 1).
-- **IA propõe, humano confirma:** a LLM nunca persiste nada; toda saída é proposta validada por schema (Zod) que passa pelo mesmo pipeline do formulário manual.
-- **Números que batem são sagrados:** saldos e totais são derivados (recalculáveis das transações), nunca armazenados como verdade; job diário de reconciliação trata divergência como incidente.
-- **Degradação graciosa:** falha de IA ou Redis não derruba o core — lançamento manual e leitura de dados funcionam sempre.
-- **Web-first com PWA de primeira classe** (ADR-0001): o registro diário acontece no celular; responsivo e fila offline não são afterthought.
+- **The API as the single source of truth:** no authoritative state on the client. A direct anti-lesson from the benchmark (Mobills' web ≠ app divergence destroyed user trust).
+- **Per-household isolation in every query** — the repository layer always receives and filters by `householdId` derived from the token, never from a client parameter (threat-model: IDOR is risk #1).
+- **AI proposes, a human confirms:** the LLM never persists anything; every output is a proposal validated by a schema (Zod) that goes through the same pipeline as the manual form.
+- **Numbers that add up are sacred:** balances and totals are derived (recomputable from transactions), never stored as truth; a daily reconciliation job treats divergence as an incident.
+- **Graceful degradation:** an AI or Redis failure doesn't take down the core — manual entry and data reading always work.
+- **Web-first with a first-class PWA** (ADR-0001): daily logging happens on the phone; responsive and the offline queue are not an afterthought.
 
-Estratégias por tecnologia:
+Strategies per technology:
 
-- **Next.js (App Router):** landing SSR/ISR (SEO é canal de aquisição) + app autenticada; Server Components para leituras iniciais, Client Components para interação.
-- **NestJS:** API REST por domínio; módulos, guards (auth, tenancy, plano) e DI organizam as invariantes do domínio financeiro.
-- **React Query:** cache e sincronização de dados de servidor no cliente (filtros de transações, refetch pós-mutação).
-- **Zustand:** estado de UI efêmero (modal de lançamento aberto, filtros ativos, contexto PF/PJ selecionado na visão) — nunca duplicar dados de servidor.
-- **Prisma:** schema tipado, migrations versionadas, `$transaction` para atomicidade do split.
-- **PostgreSQL 16:** ACID + constraints das invariantes no próprio banco (CHECK conta XOR fatura etc.).
-- **Redis + BullMQ:** jobs (fechamento de fatura, lembretes de provisão, resumo semanal, reconciliação); rate limit de `/ai/*`. Degradável para `@nestjs/schedule` sem Redis se necessário.
-- **Vercel AI SDK / SDK do provedor:** chamadas de LLM na API (nunca do browser); prompts versionados em `apps/api/src/ai/prompts`.
-- **PWA:** manifest + service worker; fila local (IndexedDB) apenas para criação offline de transações, com `idempotency-key`.
-- **Testes:** Vitest (unit/integration) + Playwright (E2E) + Testing Library (componentes).
-- **Local:** Docker Compose (Postgres, Redis); seed script com dados de exemplo (Rafael, o PJ); `.env.example`.
-- **Deploy:** web na Vercel (preview por PR); API + Postgres + Redis em Railway/Fly (região São Paulo); migrations no pipeline.
+- **Next.js (App Router):** SSR/ISR landing (SEO is an acquisition channel) + authenticated app; Server Components for initial reads, Client Components for interaction.
+- **NestJS:** REST API per domain; modules, guards (auth, tenancy, plan) and DI organize the financial domain's invariants.
+- **React Query:** cache and sync of server data on the client (transaction filters, refetch after mutation).
+- **Zustand:** ephemeral UI state (open entry modal, active filters, the PF/PJ context selected in the view) — never duplicate server data.
+- **Prisma:** typed schema, versioned migrations, `$transaction` for split atomicity.
+- **PostgreSQL 16:** ACID + invariant constraints in the database itself (CHECK account XOR invoice, etc.).
+- **Redis + BullMQ:** jobs (statement closing, provision reminders, weekly summary, reconciliation); rate limit for `/ai/*`. Degradable to `@nestjs/schedule` without Redis if needed.
+- **Vercel AI SDK / the provider's SDK:** LLM calls on the API (never from the browser); prompts versioned in `apps/api/src/ai/prompts`.
+- **PWA:** manifest + service worker; a local queue (IndexedDB) only for offline transaction creation, with an `idempotency-key`.
+- **Tests:** Vitest (unit/integration) + Playwright (E2E) + Testing Library (components).
+- **Local:** Docker Compose (Postgres, Redis); a seed script with sample data (Rafael, the PJ); `.env.example`.
+- **Deploy:** web on Vercel (preview per PR); API + Postgres + Redis on Railway/Fly (São Paulo region); migrations in the pipeline.
 
 ---
 
-## 2. Estrutura de pastas (monorepo — ADR-0004)
+## 2. Folder structure (monorepo — ADR-0004)
 
 ```txt
 tally/
@@ -45,24 +45,24 @@ tally/
 │   │   └── src/
 │   │       ├── app/
 │   │       │   ├── (marketing)/    # landing, blog (SSR/ISR, SEO)
-│   │       │   ├── (auth)/         # login, registro, onboarding
-│   │       │   └── (app)/          # área autenticada
+│   │       │   ├── (auth)/         # login, sign up, onboarding
+│   │       │   └── (app)/          # authenticated area
 │   │       │       ├── dashboard/  transactions/  cards/
-│   │       │       ├── pj/         # painel PJ, provisões
-│   │       │       ├── reports/    # mês fechado
+│   │       │       ├── pj/         # PJ panel, provisions
+│   │       │       ├── reports/    # closed month
 │   │       │       └── settings/
 │   │       ├── components/
-│   │       │   ├── ui/             # primitivos shadcn (Button, Input, Dialog...)
+│   │       │   ├── ui/             # shadcn primitives (Button, Input, Dialog...)
 │   │       │   ├── app/            # AppShell, PageHeader, MetricCard, ContextBadge
-│   │       │   ├── charts/         # wrappers Recharts
+│   │       │   ├── charts/         # Recharts wrappers
 │   │       │   └── feedback/       # EmptyState, LoadingState, ErrorState, Toast
-│   │       ├── features/           # por domínio (UI + hooks + tipos locais)
+│   │       ├── features/           # per domain (UI + hooks + local types)
 │   │       │   ├── transactions/  split/  cards/  pj-panel/
 │   │       │   ├── provisions/  reports/  ai-entry/  onboarding/
 │   │       │   └── settings/
-│   │       ├── lib/                # api client, money format, datas
+│   │       ├── lib/                # api client, money format, dates
 │   │       ├── stores/             # Zustand (ui state)
-│   │       └── pwa/                # service worker, fila offline
+│   │       └── pwa/                # service worker, offline queue
 │   └── api/                        # NestJS
 │       └── src/
 │           ├── modules/
@@ -70,7 +70,7 @@ tally/
 │           │   ├── contexts/  accounts/  categories/
 │           │   ├── cards/  invoices/          # ADR-0005
 │           │   ├── transactions/  splits/  provisions/
-│           │   ├── fiscal/                    # fiscal_rules versionadas
+│           │   ├── fiscal/                    # versioned fiscal_rules
 │           │   ├── ai/                        # parse, categorize, summary
 │           │   │   ├── prompts/  guards/  tools/
 │           │   ├── insights/  reports/  exports/
@@ -78,198 +78,198 @@ tally/
 │           ├── common/             # guards (tenancy!), interceptors, filters, decorators
 │           └── prisma/             # PrismaService
 ├── packages/
-│   ├── shared/                     # schemas Zod, tipos da API, money utils (ADR-0006)
+│   ├── shared/                     # Zod schemas, API types, money utils (ADR-0006)
 │   └── config/                     # eslint, tsconfig, prettier
 ├── prisma/                         # schema.prisma, migrations, seed
-└── docs/                           # esta documentação
+└── docs/                           # this documentation
 ```
 
-Responsabilidades:
+Responsibilities:
 
-- `apps/web/features/` — tudo de um domínio junto; UI não chama fetch direto (hooks encapsulam React Query).
-- `apps/api/modules/*/service` — regra de negócio pura, testável; recebe repositórios.
-- `apps/api/modules/*/repository` — única camada que fala com o Prisma; **impõe `householdId` em toda query**.
-- `apps/api/common/guards/tenancy.guard.ts` — o arquivo mais importante do repositório (threat-model).
-- `packages/shared` — mesmo schema Zod valida no front (RHF) e no back (pipe do Nest); tipos de request/response compartilhados.
-- `prisma/` — fonte da verdade do modelo físico (espelha `data-model.md`).
+- `apps/web/features/` — everything for a domain together; the UI doesn't call fetch directly (hooks encapsulate React Query).
+- `apps/api/modules/*/service` — pure, testable business logic; receives repositories.
+- `apps/api/modules/*/repository` — the only layer that talks to Prisma; **enforces `householdId` in every query**.
+- `apps/api/common/guards/tenancy.guard.ts` — the most important file in the repository (threat-model).
+- `packages/shared` — the same Zod schema validates on the front (RHF) and on the back (Nest pipe); shared request/response types.
+- `prisma/` — the source of truth of the physical model (mirrors `data-model.md`).
 
 ---
 
-## 3. Estratégia de frontend
+## 3. Frontend strategy
 
-- **Server Components:** páginas e leituras iniciais (home com os 3 números, lista de transações no primeiro load, mês fechado). Sem estado, sem efeitos.
-- **Client Components:** modal de lançamento, campo de IA, tela do split, filtros, gráficos — `"use client"` no menor escopo possível.
-- **React Query:** query keys por domínio + parâmetros (`['transactions', { month, context }]`); invalidação pós-mutação; optimistic update no lançamento rápido (a promessa dos 10s inclui a percepção).
-- **Zustand:** contexto PF/PJ ativo na visão, modal aberto, rascunho do campo de IA. Filtros sincronizados na URL (searchParams) para deep-link.
-- **Formulários:** React Hook Form + Zod de `@tally/shared` (mesmo schema do back — erro igual nos dois lados).
-- **Dinheiro:** sempre `amount_cents` (string na API) → formatação apenas na borda com `Intl.NumberFormat` via `@tally/shared/money` (ADR-0006). Lint rule proíbe `parseFloat` em contexto de dinheiro.
-- **Atalhos de teclado (desktop):** `N` novo lançamento, `/` busca, `Tab` flui pelo formulário na ordem do caminho feliz.
-- **Mobile/PWA:** botão "+" fixo no polegar, formulário de 1 coluna, fila offline de criação com indicador de sync.
-- **Loading/error/empty:** todo fetch trata os 3 estados via `components/feedback`; home vazia mostra tutorial do split com dados de exemplo descartáveis.
-- **Contexto visual PF/PJ:** `ContextBadge` (🟦 PJ / 🟩 PF) presente em toda transação, relatório e número — nunca cor como único codificador (a11y).
+- **Server Components:** pages and initial reads (home with the 3 numbers, transaction list on first load, closed month). No state, no effects.
+- **Client Components:** the entry modal, the AI field, the split screen, filters, charts — `"use client"` on the smallest possible scope.
+- **React Query:** query keys per domain + parameters (`['transactions', { month, context }]`); invalidation after mutation; optimistic update on quick entry (the 10s promise includes perception).
+- **Zustand:** the active PF/PJ context in the view, open modal, AI-field draft. Filters synced to the URL (searchParams) for deep-linking.
+- **Forms:** React Hook Form + Zod from `@tally/shared` (the same back-end schema — the same error on both sides).
+- **Money:** always `amount_cents` (a string in the API) → formatting only at the edge with `Intl.NumberFormat` via `@tally/shared/money` (ADR-0006). A lint rule forbids `parseFloat` in a money context.
+- **Keyboard shortcuts (desktop):** `N` new entry, `/` search, `Tab` flows through the form in the happy-path order.
+- **Mobile/PWA:** a fixed "+" button at the thumb, a 1-column form, an offline creation queue with a sync indicator.
+- **Loading/error/empty:** every fetch handles the 3 states via `components/feedback`; an empty home shows a split tutorial with disposable sample data.
+- **PF/PJ visual context:** a `ContextBadge` (🟦 PJ / 🟩 PF) present on every transaction, report and number — never color as the only encoder (a11y).
 
 ---
 
 ## 4. Design system / UI foundation
 
-| Componente                             | Onde                    | Tipo     | Props principais                   | Estados                      | Testes           | Deps     |
+| Component                              | Where                   | Type     | Main props                         | States                       | Tests            | Deps     |
 | -------------------------------------- | ----------------------- | -------- | ---------------------------------- | ---------------------------- | ---------------- | -------- |
-| Button                                 | `components/ui`         | genérico | variant, size, loading             | hover/focus/disabled/loading | unit             | cva      |
-| Input / MoneyInput                     | `components/ui`         | genérico | error, label; cents in/out         | focus/error                  | unit             | —        |
-| Select                                 | `components/ui`         | genérico | options, value                     | open/disabled                | unit             | radix    |
-| Dialog                                 | `components/ui`         | genérico | open, onOpenChange                 | focus trap                   | unit a11y        | radix    |
-| Tabs / SegmentedControl                | `components/ui`         | genérico | value, onChange                    | active                       | unit             | radix    |
-| Toast                                  | `components/feedback`   | genérico | variant                            | auto-dismiss                 | —                | sonner   |
-| EmptyState / LoadingState / ErrorState | `components/feedback`   | genérico | title, action / skeleton / onRetry | —                            | —                | —        |
-| DataTable                              | `components/app`        | genérico | columns, data                      | loading/empty                | unit             | tanstack |
-| DateField / MonthPicker                | `components/app`        | genérico | value, onChange                    | —                            | unit             | —        |
-| AppShell / Sidebar / Topbar            | `components/app`        | produto  | items, user                        | active                       | —                | —        |
-| PageHeader                             | `components/app`        | produto  | title, actions                     | —                            | —                | —        |
-| MetricCard                             | `components/app`        | produto  | label, value_cents, trend          | loading                      | unit             | —        |
-| **ContextBadge**                       | `components/app`        | produto  | context (PF\|PJ)                   | —                            | unit             | —        |
-| TransactionAmount                      | `components/app`        | produto  | cents, type                        | —                            | unit             | —        |
-| ChartCard                              | `components/charts`     | genérico | title, data                        | loading/empty                | —                | recharts |
-| QuickEntryModal                        | `features/transactions` | produto  | defaultContext, onSaved            | submitting/error             | unit+integration | RHF+Zod  |
-| AIEntryField                           | `features/ai-entry`     | produto  | onProposal                         | idle/parsing/error           | unit             | —        |
-| AIProposalCard                         | `features/ai-entry`     | produto  | proposal, onConfirm/onEdit         | editable                     | unit             | —        |
-| **SplitPanel** ⭐                      | `features/split`        | produto  | income, rules, onApply             | ajuste de %                  | unit+integration | —        |
-| InvoiceView                            | `features/cards`        | produto  | invoice                            | open/closed/paid             | unit             | —        |
-| InstallmentTag                         | `features/cards`        | produto  | no, of                             | —                            | —                | —        |
-| PJPanel / CeilingBar                   | `features/pj-panel`     | produto  | metrics / usage                    | warning ≥85%                 | unit             | —        |
-| ProvisionCard                          | `features/provisions`   | produto  | provision, onPay                   | pending/paid                 | unit             | —        |
-| MonthCloseReport                       | `features/reports`      | produto  | month                              | —                            | integration      | —        |
-| InsightCard                            | `features/ai-entry`     | produto  | insight, evidence                  | read/unread                  | unit             | —        |
+| Button                                 | `components/ui`         | generic  | variant, size, loading             | hover/focus/disabled/loading | unit             | cva      |
+| Input / MoneyInput                     | `components/ui`         | generic  | error, label; cents in/out         | focus/error                  | unit             | —        |
+| Select                                 | `components/ui`         | generic  | options, value                     | open/disabled                | unit             | radix    |
+| Dialog                                 | `components/ui`         | generic  | open, onOpenChange                 | focus trap                   | unit a11y        | radix    |
+| Tabs / SegmentedControl                | `components/ui`         | generic  | value, onChange                    | active                       | unit             | radix    |
+| Toast                                  | `components/feedback`   | generic  | variant                            | auto-dismiss                 | —                | sonner   |
+| EmptyState / LoadingState / ErrorState | `components/feedback`   | generic  | title, action / skeleton / onRetry | —                            | —                | —        |
+| DataTable                              | `components/app`        | generic  | columns, data                      | loading/empty                | unit             | tanstack |
+| DateField / MonthPicker                | `components/app`        | generic  | value, onChange                    | —                            | unit             | —        |
+| AppShell / Sidebar / Topbar            | `components/app`        | product  | items, user                        | active                       | —                | —        |
+| PageHeader                             | `components/app`        | product  | title, actions                     | —                            | —                | —        |
+| MetricCard                             | `components/app`        | product  | label, value_cents, trend          | loading                      | unit             | —        |
+| **ContextBadge**                       | `components/app`        | product  | context (PF\|PJ)                   | —                            | unit             | —        |
+| TransactionAmount                      | `components/app`        | product  | cents, type                        | —                            | unit             | —        |
+| ChartCard                              | `components/charts`     | generic  | title, data                        | loading/empty                | —                | recharts |
+| QuickEntryModal                        | `features/transactions` | product  | defaultContext, onSaved            | submitting/error             | unit+integration | RHF+Zod  |
+| AIEntryField                           | `features/ai-entry`     | product  | onProposal                         | idle/parsing/error           | unit             | —        |
+| AIProposalCard                         | `features/ai-entry`     | product  | proposal, onConfirm/onEdit         | editable                     | unit             | —        |
+| **SplitPanel** ⭐                      | `features/split`        | product  | income, rules, onApply             | % adjustment                 | unit+integration | —        |
+| InvoiceView                            | `features/cards`        | product  | invoice                            | open/closed/paid             | unit             | —        |
+| InstallmentTag                         | `features/cards`        | product  | no, of                             | —                            | —                | —        |
+| PJPanel / CeilingBar                   | `features/pj-panel`     | product  | metrics / usage                    | warning ≥85%                 | unit             | —        |
+| ProvisionCard                          | `features/provisions`   | product  | provision, onPay                   | pending/paid                 | unit             | —        |
+| MonthCloseReport                       | `features/reports`      | product  | month                              | —                            | integration      | —        |
+| InsightCard                            | `features/ai-entry`     | product  | insight, evidence                  | read/unread                  | unit             | —        |
 
-`SplitPanel` é o componente mais importante do produto (momento AHA, hipótese H4) — prototipar e testar primeiro.
+`SplitPanel` is the most important product component (the AHA moment, hypothesis H4) — prototype and test it first.
 
 ---
 
-## 5. Backend e API (NestJS)
+## 5. Backend and API (NestJS)
 
-- **Controllers finos:** validação por DTO (Zod pipe de `@tally/shared`), delegação a services; nada de regra na rota.
-- **Guards em cadeia:** `AuthGuard` (JWT do cookie) → `TenancyGuard` (injeta `householdId` do token no request) → `PlanGuard` (features Pro checadas no servidor, nunca só no front).
-- **Services:** regras de negócio puras (split, fechamento de fatura, teto MEI); recebem repositórios; onde vivem as 7 invariantes de `domain-model.md`.
-- **Repositories:** único acesso ao Prisma; assinatura sempre começa com `householdId`.
-- **Responses:** envelope `{ data }` ou `{ error: { code, message, details? } }`; erros de domínio mapeados para HTTP; nunca vazar stack/PII.
-- **Idempotência:** `Idempotency-Key` aceito em POSTs de escrita (retry seguro da fila offline do PWA).
-- **Versionamento:** prefixo `/v1` desde o início.
+- **Thin controllers:** DTO validation (a Zod pipe from `@tally/shared`), delegation to services; no rules in the route.
+- **Chained guards:** `AuthGuard` (JWT from the cookie) → `TenancyGuard` (injects the token's `householdId` into the request) → `PlanGuard` (Pro features checked on the server, never only on the front).
+- **Services:** pure business rules (split, statement closing, MEI ceiling); receive repositories; where the 7 invariants of `domain-model.md` live.
+- **Repositories:** the only access to Prisma; the signature always starts with `householdId`.
+- **Responses:** an envelope `{ data }` or `{ error: { code, message, details? } }`; domain errors mapped to HTTP; never leak stack/PII.
+- **Idempotency:** `Idempotency-Key` accepted on write POSTs (safe retry of the PWA's offline queue).
+- **Versioning:** the `/v1` prefix from the start.
 
-Endpoints do MVP:
+MVP endpoints:
 
 ```txt
 POST   /v1/auth/register  /v1/auth/login  /v1/auth/refresh  /v1/auth/logout
 GET    /v1/me
-GET    /v1/onboarding            POST /v1/onboarding        # regime, faixa, % reserva
+GET    /v1/onboarding            POST /v1/onboarding        # regime, bracket, % reserve
 CRUD   /v1/accounts  /v1/categories
 CRUD   /v1/cards
 GET    /v1/cards/:id/invoices    GET /v1/invoices/:id
 POST   /v1/invoices/:id/pay
-GET    /v1/transactions          # ?context=PF|PJ&month=&cursor= (paginação cursor)
+GET    /v1/transactions          # ?context=PF|PJ&month=&cursor= (cursor pagination)
 POST   /v1/transactions          PATCH/DELETE /v1/transactions/:id
-POST   /v1/transactions/:id/split                            # o fluxo AHA (atômico)
+POST   /v1/transactions/:id/split                            # the AHA flow (atomic)
 GET    /v1/provisions            POST /v1/provisions/:id/pay
-POST   /v1/ai/parse-transaction  # texto → proposta (não persiste)
+POST   /v1/ai/parse-transaction  # text → proposal (doesn't persist)
 GET    /v1/insights              POST /v1/insights/:id/read
 GET    /v1/reports/monthly?month=   GET /v1/reports/pj-panel
-GET    /v1/exports/full          # CSV/JSON, síncrono no MVP
+GET    /v1/exports/full          # CSV/JSON, synchronous in the MVP
 PATCH  /v1/settings              DELETE /v1/account          # LGPD: purge ≤30d
 ```
 
 Jobs (BullMQ):
 
 ```txt
-invoice-close        cron diário   fecha faturas de ciclo encerrado (fatura fechada = imutável)
-provision-reminders  cron diário   D-7 e D-1 de provisões pendentes → insight + e-mail
-weekly-summary       cron semanal  agrega mês → LLM (3 frases) → insight + e-mail
-reconciliation       cron diário   Σ transações vs. saldos materializados → divergência = incidente
-account-purge        on demand     hard delete ≤30 dias após exclusão de conta
+invoice-close        daily cron    closes statements whose cycle ended (closed statement = immutable)
+provision-reminders  daily cron    D-7 and D-1 of pending provisions → insight + email
+weekly-summary       weekly cron   aggregates the month → LLM (3 sentences) → insight + email
+reconciliation       daily cron    Σ transactions vs. materialized balances → divergence = incident
+account-purge        on demand     hard delete ≤30 days after account deletion
 ```
 
 ---
 
-## 6. Banco de dados (Prisma + PostgreSQL)
+## 6. Database (Prisma + PostgreSQL)
 
-> Schema completo, índices e derivações em `data-model.md`. Resumo das estratégias transversais:
+> Full schema, indexes and derivations in `data-model.md`. Summary of the cross-cutting strategies:
 
-- **Multi-tenant por household:** toda tabela de domínio tem `household_id` (FK, indexado) — desde o dia 1, mesmo com households de 1 pessoa (v2 família fica barata). Repository impõe o filtro; `Decision Needed` — Postgres RLS como defesa em profundidade na fase de hardening.
-- **Dinheiro:** `bigint` centavos (ADR-0006); split proporcional deixa o resto na última parcela (invariante 5).
-- **Cartão por fatura (ADR-0005):** `invoices` como agrupador de competência; `invoice_payments` liga o pagamento (caixa); parcelas em N transações via `installment_group_id`; fatura fechada congela `closed_total_cents` e vira imutável.
-- **Constraints como invariantes:** `CHECK (num_nonnulls(account_id, invoice_id) = 1)` (conta XOR fatura) e afins vivem no banco, não só na aplicação.
-- **Derivados nunca são verdade:** `account_balances` é view materializada (cache invalidável); job de reconciliação diária compara e alerta.
-- **Regras fiscais versionadas:** `fiscal_rules(regime, version, valid_from, valid_to, payload)` — alíquota nunca hardcoded (reforma tributária) e **nunca calculada pela LLM**.
-- **Soft delete** com `deleted_at` nas entidades de domínio; hard delete apenas no purge de conta (cascade).
-- **Auditoria:** `audit_log` append-only (quem, o quê, diff) para toda escrita sensível; `created_via` em toda transação (form|ai|import|system).
-- **Preparado para o futuro sem pagar agora:** Open Finance entrará como `connections` + staging `imported_transactions` sem tocar o core (ADR-0007); IA v2 (chat/RAG) pode adicionar pgvector depois — não há embeddings no MVP.
-
----
-
-## 7. IA (v1 — enxuta e proativa)
-
-Escopo deliberado (ver `mvp-scope.md`): **parsing de lançamento, categorização e resumo semanal**. Sem chat aberto, sem agentes, sem RAG — chat entra na v1.5 com a vantagem de contexto PJ.
-
-- **Parsing (`POST /v1/ai/parse-transaction`):** texto livre ("almoço com cliente 45, empresa") + categorias do usuário + contextos → JSON estruturado. Timeout 5s com fallback para o formulário; resposta é **proposta**, nunca persiste.
-- **Validação estrita:** saída da LLM passa por schema Zod idêntico ao do formulário. Saída inválida = fallback, não retry infinito.
-- **Categorização com aprendizado:** correções do usuário gravadas em `ai_feedback` e usadas como few-shot nos prompts seguintes (personalização barata, sem fine-tuning).
-- **Resumo semanal (job):** agregações calculadas por SQL (nunca pela LLM) → LLM apenas **redige** 3 frases sobre números prontos → `insights` com `evidence` (ids das transações-fonte, princípio "números que batem").
-- **Alertas determinísticos sem LLM:** lembrete de provisão, teto MEI ≥85%, gasto > N× a média da categoria — regra pura, custo zero, confiabilidade total. LLM só onde linguagem natural agrega.
-- **Proteção de dados:** prompts recebem o mínimo (texto do lançamento, nomes de categorias, agregados) — nunca extrato completo, e-mail ou nome; `householdId` vem da sessão/job, jamais do prompt; provedor com retenção zero/opt-out de treino.
-- **Prompt injection:** conteúdo do usuário é claramente separado das instruções; a LLM não executa ações — só produz JSON/texto validado (`ai/guards`). `Risk`
-- **Alucinação fiscal:** alíquotas e tetos vêm SEMPRE de `fiscal_rules`; a LLM é proibida de calcular imposto por prompt e por arquitetura (não recebe a tool).
-- **Custo:** modelo pequeno (classe Haiku) para parsing/categorização; rate limit por usuário/dia por plano; teto de gasto diário global com circuit breaker; cache de parsing de padrões repetidos ("uber", "ifood"); tokens contabilizados por usuário (guardrail T3). `Risk`
-- **Prompts versionados** em `ai/prompts` com testes de snapshot; parsing testado com fixtures (modelo mockado — sem custo/flakiness no CI).
+- **Per-household multi-tenancy:** every domain table has `household_id` (FK, indexed) — from day 1, even with 1-person households (a cheap v2 family). The repository enforces the filter; `Decision Needed` — Postgres RLS as defense in depth in the hardening phase.
+- **Money:** `bigint` cents (ADR-0006); a proportional split leaves the remainder on the last installment (invariant 5).
+- **Card by statement (ADR-0005):** `invoices` as an accrual grouping; `invoice_payments` links the payment (cash); installments in N transactions via `installment_group_id`; a closed statement freezes `closed_total_cents` and becomes immutable.
+- **Constraints as invariants:** `CHECK (num_nonnulls(account_id, invoice_id) = 1)` (account XOR invoice) and the like live in the database, not only in the application.
+- **Derived values are never truth:** `account_balances` is a materialized view (an invalidatable cache); a daily reconciliation job compares and alerts.
+- **Versioned fiscal rules:** `fiscal_rules(regime, version, valid_from, valid_to, payload)` — a rate is never hardcoded (tax reform) and **never computed by the LLM**.
+- **Soft delete** with `deleted_at` on domain entities; hard delete only in the account purge (cascade).
+- **Auditing:** an append-only `audit_log` (who, what, diff) for every sensitive write; `created_via` on every transaction (form|ai|import|system).
+- **Prepared for the future without paying now:** Open Finance will enter as `connections` + an `imported_transactions` staging without touching the core (ADR-0007); AI v2 (chat/RAG) can add pgvector later — there are no embeddings in the MVP.
 
 ---
 
-## 8. PWA e offline
+## 7. AI (v1 — lean and proactive)
 
-- **Instalável:** manifest + ícones; prompt de instalação discreto após o 3º uso mobile.
-- **Fila offline (escopo mínimo):** apenas **criação** de transações; IndexedDB → flush com `Idempotency-Key` ao reconectar; indicador de status de sync visível.
-- **Leituras offline:** último snapshot cacheado, marcado como "desatualizado".
-- **Fora de escopo:** edição offline e resolução de conflitos (fonte de bugs — anti-lição Wallet). Editar exige conexão.
-- **Notificações:** e-mail é o canal confiável de alertas no MVP (push web em iOS é limitado — trade-off aceito no ADR-0001).
+Deliberate scope (see `mvp-scope.md`): **entry parsing, categorization and weekly summary**. No open chat, no agents, no RAG — chat enters in v1.5 with the advantage of PJ context.
 
----
-
-## 9. Segurança e privacidade
-
-> Modelo completo em `threat-model.md`. Resumo operacional:
-
-- **Autenticação:** argon2id; JWT curto (15 min) em cookie httpOnly+Secure+SameSite=Lax; refresh token rotativo com detecção de reuso (revoga a família); rate limit em auth.
-- **Autorização/isolamento:** `TenancyGuard` global; repositórios exigem `householdId`; **testes automatizados de IDOR em 100% dos endpoints autenticados** — gate de lançamento.
-- **Validação:** Zod em toda entrada (`whitelist` — mass assignment bloqueado); limites de body e paginação.
-- **Front:** CSP estrita, HSTS; qualquer texto vindo da LLM é sanitizado antes de renderizar.
-- **Fatura fechada imutável** (invariante 6): correção só via transação de ajuste auditada.
-- **Rate limit:** Redis por usuário/IP em `/auth/*` e `/ai/*`.
-- **Logs sem PII:** estruturados (pino), `requestId` + hash de usuário; nunca valores ou descrições de transações.
-- **LGPD:** exportação completa em 1 clique (F8); exclusão com purge real ≤30 dias; minimização (sem CPF/CNPJ completo no MVP — regime + faixa bastam); política em linguagem simples.
-- **Segredos:** env do provedor, fora do repositório; rotação documentada; Dependabot + `npm audit` no CI.
-- **Backups:** snapshot diário criptografado + **teste de restore mensal como ritual** (não só configuração).
+- **Parsing (`POST /v1/ai/parse-transaction`):** free text ("lunch with client 45, company") + the user's categories + contexts → structured JSON. 5s timeout with a fallback to the form; the response is a **proposal**, it never persists.
+- **Strict validation:** the LLM's output goes through a Zod schema identical to the form's. Invalid output = fallback, not an infinite retry.
+- **Categorization with learning:** the user's corrections recorded in `ai_feedback` and used as few-shot in the following prompts (cheap personalization, no fine-tuning).
+- **Weekly summary (job):** aggregations computed by SQL (never by the LLM) → the LLM only **writes** 3 sentences about ready numbers → `insights` with `evidence` (ids of the source transactions, the "numbers that add up" principle).
+- **Deterministic alerts without the LLM:** provision reminder, MEI ceiling ≥85%, spend > N× the category's average — a pure rule, zero cost, total reliability. The LLM only where natural language adds value.
+- **Data protection:** prompts receive the minimum (entry text, category names, aggregates) — never the full statement, email or name; `householdId` comes from the session/job, never from the prompt; a provider with zero retention/opt-out of training.
+- **Prompt injection:** the user's content is clearly separated from the instructions; the LLM doesn't execute actions — it only produces validated JSON/text (`ai/guards`). `Risk`
+- **Fiscal hallucination:** rates and ceilings ALWAYS come from `fiscal_rules`; the LLM is forbidden from computing taxes by prompt and by architecture (it doesn't receive the tool).
+- **Cost:** a small model (Haiku class) for parsing/categorization; a per-user/day rate limit per plan; a global daily spend cap with a circuit breaker; cache of parsing for repeated patterns ("uber", "ifood"); tokens counted per user (guardrail T3). `Risk`
+- **Versioned prompts** in `ai/prompts` with snapshot tests; parsing tested with fixtures (a mocked model — no cost/flakiness in CI).
 
 ---
 
-## 10. Observabilidade
+## 8. PWA and offline
 
-- **Sentry:** front e API, releases vinculadas ao deploy.
-- **Logs estruturados:** JSON (pino) com `requestId`; sem PII.
-- **Métricas de guardrail** (de `success-metrics.md`): latência p95 do CRUD de transação (<300ms — a promessa dos 10s), 5xx por endpoint, uptime ≥99,5%.
-- **Métricas de IA:** tokens e custo por usuário/dia, latência do parse, taxa de proposta aceita sem correção (meta ≥80% após 1 mês).
-- **Métricas de integridade:** divergências do job de reconciliação (meta: zero; cada caso = incidente).
-- **Produto:** PostHog (eventos de `success-metrics.md`: ativação, split aplicado, resumo aberto...).
-- **Alertas:** erro acima de threshold, custo de IA acima do orçamento diário, falha de migration, divergência de reconciliação.
+- **Installable:** manifest + icons; a discreet install prompt after the 3rd mobile use.
+- **Offline queue (minimum scope):** only transaction **creation**; IndexedDB → flush with an `Idempotency-Key` on reconnect; a visible sync-status indicator.
+- **Offline reads:** the last cached snapshot, marked as "stale".
+- **Out of scope:** offline editing and conflict resolution (a source of bugs — anti-Wallet lesson). Editing requires a connection.
+- **Notifications:** email is the reliable alert channel in the MVP (web push on iOS is limited — a trade-off accepted in ADR-0001).
 
 ---
 
-## 11. Testes
+## 9. Security and privacy
 
-Ordem de valor: **invariantes do domínio → tenancy → fluxos críticos de API → E2E dos caminhos principais**.
+> Full model in `threat-model.md`. Operational summary:
 
-- **Vitest (unit):** as 7 invariantes de `domain-model.md` (split soma zero entre pernas, conta XOR fatura, parcelas somam o total com resto na última, fatura fechada imutável...); `money` utils; regras fiscais por versão; validators.
-- **Vitest (integration):** controllers + repositories contra Postgres de teste (Testcontainers/Docker); **suite de tenancy: para cada endpoint, usuário A tenta acessar recurso de B → 404/403** — o teste mais importante do repositório.
-- **Testing Library:** `SplitPanel`, `QuickEntryModal`, `AIProposalCard`, `MoneyInput` (estados e a11y).
-- **Playwright (E2E):** onboarding → primeiro gasto → primeiro recebimento com split → home com 3 números; ciclo de fatura (compra parcelada → fechamento → pagamento); exportação CSV.
-- **IA:** parsing com fixtures e modelo mockado; snapshot de prompts; teste do fallback (timeout → formulário).
-- **Jobs:** fechamento de fatura e reconciliação com fixtures de tempo (fake timers).
-- **A11y:** axe nas páginas-chave e nos componentes de formulário.
+- **Authentication:** argon2id; a short JWT (15 min) in an httpOnly+Secure+SameSite=Lax cookie; a rotating refresh token with reuse detection (revokes the family); rate limit on auth.
+- **Authorization/isolation:** a global `TenancyGuard`; repositories require `householdId`; **automated IDOR tests on 100% of authenticated endpoints** — a launch gate.
+- **Validation:** Zod on every input (`whitelist` — mass assignment blocked); body and pagination limits.
+- **Front:** a strict CSP, HSTS; any text coming from the LLM is sanitized before rendering.
+- **A closed statement is immutable** (invariant 6): a correction only via an audited adjustment transaction.
+- **Rate limit:** Redis per user/IP on `/auth/*` and `/ai/*`.
+- **Logs without PII:** structured (pino), `requestId` + a user hash; never transaction values or descriptions.
+- **LGPD:** a full export in one click (F8); deletion with a real purge ≤30 days; minimization (no full CPF/CNPJ in the MVP — regime + bracket are enough); a policy in simple language.
+- **Secrets:** provider env, out of the repository; documented rotation; Dependabot + `npm audit` in CI.
+- **Backups:** an encrypted daily snapshot + **a monthly restore test as a ritual** (not just configuration).
+
+---
+
+## 10. Observability
+
+- **Sentry:** front and API, releases linked to the deploy.
+- **Structured logs:** JSON (pino) with `requestId`; no PII.
+- **Guardrail metrics** (from `success-metrics.md`): p95 latency of the transaction CRUD (<300ms — the 10s promise), 5xx per endpoint, uptime ≥99.5%.
+- **AI metrics:** tokens and cost per user/day, parse latency, the rate of proposals accepted without correction (target ≥80% after 1 month).
+- **Integrity metrics:** divergences from the reconciliation job (target: zero; each case = an incident).
+- **Product:** PostHog (events from `success-metrics.md`: activation, split applied, summary opened...).
+- **Alerts:** errors above threshold, AI cost above the daily budget, migration failure, reconciliation divergence.
+
+---
+
+## 11. Tests
+
+Value order: **domain invariants → tenancy → critical API flows → E2E of the main paths**.
+
+- **Vitest (unit):** the 7 invariants of `domain-model.md` (split sums to zero across legs, account XOR invoice, installments sum to the total with the remainder on the last, a closed statement is immutable...); `money` utils; fiscal rules per version; validators.
+- **Vitest (integration):** controllers + repositories against a test Postgres (Testcontainers/Docker); **tenancy suite: for each endpoint, user A tries to access B's resource → 404/403** — the most important test in the repository.
+- **Testing Library:** `SplitPanel`, `QuickEntryModal`, `AIProposalCard`, `MoneyInput` (states and a11y).
+- **Playwright (E2E):** onboarding → first expense → first income with split → home with 3 numbers; statement cycle (installment purchase → closing → payment); CSV export.
+- **AI:** parsing with fixtures and a mocked model; prompt snapshots; a fallback test (timeout → form).
+- **Jobs:** statement closing and reconciliation with time fixtures (fake timers).
+- **A11y:** axe on the key pages and the form components.
 
 ---
 
@@ -282,71 +282,71 @@ jobs:
       - checkout
       - setup-node + pnpm (cache)
       - install (pnpm install --frozen-lockfile)
-      - verify-envs (variáveis obrigatórias presentes)
-      - lint (eslint) + typecheck (tsc --noEmit) [turbo, por workspace]
+      - verify-envs (required variables present)
+      - lint (eslint) + typecheck (tsc --noEmit) [turbo, per workspace]
       - unit (vitest run)
-      - prisma-check (schema ⇄ migrations consistentes)
-      - integration (vitest, serviço Postgres+Redis) # inclui suite de tenancy
+      - prisma-check (schema ⇄ migrations consistent)
+      - integration (vitest, Postgres+Redis service) # includes the tenancy suite
       - build (turbo build: web + api)
-      - e2e (playwright, stack completa em serviços)
-      - deploy-preview (Vercel web, em PR)
-      - deploy (merge em main: migrations → api → web)
+      - e2e (playwright, full stack in services)
+      - deploy-preview (Vercel web, on PR)
+      - deploy (merge to main: migrations → api → web)
       - sentry-release
 ```
 
-- Turborepo com cache por workspace (só builda o que mudou).
-- Migrations aplicadas antes do deploy da API (expand → contract em mudanças destrutivas).
-- Preview por PR no front; API de preview aponta para banco efêmero seedado.
+- Turborepo with a per-workspace cache (only builds what changed).
+- Migrations applied before the API deploy (expand → contract on destructive changes).
+- Preview per PR on the front; the preview API points to a seeded ephemeral database.
 
 ---
 
-## 13. Documentação do repositório
+## 13. Repository documentation
 
-- `README.md` — pitch, screenshots, stack, setup (`docker compose up` + `pnpm dev`), status do roadmap.
-- `CONTRIBUTING.md` — como rodar, padrões, fluxo de PR. · `SECURITY.md` — como reportar vulnerabilidade.
-- `LICENSE` — `Decision Needed` (MIT se o objetivo de portfólio falar mais alto; avaliar antes de publicar, dado o plano de monetização).
-- `.env.example` — todas as variáveis das duas apps.
-- `docs/` — discovery, product, ux e architecture (este documento + ADRs).
+- `README.md` — pitch, screenshots, stack, setup (`docker compose up` + `pnpm dev`), roadmap status.
+- `CONTRIBUTING.md` — how to run, standards, PR flow. · `SECURITY.md` — how to report a vulnerability.
+- `LICENSE` — `Decision Needed` (MIT if the portfolio goal wins out; evaluate before publishing, given the monetization plan).
+- `.env.example` — all variables of both apps.
+- `docs/` — discovery, product, ux and architecture (this document + the ADRs).
 
 ---
 
-## Apêndice A — Diagrama de arquitetura (alto nível)
+## Appendix A — Architecture diagram (high level)
 
 ```mermaid
 flowchart TB
   subgraph Client["Browser desktop / mobile (PWA)"]
     UI["Next.js UI<br/>RSC + Client Components"]
-    SW["Service Worker<br/>fila offline (criação)"]
+    SW["Service Worker<br/>offline queue (creation)"]
   end
 
   subgraph FE["apps/web — Vercel"]
-    RSC["Server Components<br/>(leituras iniciais)"]
+    RSC["Server Components<br/>(initial reads)"]
   end
 
-  subgraph BE["apps/api — NestJS (Railway/Fly, região SP)"]
+  subgraph BE["apps/api — NestJS (Railway/Fly, SP region)"]
     direction TB
     GUARD["Guards<br/>Auth → Tenancy → Plan"]
-    CTRL["Controllers (DTO Zod)"]
-    SVC["Services<br/>(invariantes do domínio)"]
-    REPO["Repositories<br/>(sempre householdId)"]
+    CTRL["Controllers (Zod DTO)"]
+    SVC["Services<br/>(domain invariants)"]
+    REPO["Repositories<br/>(always householdId)"]
     AIM["AI Module<br/>parse · categorize · summary"]
-    JOBS["Jobs BullMQ<br/>invoice-close · reminders ·<br/>weekly-summary · reconciliation"]
+    JOBS["BullMQ Jobs<br/>invoice-close · reminders ·<br/>weekly-summary · reconciliation"]
   end
 
-  subgraph Data["Dados"]
-    PG[("PostgreSQL<br/>fonte única de verdade")]
-    REDIS[("Redis<br/>filas · rate limit")]
+  subgraph Data["Data"]
+    PG[("PostgreSQL<br/>single source of truth")]
+    REDIS[("Redis<br/>queues · rate limit")]
   end
 
-  subgraph Ext["Externos"]
-    LLM["LLM API<br/>(modelo pequeno, retenção zero)"]
-    MAIL["E-mail<br/>(alertas, resumo semanal)"]
-    OF["Open Finance / agregador<br/>(Future — ADR-0007)"]
+  subgraph Ext["External"]
+    LLM["LLM API<br/>(small model, zero retention)"]
+    MAIL["Email<br/>(alerts, weekly summary)"]
+    OF["Open Finance / aggregator<br/>(Future — ADR-0007)"]
   end
 
-  UI -->|"REST /v1 (cookies httpOnly)"| GUARD
+  UI -->|"REST /v1 (httpOnly cookies)"| GUARD
   UI -.-> RSC
-  SW -->|"flush c/ idempotency-key"| GUARD
+  SW -->|"flush w/ idempotency-key"| GUARD
   RSC -->|server-side fetch| GUARD
   GUARD --> CTRL --> SVC --> REPO --> PG
   CTRL --> AIM
@@ -356,55 +356,55 @@ flowchart TB
   JOBS --> MAIL
   JOBS --- REDIS
   SVC -.rate limit / cache.-> REDIS
-  OF -.futuro: staging imported_transactions.-> SVC
+  OF -.future: imported_transactions staging.-> SVC
 ```
 
-## Apêndice B — Fluxo do split de recebimento (sequência) ⭐
+## Appendix B — Income split flow (sequence) ⭐
 
 ```mermaid
 sequenceDiagram
-  participant U as Usuário
+  participant U as User
   participant W as apps/web (SplitPanel)
   participant API as POST /v1/transactions/:id/split
   participant S as SplitService
-  participant F as FiscalRules (banco)
+  participant F as FiscalRules (database)
   participant DB as Postgres ($transaction)
 
-  U->>W: registra receita PJ de R$ 5.000
-  W->>API: aplicar split (rules do perfil, ajustáveis)
-  API->>S: valida DTO + tenancy
-  S->>F: alíquota vigente (versionada — nunca LLM)
+  U->>W: records PJ income of R$ 5,000
+  W->>API: apply split (profile rules, adjustable)
+  API->>S: validates DTO + tenancy
+  S->>F: current rate (versioned — never the LLM)
   S->>DB: BEGIN
-  DB-->>S: provision imposto (pending, due_date)
-  DB-->>S: transfer → conta reserva
-  DB-->>S: transfer pró-labore (PJ → PF)
-  S->>DB: COMMIT (tudo com split_id)
-  API-->>W: { provisão, reserva, "seu salário": R$ 3.950 }
-  W-->>U: tela AHA + home atualizada (3 números)
+  DB-->>S: tax provision (pending, due_date)
+  DB-->>S: transfer → reserve account
+  DB-->>S: owner's-draw transfer (PJ → PF)
+  S->>DB: COMMIT (everything with split_id)
+  API-->>W: { provision, reserve, "seu salário": R$ 3.950 }
+  W-->>U: AHA screen + updated home (3 numbers)
 ```
 
-## Apêndice C — Ciclo de vida da fatura (ADR-0005)
+## Appendix C — Statement lifecycle (ADR-0005)
 
 ```mermaid
 flowchart LR
-  BUY["Compra no cartão<br/>(PF ou PJ, à vista ou N×)"] --> ALLOC["Aloca na fatura do ciclo<br/>(parcelas → N faturas futuras)"]
-  ALLOC --> OPEN["Fatura OPEN<br/>total = Σ transações (derivado)"]
-  OPEN -->|"job invoice-close<br/>(dia de fechamento)"| CLOSED["Fatura CLOSED<br/>total congelado · imutável"]
-  CLOSED -->|"POST /invoices/:id/pay"| PAY["Transação de conta (caixa)<br/>via invoice_payments"]
+  BUY["Card purchase<br/>(PF or PJ, one-off or N×)"] --> ALLOC["Allocates to the cycle's statement<br/>(installments → N future statements)"]
+  ALLOC --> OPEN["Statement OPEN<br/>total = Σ transactions (derived)"]
+  OPEN -->|"invoice-close job<br/>(closing day)"| CLOSED["Statement CLOSED<br/>frozen total · immutable"]
+  CLOSED -->|"POST /invoices/:id/pay"| PAY["Account transaction (cash)<br/>via invoice_payments"]
   PAY --> PAID["PAID / PARTIALLY_PAID"]
-  CLOSED -. correção .-> ADJ["Transação de ajuste<br/>(auditada — nunca edição)"]
+  CLOSED -. correction .-> ADJ["Adjustment transaction<br/>(audited — never an edit)"]
 ```
 
-## Apêndice D — Fluxo do lançamento por linguagem natural
+## Appendix D — Natural-language entry flow
 
 ```mermaid
 flowchart LR
-  TXT["Texto: 'almoço com cliente 45, empresa'"] --> PARSE["POST /v1/ai/parse-transaction"]
-  PARSE --> LLM["LLM (timeout 5s)<br/>+ categorias e contextos do usuário"]
-  LLM --> VAL{"JSON válido<br/>(Zod)?"}
-  VAL -->|não| FALLBACK["Fallback:<br/>formulário pré-preenchido"]
-  VAL -->|sim| CARD["AIProposalCard<br/>R$45 · Alimentação · PJ · hoje"]
-  CARD -->|editar| CARD
-  CARD -->|confirmar 1 clique| POST["POST /v1/transactions<br/>(mesmo pipeline do form)"]
-  CARD -. correções .-> FB["ai_feedback<br/>(few-shot futuro)"]
+  TXT["Text: 'lunch with client 45, company'"] --> PARSE["POST /v1/ai/parse-transaction"]
+  PARSE --> LLM["LLM (5s timeout)<br/>+ the user's categories and contexts"]
+  LLM --> VAL{"Valid JSON<br/>(Zod)?"}
+  VAL -->|no| FALLBACK["Fallback:<br/>pre-filled form"]
+  VAL -->|yes| CARD["AIProposalCard<br/>R$45 · Food · PJ · today"]
+  CARD -->|edit| CARD
+  CARD -->|confirm 1 click| POST["POST /v1/transactions<br/>(same pipeline as the form)"]
+  CARD -. corrections .-> FB["ai_feedback<br/>(future few-shot)"]
 ```

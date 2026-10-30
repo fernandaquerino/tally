@@ -1,33 +1,33 @@
-# ADR-0004: Monorepo com pnpm workspaces (+ Turborepo)
+# ADR-0004: Monorepo with pnpm workspaces (+ Turborepo)
 
-**Status:** Aceito · **Data:** 2026-07-13
+**Status:** Accepted · **Date:** 2026-07-13
 
-## Contexto
+## Context
 
-Duas aplicações (web, api) + código compartilhado (schemas Zod, tipos, utilitários de dinheiro). Solo dev: custo de contexto entre repositórios é alto.
+Two applications (web, api) + shared code (Zod schemas, types, money utilities). Solo dev: the context cost of switching between repositories is high.
 
-## Opções
+## Options
 
-### A: Dois repositórios
+### A: Two repositories
 
-**Contras:** versionar `@tally/shared` via npm privado ou copy-paste; PRs duplos; drift de tipos.
+**Cons:** versioning `@tally/shared` via a private npm or copy-paste; double PRs; type drift.
 
-### B: Monorepo pnpm workspaces + Turborepo (escolhida)
+### B: pnpm workspaces monorepo + Turborepo (chosen)
 
-**Prós:** um clone, um PR, tipos compartilhados por import direto; cache de build; padrão de mercado que também vale aprender.
-**Contras:** setup inicial um pouco maior; deploys precisam de filtro por app (Vercel e Railway suportam).
+**Pros:** one clone, one PR, shared types via direct import; build cache; an industry-standard worth learning too.
+**Cons:** slightly larger initial setup; deploys need a per-app filter (Vercel and Railway support it).
 
-## Decisão
+## Decision
 
 ```
 tally/
 ├── apps/web        (Next.js)
 ├── apps/api        (NestJS)
-├── packages/shared (schemas Zod, tipos, money utils)
+├── packages/shared (Zod schemas, types, money utils)
 └── packages/config (eslint, tsconfig)
 ```
 
-## Consequências
+## Consequences
 
-- Fica mais fácil: consistência de tipos, refactors cross-app.
-- Revisitar quando: nunca no horizonte do projeto.
+- Gets easier: type consistency, cross-app refactors.
+- Revisit when: never within the project's horizon.

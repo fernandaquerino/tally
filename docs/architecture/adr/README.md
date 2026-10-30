@@ -1,15 +1,15 @@
 # ADRs — Architecture Decision Records
 
-Toda decisão técnica relevante vira um ADR: contexto → opções → decisão → consequências.
-Numeração sequencial; ADR aceito não se edita — se a decisão mudar, cria-se um novo que o **supersede**.
+Every relevant technical decision becomes an ADR: context → options → decision → consequences.
+Sequential numbering; an accepted ADR is not edited — if the decision changes, a new one is created that **supersedes** it.
 
-| #    | Título                                                        | Status |
-| ---- | ------------------------------------------------------------- | ------ |
-| 0001 | Web-first (adiar mobile nativo)                               | Aceito |
-| 0002 | Stack: Next.js + NestJS + TypeScript                          | Aceito |
-| 0003 | PostgreSQL + Prisma                                           | Aceito |
-| 0004 | Monorepo com pnpm workspaces                                  | Aceito |
-| 0005 | Cartão de crédito modelado por fatura (competência vs. caixa) | Aceito |
-| 0006 | Dinheiro como inteiro em centavos                             | Aceito |
-| 0007 | Manual-first: sem Open Finance no MVP                         | Aceito |
-| 0008 | Autenticação por cookies e tenancy derivada da sessão         | Aceito |
+| #    | Title                                                              | Status   |
+| ---- | ------------------------------------------------------------------ | -------- |
+| 0001 | Web-first (defer native mobile)                                    | Accepted |
+| 0002 | Stack: Next.js + NestJS + TypeScript                               | Accepted |
+| 0003 | PostgreSQL + Prisma                                                | Accepted |
+| 0004 | Monorepo with pnpm workspaces                                      | Accepted |
+| 0005 | Credit card modeled by statement (accrual vs. cash)               | Accepted |
+| 0006 | Money as an integer in cents                                      | Accepted |
+| 0007 | Manual-first: no Open Finance in the MVP                          | Accepted |
+| 0008 | Cookie-based authentication and tenancy derived from the session  | Accepted |

@@ -1,48 +1,48 @@
-# Visão de Produto — Tally
+# Product Vision — Tally
 
-## Visão
+## Vision
 
-**Tally é o app de vida financeira para quem é pessoa física e jurídica ao mesmo tempo** — o freelancer, o MEI, o consultor PJ — e para a família que ele sustenta. Uma IA que entende as duas vidas, separa o que é de quem, avisa antes do problema e transforma dados em plano.
+**Tally is the financial-life app for people who are a person and a company at the same time** — the freelancer, the MEI, the PJ consultant — and for the family they support. An AI that understands both lives, separates what belongs to whom, warns before the problem and turns data into a plan.
 
 ## Elevator pitch
 
-> "O Tally é o app financeiro para quem vive de CNPJ: controla o PJ e o pessoal no mesmo lugar, com IA que te diz quanto do seu faturamento é realmente seu — diferente dos apps de finanças pessoais que ignoram sua empresa e dos ERPs que ignoram sua vida."
+> "Tally is the finance app for people who live off a CNPJ: it manages the business and the personal in the same place, with AI that tells you how much of your revenue is really yours — unlike personal finance apps that ignore your company and ERPs that ignore your life."
 
-## O que o Tally É
+## What Tally IS
 
-- O lugar onde a vida financeira inteira (empresa + casa) faz sentido junta
-- Um método embutido: todo recebimento passa pelo split (imposto → reserva → seu salário)
-- Proativo: avisa antes do susto (DAS, teto MEI, ritmo de gastos)
-- Confiável: dados íntegros, exportáveis, cartão modelado certo
+- The place where the whole financial life (company + home) makes sense together
+- A built-in method: every income goes through the split (tax → reserve → your salary)
+- Proactive: warns before the shock (DAS, MEI ceiling, spending pace)
+- Trustworthy: data integrity, exportable, a correctly modeled card
 
-## O que o Tally NÃO é
+## What Tally is NOT
 
-- ❌ ERP / emissor de nota fiscal (território Cora, Bling, MEI Fácil — integrar, não construir)
-- ❌ Gestor de investimentos (registrar saldo basta; Kinvo que faça o resto)
-- ❌ Banco / conta digital
-- ❌ Mais um dashboard genérico de finanças pessoais (o 13º Mobills)
+- ❌ An ERP / invoice issuer (Cora, Bling, MEI Fácil territory — integrate, don't build)
+- ❌ An investment manager (recording a balance is enough; let Kinvo do the rest)
+- ❌ A bank / digital account
+- ❌ Yet another generic personal finance dashboard (the 13th Mobills)
 
-## Onde brigamos (escolhas conscientes)
+## Where we fight (conscious choices)
 
-| Dimensão                                  | Posição                                                       |
+| Dimension                                 | Position                                                      |
 | ----------------------------------------- | ------------------------------------------------------------- |
-| Híbrido PF+PJ                             | ✅ CORE — espaço vazio validado no benchmark                  |
-| IA proativa com contexto fiscal           | ✅ CORE — "ter IA" é commodity; IA que entende DAS não existe |
-| Confiabilidade (dados, cartão por fatura) | ✅ Aposta silenciosa — dor nº 1 do mercado                    |
-| Conta família                             | ✅ v2 — motivo de upgrade                                     |
-| Open Finance                              | ⏳ v2+ — expectativa, mas não âncora do MVP (ADR-0007)        |
-| NF/DAS in-app, investimentos              | ❌ Não brigamos                                               |
+| PF+PJ hybrid                              | ✅ CORE — an empty space validated in the benchmark           |
+| Proactive AI with fiscal context         | ✅ CORE — "having AI" is a commodity; AI that understands the DAS doesn't exist |
+| Reliability (data, card by statement)     | ✅ Silent bet — the market's pain #1                          |
+| Family account                            | ✅ v2 — an upgrade reason                                     |
+| Open Finance                              | ⏳ v2+ — an expectation, but not the MVP's anchor (ADR-0007)  |
+| In-app invoice/DAS, investments           | ❌ We don't fight                                             |
 
-## Princípios de produto
+## Product principles
 
-1. **O split é o método.** Não registramos gastos; ensinamos a separar dinheiro. (lição YNAB: método retém, ferramenta não)
-2. **Avisar > responder.** IA proativa antes de chat. (lição Pierre)
-3. **Confiança é feature.** Backup, exportação e números que batem valem mais que gráfico bonito.
-4. **Pago = o que funciona melhor.** Nunca paywall sobre feature instável. (anti-lição Despezzas)
-5. **Simples na entrada, profundo sob demanda.** (lição Organizze sem herdar o teto baixo)
+1. **The split is the method.** We don't record expenses; we teach how to separate money. (YNAB lesson: a method retains, a tool doesn't)
+2. **Warn > answer.** Proactive AI before chat. (Pierre lesson)
+3. **Trust is a feature.** Backup, export and numbers that add up are worth more than a pretty chart.
+4. **Paid = what works best.** Never a paywall over an unstable feature. (anti-Despezzas lesson)
+5. **Simple on entry, deep on demand.** (Organizze lesson without inheriting the low ceiling)
 
-## Horizonte (3 anos, aspiracional)
+## Horizon (3 years, aspirational)
 
-- Ano 1: o melhor lugar do Brasil pra um PJ solo entender seu dinheiro (web)
-- Ano 2: a casa inteira no Tally (família) + mobile + automação (OF)
-- Ano 3: a camada de inteligência financeira do trabalhador independente brasileiro (integrações: contador, emissores de NF, bancos PJ)
+- Year 1: the best place in Brazil for a solo PJ to understand their money (web)
+- Year 2: the whole home in Tally (family) + mobile + automation (OF)
+- Year 3: the financial intelligence layer of the Brazilian independent worker (integrations: accountant, invoice issuers, PJ banks)

@@ -1,53 +1,53 @@
-# Análise Competitiva — Tally
+# Competitive Analysis — Tally
 
-> Pesquisa de julho/2026. Versão condensada; análise completa por app (reviews, dores, preços) no documento de benchmark original.
+> July/2026 research. A condensed version; the full per-app analysis (reviews, pains, prices) in the original benchmark document.
 
-## Mapa do mercado
+## Market map
 
-| App                   | Origem | Preço (plano útil) | Open Finance          | IA               | PJ                  | Família             | Cartão por fatura | Força                                  | Fraqueza                 |
-| --------------------- | ------ | ------------------ | --------------------- | ---------------- | ------------------- | ------------------- | ----------------- | -------------------------------------- | ------------------------ |
-| Mobills               | 🇧🇷     | ~R$ 120/ano        | ✅ instável           | Básica           | ❌                  | ❌                  | Parcial           | Completude + marca                     | Sync não confiável       |
-| Organizze             | 🇧🇷     | ~R$ 135/ano        | ✅ cobertura menor    | Básica           | Rótulo de conta     | Login compartilhado | Parcial           | Simplicidade                           | Teto baixo               |
-| Minhas Economias      | 🇧🇷     | Freemium           | ✅                    | ❌               | Separação de contas | ❌                  | Parcial           | Confiabilidade                         | Datado                   |
-| Wallet (BudgetBakers) | 🇨🇿     | ~US$ 20/ano        | Agregadores           | Categorização    | ❌                  | Compartilhado       | ❌                | Orçamentos flexíveis                   | Sync + perda de dados    |
-| Pierre (CloudWalk)    | 🇧🇷     | R$ 39/mês          | ✅ 100+ bancos        | ⭐ Multiagente   | ❌                  | ❌                  | Via OF            | IA proativa conversacional             | Caro, sem PJ, sem manual |
-| Despezzas             | 🇧🇷     | Freemium           | ✅ instável p/ alguns | Chat conectado   | ❌                  | ❌                  | Sim               | Custo-benefício                        | OF instável no paywall   |
-| Copilot Money         | 🇺🇸     | US$ 95/ano         | Plaid EUA             | ⭐ Categorização | ❌                  | Fraco               | N/A               | Design + review por swipe              | Apple-only, sem BR       |
-| YNAB                  | 🇺🇸     | US$ 109/ano        | Plaid EUA/UE          | ❌ deliberado    | ❌                  | ✅ 6 pessoas        | N/A               | Metodologia + comunidade               | Rígido, não traduz p/ BR |
-| Monarch Money         | 🇺🇸     | US$ 100–199/ano    | 13k instituições      | Assistente       | Tier Plus (novo)    | ⭐ Melhor           | N/A               | Dashboard p/ casais                    | Preço, trial 7 dias      |
-| LAPI                  | 🇧🇷     | Freemium           | ❌ por design         | Coach + OCR      | ❌                  | ✅ + contador       | ⭐ Referência     | Privacidade + multiplataforma          | Fricção do manual        |
-| ZMoney                | 🇧🇷     | Grátis             | ❌                    | ❌               | ❌                  | ❌                  | ❌                | Preço + conteúdo                       | Sem diferencial          |
-| Servora               | ❓     | —                  | —                     | —                | —                   | —                   | —                 | **Não identificado — aguardando link** | —                        |
+| App                   | Origin | Price (useful plan) | Open Finance          | AI               | PJ                  | Family              | Card by statement | Strength                               | Weakness                 |
+| --------------------- | ------ | ------------------- | --------------------- | ---------------- | ------------------- | ------------------- | ----------------- | -------------------------------------- | ------------------------ |
+| Mobills               | 🇧🇷     | ~R$ 120/year        | ✅ unstable           | Basic            | ❌                  | ❌                  | Partial           | Completeness + brand                   | Unreliable sync          |
+| Organizze             | 🇧🇷     | ~R$ 135/year        | ✅ smaller coverage   | Basic            | An account label    | Shared login        | Partial           | Simplicity                             | Low ceiling              |
+| Minhas Economias      | 🇧🇷     | Freemium            | ✅                    | ❌               | Account separation  | ❌                  | Partial           | Reliability                            | Dated                    |
+| Wallet (BudgetBakers) | 🇨🇿     | ~US$ 20/year        | Aggregators           | Categorization   | ❌                  | Shared              | ❌                | Flexible budgets                       | Sync + data loss         |
+| Pierre (CloudWalk)    | 🇧🇷     | R$ 39/month         | ✅ 100+ banks         | ⭐ Multi-agent   | ❌                  | ❌                  | Via OF            | Proactive conversational AI            | Pricey, no PJ, no manual |
+| Despezzas             | 🇧🇷     | Freemium            | ✅ unstable for some  | Connected chat   | ❌                  | ❌                  | Yes               | Value for money                        | Unstable OF behind paywall|
+| Copilot Money         | 🇺🇸     | US$ 95/year         | Plaid US              | ⭐ Categorization | ❌                  | Weak                | N/A               | Design + swipe review                  | Apple-only, no BR        |
+| YNAB                  | 🇺🇸     | US$ 109/year        | Plaid US/EU           | ❌ deliberate    | ❌                  | ✅ 6 people         | N/A               | Methodology + community                | Rigid, doesn't translate to BR |
+| Monarch Money         | 🇺🇸     | US$ 100–199/year    | 13k institutions      | Assistant        | Plus tier (new)     | ⭐ Best             | N/A               | Dashboard for couples                  | Price, 7-day trial       |
+| LAPI                  | 🇧🇷     | Freemium            | ❌ by design          | Coach + OCR      | ❌                  | ✅ + accountant     | ⭐ Reference      | Privacy + cross-platform               | Manual friction          |
+| ZMoney                | 🇧🇷     | Free                | ❌                    | ❌               | ❌                  | ❌                  | ❌                | Price + content                        | No differentiator        |
+| Servora               | ❓     | —                   | —                     | —                | —                   | —                   | —                 | **Not identified — awaiting a link**   | —                        |
 
-## As 5 dores transversais do mercado
+## The 5 cross-cutting pains of the market
 
-1. **Sync bancário que quebra** — dor nº 1 de Mobills, Wallet e Despezzas; Open Finance é expectativa mas ninguém entrega confiável.
-2. **Perda/divergência de dados** — casos graves em Mobills (web ≠ app) e Wallet (transações corrompidas sem backup).
-3. **Cartão de crédito mal modelado** — competência vs. caixa; só o LAPI trata como prioridade. Gera o eterno "saldo não bate".
-4. **Paywall sobre features instáveis** — cobrar por Open Finance bugado gera as piores reviews (Despezzas, Mobills).
-5. **Família/casal como gambiarra** — login compartilhado ou cobrança extra; Monarch prova o valor lá fora, no Brasil está vago.
+1. **Bank sync that breaks** — pain #1 of Mobills, Wallet and Despezzas; Open Finance is an expectation but nobody delivers it reliably.
+2. **Data loss/divergence** — severe cases in Mobills (web ≠ app) and Wallet (corrupted transactions without backup).
+3. **Poorly modeled credit card** — accrual vs. cash; only LAPI treats it as a priority. It generates the eternal "the balance doesn't add up".
+4. **Paywall over unstable features** — charging for buggy Open Finance generates the worst reviews (Despezzas, Mobills).
+5. **Family/couple as a hack** — shared login or an extra charge; Monarch proves the value abroad, in Brazil it's vague.
 
-## Espaços vazios identificados
+## Identified empty spaces
 
-- **Híbrido PF+PJ**: nenhum dos 12 atende. Organizze/Minhas Economias têm só "separação de contas". Pierre (o líder de IA) ignora PJ. Cora/MEI Fácil são PJ-only e fiscais.
-- **IA com contexto fiscal**: "ter IA" já é commodity (Pierre, Despezzas, Minhas Finanças, LAPI); IA que entende DAS, pró-labore e teto MEI não existe.
-- **Confiabilidade como marca**: o mercado inteiro falha em integridade de dados.
+- **PF+PJ hybrid**: none of the 12 addresses it. Organizze/Minhas Economias only have "account separation". Pierre (the AI leader) ignores PJ. Cora/MEI Fácil are PJ-only and fiscal.
+- **AI with fiscal context**: "having AI" is already a commodity (Pierre, Despezzas, Minhas Finanças, LAPI); AI that understands the DAS, owner's draw and MEI ceiling doesn't exist.
+- **Reliability as a brand**: the whole market fails at data integrity.
 
-## Concorrentes a monitorar (trimestral)
+## Competitors to monitor (quarterly)
 
-- **Pierre/CloudWalk**: se lançarem contexto PJ, atacam nosso core. InfinitePay é canal de distribuição deles.
-- **Cora / MEI Fácil**: se descerem para vida pessoal, atacam pelo outro lado.
-- **Monarch**: tier Plus com small business sinaliza que o híbrido é tendência global.
+- **Pierre/CloudWalk**: if they launch PJ context, they attack our core. InfinitePay is their distribution channel.
+- **Cora / MEI Fácil**: if they move down into personal life, they attack from the other side.
+- **Monarch**: a Plus tier with small business signals that the hybrid is a global trend.
 
-## Lições aplicadas ao Tally
+## Lessons applied to Tally
 
-| Lição                             | Fonte                    | Aplicação                                     |
+| Lesson                            | Source                   | Application                                   |
 | --------------------------------- | ------------------------ | --------------------------------------------- |
-| Registro em segundos retém        | Organizze                | Requisito de UX nº 1                          |
-| Cartão por fatura é o acerto raro | LAPI                     | Modelo de dados desde o dia 1 (ADR-0005)      |
-| IA proativa > chat reativo        | Pierre                   | Resumo semanal + alertas antes de chat aberto |
-| Pago = o que funciona melhor      | Despezzas (anti-exemplo) | OF só quando estável                          |
-| Trial curto gera reclamação       | Monarch                  | Trial de 30 dias                              |
-| Aumentos de preço corroem a base  | YNAB                     | Grandfathering de early users                 |
-| Delegação p/ contador é ouro      | LAPI                     | Roadmap v1.5                                  |
-| Conteúdo = aquisição barata       | Mobills, ZMoney          | Blog/SEO "finanças para PJ"                   |
+| Entry in seconds retains          | Organizze                | UX requirement #1                             |
+| Card by statement is the rare win | LAPI                     | A data model from day 1 (ADR-0005)            |
+| Proactive AI > reactive chat      | Pierre                   | Weekly summary + alerts before open chat      |
+| Paid = what works best            | Despezzas (anti-example) | OF only when stable                           |
+| A short trial generates complaints| Monarch                  | A 30-day trial                                |
+| Price increases erode the base    | YNAB                     | Grandfathering of early users                 |
+| Delegation to the accountant is gold | LAPI                  | v1.5 roadmap                                  |
+| Content = cheap acquisition       | Mobills, ZMoney          | A "finance for PJ" blog/SEO                   |
