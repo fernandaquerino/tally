@@ -1,45 +1,45 @@
-# Jornadas do Usuário — Tally
+# User Journeys — Tally
 
-> Jornada = experiência ponta a ponta com estados emocionais. Persona: Rafael (PJ híbrido). Canal: web (desktop + mobile browser/PWA).
+> A journey = the end-to-end experience with emotional states. Persona: Rafael (PJ hybrid). Channel: web (desktop + mobile browser/PWA).
 
-## Jornada 1 — Do susto ao cadastro (aquisição)
+## Journey 1 — From the shock to sign up (acquisition)
 
-| Etapa     | O que acontece                                                     | Emoção              | Oportunidade do Tally                                       |
-| --------- | ------------------------------------------------------------------ | ------------------- | ----------------------------------------------------------- |
-| Gatilho   | Levou multa do DAS ou fechou mês no vermelho apesar de faturar bem | 😖 frustração       | Conteúdo SEO: "quanto separar de imposto MEI"               |
-| Busca     | Pesquisa no Google / pergunta em grupo de freelancer               | 🤔 esperança cética | Landing com a dor exata: "Faturou bem. Por que não sobrou?" |
-| Avaliação | Compara com Mobills/planilha; medo de ser "mais um app"            | 😒 ceticismo        | Posicionamento PJ explícito + trial 30 dias sem cartão      |
-| Cadastro  | E-mail/senha ou Google                                             | 😐 neutro           | <60 segundos, sem pedir dados demais                        |
+| Step        | What happens                                                        | Emotion              | Tally's opportunity                                         |
+| ----------- | ------------------------------------------------------------------- | -------------------- | ----------------------------------------------------------- |
+| Trigger     | Got a DAS fine or closed the month in the red despite billing well  | 😖 frustration       | SEO content: "how much to set aside for MEI tax"            |
+| Search      | Searches on Google / asks in a freelancer group                     | 🤔 skeptical hope    | A landing with the exact pain: "Billed well. Why is there nothing left?" |
+| Evaluation  | Compares with Mobills/a spreadsheet; afraid of being "just another app" | 😒 skepticism     | Explicit PJ positioning + a 30-day trial without a card     |
+| Sign up     | Email/password or Google                                            | 😐 neutral           | <60 seconds, without asking for too much data               |
 
-## Jornada 2 — Primeiro valor (onboarding → AHA)
+## Journey 2 — First value (onboarding → AHA)
 
-| Etapa                    | O que acontece                                                                                                | Emoção                          | Oportunidade                                  |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------- | ------------------------------- | --------------------------------------------- |
-| Setup                    | Informa: sou MEI/Simples, faixa, % reserva desejada                                                           | 🙂 "esse app fala minha língua" | 3 perguntas, não 15 (anti-lição da categoria) |
-| Primeiro lançamento      | Registra um gasto de teste (ou por IA: "mercado 230")                                                         | 🙂 leveza                       | <10s; sucesso celebrado discretamente         |
-| **Primeiro recebimento** | Lança "recebi 5.000 do cliente X" → **tela do split**: R$ 300 imposto · R$ 750 reserva · R$ 3.950 seu salário | 🤯 **AHA**                      | O momento que define o produto; medir A3      |
-| Home                     | Vê os 3 números: resultado PJ · disponível pessoal · comprometido                                             | 😌 controle                     | Clareza > densidade                           |
+| Step                    | What happens                                                                                                  | Emotion                          | Opportunity                                   |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------- | --------------------------------------------- |
+| Setup                   | States: I'm MEI/Simples, bracket, desired reserve %                                                           | 🙂 "this app speaks my language" | 3 questions, not 15 (anti-category lesson)    |
+| First entry             | Records a test expense (or via AI: "market 230")                                                             | 🙂 lightness                     | <10s; success celebrated discreetly           |
+| **First income**        | Logs "received 5,000 from client X" → **the split screen**: R$ 300 tax · R$ 750 reserve · R$ 3,950 your salary | 🤯 **AHA**                       | The moment that defines the product; measure A3 |
+| Home                    | Sees the 3 numbers: PJ result · personal available · committed                                              | 😌 control                       | Clarity > density                             |
 
-## Jornada 3 — O mês vivido (hábito)
+## Journey 3 — The month lived (habit)
 
-| Etapa        | O que acontece                                                           | Emoção            | Oportunidade                            |
-| ------------ | ------------------------------------------------------------------------ | ----------------- | --------------------------------------- |
-| Dia a dia    | Registra gastos no celular (PWA) em segundos; toggle PF/PJ               | 😐→🙂 rotina leve | Fricção mínima é retenção               |
-| Semana       | Recebe resumo em 3 frases: "ritmo ok; delivery 40% acima; DAS em 6 dias" | 🙂 "alguém cuida" | IA proativa (lição Pierre)              |
-| Vencimento   | Lembrete de DAS com valor já provisionado                                | 😌 paz fiscal     | O anti-susto é o gain emocional central |
-| Fatura fecha | Vê a fatura com parcelas projetadas; PF e PJ separados                   | 😌 saldo bate     | ADR-0005 pagando dividendo              |
-| Fecha o mês  | Resumo mensal: quanto faturou, quanto era dele, pra onde foi             | 😊 orgulho        | North Star; compartilhável (v2)         |
+| Step            | What happens                                                             | Emotion            | Opportunity                             |
+| --------------- | ------------------------------------------------------------------------ | ------------------ | --------------------------------------- |
+| Day to day      | Records expenses on the phone (PWA) in seconds; PF/PJ toggle             | 😐→🙂 light routine | Minimal friction is retention           |
+| Week            | Gets a 3-sentence summary: "pace ok; delivery 40% above; DAS in 6 days"  | 🙂 "someone's got this" | Proactive AI (Pierre lesson)        |
+| Due date        | A DAS reminder with the already-provisioned amount                       | 😌 fiscal peace    | The anti-shock is the central emotional gain |
+| Statement closes| Sees the statement with projected installments; PF and PJ separated      | 😌 the balance adds up | ADR-0005 paying dividends           |
+| Closes the month| Monthly summary: how much was billed, how much was theirs, where it went | 😊 pride           | North Star; shareable (v2)              |
 
-## Jornada 4 — Upgrade (grátis → Pro)
+## Journey 4 — Upgrade (free → Pro)
 
-| Etapa         | Gatilho                                                | Oportunidade                                    |
+| Step          | Trigger                                                | Opportunity                                     |
 | ------------- | ------------------------------------------------------ | ----------------------------------------------- |
-| Limite tocado | Quer 2º cartão / alertas ilimitados / split automático | Paywall honesto: o pago é o que funciona MELHOR |
-| Avaliação     | "R$ 15/mês é menos que meu contador cobra por hora"    | Ancoragem em ferramenta de trabalho, não em app |
-| Assinatura    | Cartão ou Pix                                          | Grandfathering comunicado (anti-lição YNAB)     |
+| Limit reached | Wants a 2nd card / unlimited alerts / automatic split  | An honest paywall: the paid tier is what works BEST |
+| Evaluation    | "R$ 15/month is less than my accountant charges per hour" | Anchoring in a work tool, not an app         |
+| Subscription  | Card or Pix                                            | Grandfathering communicated (anti-YNAB lesson)  |
 
-## Jornada 5 — Churn (a evitar) — hipóteses de abandono
+## Journey 5 — Churn (to avoid) — abandonment hypotheses
 
-1. Semana 2: cansou de digitar (H3 falhou) → mitigação: IA de registro impecável + import CSV cedo (v1.5)
-2. Números não batem (bug/UX de cartão) → mitigação: ADR-0005 + testes de conciliação
-3. "Legal, mas não mudou nada" (AHA não converteu em hábito) → mitigação: resumo semanal puxando de volta
+1. Week 2: tired of typing (H3 failed) → mitigation: impeccable entry AI + early CSV import (v1.5)
+2. The numbers don't add up (a card bug/UX) → mitigation: ADR-0005 + reconciliation tests
+3. "Nice, but nothing changed" (the AHA didn't convert into a habit) → mitigation: the weekly summary pulling back in

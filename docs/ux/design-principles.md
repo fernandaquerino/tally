@@ -1,50 +1,50 @@
-# Princípios de Design — Tally
+# Design Principles — Tally
 
-> Critérios de decisão para todo o produto. Em conflito, o de número menor vence.
+> Decision criteria for the whole product. In a conflict, the lower-numbered one wins.
 
-## 1. Dez segundos ou nada
+## 1. Ten seconds or nothing
 
-Registrar uma transação leva <10s. Toda tela nova responde: "isso adiciona fricção ao registro?" Se sim, justifique ou corte. (lição Organizze; causa nº 1 de churn da categoria é fricção)
+Recording a transaction takes <10s. Every new screen answers: "does this add friction to entry?" If so, justify it or cut it. (Organizze lesson; the category's #1 churn cause is friction)
 
-## 2. PF e PJ sempre visíveis, nunca misturados
+## 2. PF and PJ always visible, never mixed
 
-O contexto (PF/PJ) aparece em toda transação, todo relatório, todo número. Um clique para alternar, zero cliques para entender qual é qual. Cores/ícones consistentes (ex.: PJ = 🟦, PF = 🟩) em todo o produto.
+The context (PF/PJ) appears on every transaction, every report, every number. One click to switch, zero clicks to understand which is which. Consistent colors/icons (e.g. PJ = 🟦, PF = 🟩) across the whole product.
 
-## 3. O número antes do gráfico
+## 3. The number before the chart
 
-A pergunta do usuário é "quanto posso gastar?", não "como está a distribuição por categoria". Home = 3 números grandes. Gráficos são detalhe expansível, nunca a primeira resposta. (anti-lição dos dashboards genéricos; lição Pierre: tradução > dados)
+The user's question is "how much can I spend?", not "how is the distribution by category". Home = 3 big numbers. Charts are an expandable detail, never the first answer. (anti-lesson of generic dashboards; Pierre lesson: translation > data)
 
-## 4. Avisar antes do susto
+## 4. Warn before the shock
 
-O sistema fala primeiro: DAS em 7 dias, ritmo estourando, teto MEI a 85%. Notificação proativa > relatório que ninguém abre. Mas com parcimônia: máx. 1 notificação proativa/dia — alerta demais vira ruído ignorado.
+The system speaks first: DAS in 7 days, pace blowing up, MEI ceiling at 85%. A proactive notification > a report nobody opens. But sparingly: max 1 proactive notification/day — too many alerts become ignored noise.
 
-## 5. IA propõe, humano confirma
+## 5. AI proposes, a human confirms
 
-Toda ação da IA (categoria, split, parsing) vira proposta confirmável em 1 clique, nunca ação silenciosa. Correção do usuário = dado de treino. Confiança se constrói com controle. (lição Copilot: revisão como micro-hábito)
+Every AI action (category, split, parsing) becomes a proposal confirmable in 1 click, never a silent action. A user correction = training data. Trust is built with control. (Copilot lesson: review as a micro-habit)
 
-## 6. Números que batem são sagrados
+## 6. Numbers that add up are sacred
 
-Qualquer soma exibida é reconciliável: clique no número → veja as transações que o compõem. Se o usuário não consegue auditar, não mostramos. (anti-lição Mobills/Wallet)
+Any displayed sum is reconcilable: click the number → see the transactions that make it up. If the user can't audit it, we don't show it. (anti-Mobills/Wallet lesson)
 
-## 7. Simples na entrada, profundo sob demanda
+## 7. Simple on entry, deep on demand
 
-Primeira experiência: 3 perguntas, 3 números. Profundidade (subcategorias, relatórios, configurações fiscais) existe, mas atrás de "ver mais". Progressive disclosure sempre. (lição Organizze sem o teto baixo)
+First experience: 3 questions, 3 numbers. Depth (subcategories, reports, fiscal settings) exists, but behind "see more". Progressive disclosure always. (Organizze lesson without the low ceiling)
 
-## 8. Web de verdade
+## 8. Real web
 
-Desktop: atalhos de teclado (N = novo lançamento, / = busca), densidade de dados, tabelas navegáveis. Mobile (PWA): polegar alcança tudo, botão "+" fixo, formulários de uma coluna. Não é um app mobile esticado nem um desktop espremido.
+Desktop: keyboard shortcuts (N = new entry, / = search), data density, navigable tables. Mobile (PWA): the thumb reaches everything, a fixed "+" button, one-column forms. It's not a stretched mobile app nor a squeezed desktop.
 
-## 9. Linguagem de gente, não de banco
+## 9. Human language, not bank language
 
-"Seu salário" em vez de "pró-labore" (com o termo técnico entre parênteses na primeira vez). "Separado para imposto" em vez de "provisão tributária". Tom: o contador amigo, não o gerente de banco.
+"Seu salário" instead of "pró-labore" (with the technical term in parentheses the first time). "Separado para imposto" instead of "provisão tributária". Tone: the friendly accountant, not the bank manager.
 
-## 10. A saída é fácil
+## 10. The exit is easy
 
-Exportar tudo, sempre, em 1 minuto. Cancelar sem labirinto. A confiança de poder sair é o que faz ficar. (anti-lição das reclamações de cancelamento da categoria)
+Export everything, always, in 1 minute. Cancel without a maze. The confidence of being able to leave is what makes people stay. (anti-lesson of the category's cancellation complaints)
 
-## Tokens e direção visual (rascunho)
+## Tokens and visual direction (draft)
 
-- Sensação: profissional-leve (é ferramenta de trabalho, mas de uma pessoa, não de um depto financeiro)
-- Anti-referências: dashboard corporativo cinza; gamificação infantil
-- Referências: Copilot Money (clareza), Linear (densidade elegante), extratos do Nubank (linguagem)
-- Acessibilidade: contraste AA mínimo; nunca cor como único codificador de PF/PJ (ícone + label sempre)
+- Feel: light-professional (it's a work tool, but for one person, not a finance department)
+- Anti-references: a gray corporate dashboard; childish gamification
+- References: Copilot Money (clarity), Linear (elegant density), Nubank statements (language)
+- Accessibility: minimum AA contrast; never color as the only encoder of PF/PJ (icon + label always)

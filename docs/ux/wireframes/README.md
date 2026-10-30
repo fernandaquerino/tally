@@ -1,51 +1,51 @@
 # Wireframes — Tally MVP
 
-> Ferramenta: Figma (link do projeto: _adicionar_). Este diretório guarda exports PNG/PDF das versões estáveis + notas de decisão.
+> Tool: Figma (project link: _to add_). This directory holds PNG/PDF exports of the stable versions + decision notes.
 
-## Inventário de telas do MVP (checklist)
+## MVP screen inventory (checklist)
 
-### Fluxo de entrada
+### Entry flow
 
-- [ ] Landing page (dor: "Faturou bem. Por que não sobrou?")
-- [ ] Cadastro / login
-- [ ] Onboarding — pergunta CNPJ (MEI/Simples/não)
-- [ ] Onboarding — faixa + % reserva
+- [ ] Landing page (pain: "Billed well. Why is there nothing left?")
+- [ ] Sign up / login
+- [ ] Onboarding — CNPJ question (MEI/Simples/no)
+- [ ] Onboarding — bracket + reserve %
 
 ### Core
 
-- [ ] Home (3 números: resultado PJ · disponível pessoal · comprometido) — desktop e mobile
-- [ ] Modal de lançamento rápido (F2)
-- [ ] Campo/fluxo de lançamento por IA com card de confirmação (F3)
-- [ ] **Tela do split de recebimento (F4)** ⭐ — a tela mais importante do produto; prototipar primeiro e testar (H4)
-- [ ] Lista de transações com filtro PF/PJ e busca
+- [ ] Home (3 numbers: PJ result · personal available · committed) — desktop and mobile
+- [ ] Quick-entry modal (F2)
+- [ ] AI entry field/flow with a confirmation card (F3)
+- [ ] **Income split screen (F4)** ⭐ — the most important screen in the product; prototype first and test (H4)
+- [ ] Transaction list with a PF/PJ filter and search
 
-### Cartão
+### Card
 
-- [ ] Lista de cartões
-- [ ] Tela do cartão = lista de faturas
-- [ ] Detalhe da fatura (transações do ciclo, parcelas, PF vs PJ, status)
+- [ ] Card list
+- [ ] The card screen = a statement list
+- [ ] Statement detail (the cycle's transactions, installments, PF vs PJ, status)
 
 ### PJ
 
-- [ ] Painel PJ (faturamento, provisionado, disponível, teto MEI com barra)
-- [ ] Provisões (lista + marcar como pago)
+- [ ] PJ panel (revenue, provisioned, available, MEI ceiling with a bar)
+- [ ] Provisions (list + mark as paid)
 
-### Fechamento e dados
+### Closing and data
 
-- [ ] Resumo mensal / fechar o mês (F7)
-- [ ] Configurações (regime fiscal, % split, categorias)
-- [ ] Exportação de dados
+- [ ] Monthly summary / close the month (F7)
+- [ ] Settings (fiscal regime, split %, categories)
+- [ ] Data export
 
-### Estados
+### States
 
-- [ ] Home vazia (tutorial com dados de exemplo)
-- [ ] Erro de IA (degradação para formulário)
-- [ ] Offline (PWA, fila de sync)
+- [ ] Empty home (a tutorial with sample data)
+- [ ] AI error (degradation to a form)
+- [ ] Offline (PWA, sync queue)
 
-## Convenção de nomes dos exports
+## Export naming convention
 
-`NN-nome-da-tela--vX.png` (ex.: `04-split-recebimento--v2.png`)
+`NN-screen-name--vX.png` (e.g. `04-split-recebimento--v2.png`)
 
-## Ordem de prototipagem (para o teste de H4)
+## Prototyping order (for the H4 test)
 
-1. Split de recebimento → 2. Home → 3. Lançamento rápido → 4. Fatura do cartão → resto
+1. Income split → 2. Home → 3. Quick entry → 4. Card statement → the rest
