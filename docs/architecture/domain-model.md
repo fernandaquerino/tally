@@ -1,75 +1,77 @@
-# Modelo de Domínio — Tally
+# Domain Model — Tally
 
-> Linguagem ubíqua + regras de negócio. O modelo de dados (tabelas) está em `data-model.md`.
+> Ubiquitous language + business rules. The data model (tables) is in `data-model.md`.
 
-## Conceitos centrais
+## Core concepts
 
-### Context (Contexto) — o coração do Tally
+### Context — the heart of Tally
 
-Todo dinheiro pertence a um contexto: **PF** (pessoal) ou **PJ** (empresa). Um usuário tem 1 contexto PF e 0..1 contexto PJ no MVP (multi-CNPJ fica pra depois).
+All money belongs to a context: **PF** (personal) or **PJ** (company). A user has 1 PF context and 0..1 PJ context in the MVP (multi-CNPJ is for later).
 
-- O contexto PJ carrega o **FiscalProfile**: regime (MEI | SIMPLES), faixa, alíquota efetiva, teto anual.
-- Regra: alíquotas/tetos são **configuração versionada** (tabela `fiscal_rules` com vigência), nunca hardcode — a reforma tributária vai mexer nisso.
+- The PJ context carries the **FiscalProfile**: regime (MEI | SIMPLES), bracket, effective rate, annual ceiling.
+- Rule: rates/ceilings are **versioned configuration** (a `fiscal_rules` table with validity), never hardcoded — the tax reform will change this.
 
-### Account (Conta)
+### Account
 
-Onde dinheiro fica: conta corrente, carteira, **reserva**. Pertence a um contexto. Tem saldo derivado (nunca armazenado como verdade — sempre recalculável das transações; snapshot materializado apenas como cache invalidável).
+Where money sits: checking account, wallet, **reserve**. Belongs to a context. Has a derived balance (never stored as truth — always recomputable from transactions; a materialized snapshot only as an invalidatable cache).
 
-### Card (Cartão) e Invoice (Fatura) — ADR-0005
+### Card and Invoice — ADR-0005
 
-- Cartão NÃO é conta. Gasto no cartão não mexe em saldo de conta.
-- Cartão tem `closing_day` e `due_day`. Fatura = agrupador de transações por ciclo (competência).
-- Um cartão pode receber gastos PF **e** PJ (cartão misto) — o contexto vive na transação, não no cartão.
-- **Pagamento da fatura** = transação de conta (caixa) vinculada à fatura.
-- Parcelamento: compra de N parcelas gera N transações, uma por fatura futura, ligadas por `installment_group_id`.
-- Estados da fatura: `open → closed → paid` (parcial permitido: `partially_paid`).
+- A card is NOT an account. A card purchase doesn't move an account's balance.
+- A card has a `closing_day` and a `due_day`. An invoice = a grouping of transactions by cycle (accrual).
+- A card can receive PF **and** PJ purchases (a mixed card) — the context lives on the transaction, not on the card.
+- **Paying the invoice** = an account transaction (cash) linked to the invoice.
+- Installments: an N-installment purchase generates N transactions, one per future invoice, linked by `installment_group_id`.
+- Invoice states: `open → closed → paid` (partial allowed: `partially_paid`).
 
-### Transaction (Transação)
+### Transaction
 
-Evento financeiro atômico. Sempre tem: valor (centavos, ADR-0006), contexto, categoria, data de competência, e **ou** uma conta **ou** uma fatura (nunca ambos).
-Tipos: `income` | `expense` | `transfer` (par de pernas ligadas por `transfer_id`).
+An atomic financial event. Always has: amount (cents, ADR-0006), context, category, accrual date, and **either** an account **or** an invoice (never both).
+Types: `income` | `expense` | `transfer` (a pair of legs linked by `transfer_id`).
 
-### Split (Divisor de recebimento) — o diferencial
+### Split (income splitter) — the differentiator
 
-Aplicado a uma receita PJ. Gera, em transação atômica:
+Applied to PJ income. Generates, in an atomic transaction:
 
-1. **Provision** de imposto (compromisso futuro, não é despesa ainda)
-2. Transfer para conta-reserva
-3. **Pró-labore**: transfer especial **PJ → PF** (a única ponte entre contextos)
-   Regras: percentuais vêm do FiscalProfile + preferências; usuário pode ajustar por recebimento; tudo referencia o `split_id` (auditabilidade).
+1. A tax **Provision** (a future commitment, not an expense yet)
+2. A transfer to the reserve account
+3. **Owner's draw**: a special **PJ → PF** transfer (the only bridge between contexts)
+   Rules: percentages come from the FiscalProfile + preferences; the user can adjust per income; everything references the `split_id` (auditability).
 
-### Provision (Provisão)
+### Provision
 
-Dinheiro comprometido com destino certo (DAS, IR). Estados: `pending → paid` (vira despesa PJ realizada) ou `cancelled`. Alimenta o número "comprometido futuro" da home e os lembretes.
+Money committed to a certain destination (DAS, IR). States: `pending → paid` (becomes a realized PJ expense) or `cancelled`. Feeds the home's "future committed" number and the reminders.
 
-### Category (Categoria)
+### Category
 
-Por contexto (categorias PJ ≠ PF), com defaults de sistema + customizadas. Soft-delete apenas (transações históricas apontam pra ela).
+Per context (PJ categories ≠ PF), with system defaults + custom ones. Soft-delete only (historical transactions point to it).
 
-### Insight / Alert (IA)
+### Insight / Alert (AI)
 
-Saída da IA v1: `weekly_summary`, `provision_reminder`, `anomaly`, `mei_ceiling`. Sempre com payload das evidências (transações que o geraram) — princípio "números que batem".
+AI v1 output: `weekly_summary`, `provision_reminder`, `anomaly`, `mei_ceiling`. Always with the evidence payload (the transactions that generated it) — the "numbers that add up" principle.
 
-### Household (v2 — modelar cedo, implementar depois)
+### Household (v2 — model early, implement later)
 
-Agrupa usuários (família). No MVP: todo usuário tem um household de 1 pessoa. Custo de criar a entidade agora: baixo. Custo de retrofit multi-tenant depois: alto. Toda query já filtra por household_id.
+Groups users (a family). In the MVP: every user has a 1-person household. The cost of creating the entity now: low. The cost of a multi-tenant retrofit later: high. Every query already filters by household_id.
 
-## Invariantes (testes obrigatórios)
+## Invariants (mandatory tests)
 
-1. Soma das pernas de um transfer = 0.
-2. Transação tem conta XOR fatura.
-3. Pró-labore é o único fluxo PJ→PF; não existe PF→PJ no MVP (aporte fica pra depois).
-4. Saldo de conta = Σ transações da conta (propriedade verificável; job de reconciliação diária loga divergência como incidente).
-5. Σ parcelas de um installment_group = valor total da compra (centavos: sobra na última parcela).
-6. Fatura fechada é imutável (correções = transação de ajuste, nunca edição).
-7. Provisão paga gera exatamente 1 despesa vinculada.
+1. The sum of a transfer's legs = 0.
+2. A transaction has an account XOR an invoice.
+3. The owner's draw is the only PF←PJ flow; there's no PF→PJ in the MVP (a capital contribution is for later).
+4. Account balance = Σ the account's transactions (a verifiable property; a daily reconciliation job logs divergence as an incident).
+5. Σ of an installment_group's installments = the purchase's total amount (cents: the remainder on the last installment).
+6. A closed invoice is immutable (corrections = an adjustment transaction, never an edit).
+7. A paid provision generates exactly 1 linked expense.
 
-## Glossário (linguagem do produto)
+## Glossary (the product's language)
 
-| Termo técnico | Como o produto fala     |
-| ------------- | ----------------------- |
-| Pró-labore    | "Seu salário"           |
-| Provisão      | "Separado para imposto" |
-| Competência   | "Mês da compra"         |
-| Caixa         | "Quando o dinheiro sai" |
-| Contexto      | "Pessoal / Empresa"     |
+> UI copy in the right column is kept in Brazilian Portuguese (product's displayed text).
+
+| Technical term | How the product says it |
+| -------------- | ----------------------- |
+| Owner's draw   | "Seu salário"           |
+| Provision      | "Separado para imposto" |
+| Accrual        | "Mês da compra"         |
+| Cash           | "Quando o dinheiro sai" |
+| Context        | "Pessoal / Empresa"     |

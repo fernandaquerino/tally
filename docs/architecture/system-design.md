@@ -1,81 +1,82 @@
 # System Design — Tally MVP
 
-## Requisitos
+## Requirements
 
-### Funcionais (do mvp-scope.md)
+### Functional (from mvp-scope.md)
 
-Registro de transações (form + linguagem natural via IA) · contextos PF/PJ · cartão por fatura · split de recebimento com provisões · painel PJ · resumo mensal · alertas/resumo semanal · exportação CSV · auth.
+Transaction entry (form + natural language via AI) · PF/PJ contexts · card by statement · income split with provisions · PJ panel · monthly summary · alerts/weekly summary · CSV export · auth.
 
-### Não-funcionais
+### Non-functional
 
-| Requisito                     | Alvo                                             | Racional                    |
-| ----------------------------- | ------------------------------------------------ | --------------------------- |
-| Latência p95 (CRUD transação) | <300ms                                           | Promessa dos 10s            |
-| Disponibilidade               | ≥99,5%                                           | Solo dev; sem SLA agressivo |
-| Escala inicial                | ~1k usuários, ~100 req/s pico                    | MVP; não superengenheirar   |
-| Integridade de dados          | Zero perda; auditável                            | Diferencial de confiança    |
-| Custo                         | <US$ 50/mês infra + teto de IA                   | Bootstrapped                |
-| Time                          | 1 dev (também objetivo de aprendizado Next/Nest) | Simplicidade > elegância    |
+| Requirement                      | Target                                           | Rationale                   |
+| -------------------------------- | ------------------------------------------------ | --------------------------- |
+| p95 latency (transaction CRUD)   | <300ms                                           | The 10s promise             |
+| Availability                     | ≥99.5%                                           | Solo dev; no aggressive SLA |
+| Initial scale                    | ~1k users, ~100 req/s peak                       | MVP; don't over-engineer    |
+| Data integrity                   | Zero loss; auditable                             | Trust differentiator        |
+| Cost                             | <US$ 50/month infra + an AI cap                  | Bootstrapped                |
+| Team                             | 1 dev (also a Next/Nest learning goal)           | Simplicity > elegance       |
 
-## Visão de alto nível
+## High-level view
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │  Browser (desktop / mobile PWA)                              │
-│  Next.js (App Router) — SSR/ISR marketing + SPA autenticada  │
+│  Next.js (App Router) — SSR/ISR marketing + authenticated SPA│
 └──────────────┬──────────────────────────────────────────────┘
-               │ HTTPS (REST/JSON, cookies httpOnly)
+               │ HTTPS (REST/JSON, httpOnly cookies)
 ┌──────────────▼──────────────────────────────────────────────┐
-│  NestJS API (monólito modular)                               │
-│  módulos: auth · users · households(v2) · contexts ·         │
+│  NestJS API (modular monolith)                               │
+│  modules: auth · users · households(v2) · contexts ·         │
 │  accounts · cards · invoices · transactions · splits ·       │
-│  provisions · categories · insights(IA) · exports · jobs     │
+│  provisions · categories · insights(AI) · exports · jobs     │
 └───────┬───────────────────────┬─────────────────┬───────────┘
         │ Prisma                │ BullMQ          │ HTTPS
 ┌───────▼────────┐     ┌────────▼───────┐  ┌──────▼──────────┐
-│  PostgreSQL    │     │  Redis (filas, │  │  LLM API        │
-│  (fonte única  │     │  cache leve)   │  │  (categorizar,  │
-│  de verdade)   │     │                │  │  parsear, resumo)│
+│  PostgreSQL    │     │  Redis (queues,│  │  LLM API        │
+│  (single       │     │  light cache)  │  │  (categorize,   │
+│  source of     │     │                │  │  parse, summary)│
+│  truth)        │     │                │  │                 │
 └────────────────┘     └────────────────┘  └─────────────────┘
 ```
 
-Decisões-chave: monólito modular (não microserviços — ADR implícito: time de 1), REST (não GraphQL: menos superfície de aprendizado e de segurança), fonte única de verdade no servidor (anti-lição Mobills: nada de estado autoritativo no cliente).
+Key decisions: a modular monolith (not microservices — implicit ADR: a team of 1), REST (not GraphQL: less learning and security surface), a single source of truth on the server (anti-Mobills lesson: no authoritative state on the client).
 
-## Fluxos críticos
+## Critical flows
 
-### Lançamento por linguagem natural (F3)
+### Natural-language entry (F3)
 
 ```
 1. POST /ai/parse-transaction {text}
-2. Nest → LLM (prompt com categorias do usuário + contextos) → JSON estruturado
-3. Resposta = PROPOSTA (não persiste)
-4. Usuário confirma → POST /transactions (payload normal)
-5. Correções do usuário viram sinal (tabela ai_feedback) p/ few-shot futuro
+2. Nest → LLM (prompt with the user's categories + contexts) → structured JSON
+3. Response = PROPOSAL (doesn't persist)
+4. User confirms → POST /transactions (normal payload)
+5. User corrections become a signal (ai_feedback table) for future few-shot
 ```
 
-Regras: timeout 5s com fallback pro formulário; validação Zod/class-validator do JSON da LLM (nunca confiar na saída); custo controlado: modelo pequeno + cache de padrões repetidos do usuário.
+Rules: 5s timeout with a fallback to the form; Zod/class-validator validation of the LLM's JSON (never trust the output); controlled cost: a small model + cache of the user's repeated patterns.
 
-### Split de recebimento (F4) — transacional
+### Income split (F4) — transactional
 
 ```
 POST /transactions/:id/split {rules}
-→ Em UMA transação de banco (Prisma $transaction):
-   1. receita PJ (já criada)
-   2. provision (imposto) — status: pending, due_date
-   3. transfer reserva (PJ → conta-reserva)
-   4. transfer pró-labore (contexto PJ → contexto PF)
-→ Tudo referencia split_id (auditabilidade: clicar no número → ver origem)
+→ In ONE database transaction (Prisma $transaction):
+   1. PJ income (already created)
+   2. provision (tax) — status: pending, due_date
+   3. reserve transfer (PJ → reserve account)
+   4. owner's-draw transfer (PJ context → PF context)
+→ Everything references split_id (auditability: click the number → see the origin)
 ```
 
-### Jobs assíncronos (BullMQ)
+### Asynchronous jobs (BullMQ)
 
-- `weekly-summary`: cron semanal → agrega mês do usuário → LLM gera 3 frases → e-mail + in-app
-- `provision-reminders`: cron diário → provisões a vencer em 7/1 dias → notificação
-- `invoice-close`: cron diário → fecha faturas cujo ciclo terminou
-- `anomaly-check` (básico): gasto > Nx média da categoria → alerta
-  Racional do Redis/BullMQ: só para jobs; se pesar no início, degrada para cron simples (@nestjs/schedule) sem Redis — decisão reversível.
+- `weekly-summary`: a weekly cron → aggregates the user's month → the LLM generates 3 sentences → email + in-app
+- `provision-reminders`: a daily cron → provisions due in 7/1 days → notification
+- `invoice-close`: a daily cron → closes statements whose cycle ended
+- `anomaly-check` (basic): spend > Nx the category's average → alert
+  Rationale for Redis/BullMQ: only for jobs; if it gets heavy early, degrade to a simple cron (@nestjs/schedule) without Redis — a reversible decision.
 
-## API (esboço dos recursos principais)
+## API (sketch of the main resources)
 
 ```
 POST   /auth/register | /auth/login | /auth/refresh
@@ -90,33 +91,33 @@ GET    /reports/monthly?month= · GET /reports/pj-panel
 GET    /exports/full (CSV/JSON)
 ```
 
-Convenções: paginação cursor-based em /transactions; idempotency-key em POSTs de escrita (retry seguro no PWA offline); versionamento /v1 desde o início.
+Conventions: cursor-based pagination on /transactions; an idempotency-key on write POSTs (safe retry on the offline PWA); /v1 versioning from the start.
 
-## PWA / offline (escopo mínimo)
+## PWA / offline (minimum scope)
 
-- Instalável (manifest + service worker)
-- Fila local (IndexedDB) só para CRIAÇÃO de transações offline → flush com idempotency-key
-- Leituras offline: último snapshot cacheado, marcado como "desatualizado"
-- Fora do escopo: edição offline, resolução de conflito complexa (fonte de bugs; anti-lição Wallet)
+- Installable (manifest + service worker)
+- A local queue (IndexedDB) only for CREATING transactions offline → flush with an idempotency-key
+- Offline reads: the last cached snapshot, marked as "stale"
+- Out of scope: offline editing, complex conflict resolution (a source of bugs; anti-Wallet lesson)
 
-## Observabilidade
+## Observability
 
-- Logs estruturados (pino) + request-id
+- Structured logs (pino) + request-id
 - Sentry (front + API)
-- Métricas de guardrail: latência p95, erros 5xx, custo IA/dia
-- Health checks p/ deploy
+- Guardrail metrics: p95 latency, 5xx errors, AI cost/day
+- Health checks for deploy
 
 ## Deploy (MVP)
 
-- Front: Vercel (Next nativo)
-- API + Postgres + Redis: Railway/Fly/Render (1 região, São Paulo se possível)
-- Migrations: Prisma Migrate no CI antes do deploy
-- Backups: snapshot diário do Postgres + teste de restore mensal (ritual, não só config)
+- Front: Vercel (native Next)
+- API + Postgres + Redis: Railway/Fly/Render (1 region, São Paulo if possible)
+- Migrations: Prisma Migrate in CI before the deploy
+- Backups: daily Postgres snapshot + a monthly restore test (a ritual, not just config)
 
-## O que revisitar quando crescer
+## What to revisit when it grows
 
-- Separar workers de API (mesmo código, processos distintos)
-- Read replicas se relatórios pesarem
-- Fila de e-mail dedicada
-- Rate limit por plano (hoje: global por IP+user)
-- Multi-região: não antes de milhares de usuários
+- Separate the workers from the API (same code, distinct processes)
+- Read replicas if reports get heavy
+- A dedicated email queue
+- Rate limit per plan (today: global per IP+user)
+- Multi-region: not before thousands of users
