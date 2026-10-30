@@ -1,54 +1,54 @@
-# Plano de Pesquisa — Discovery Tally
+# Research Plan — Tally Discovery
 
-## Objetivos
+## Goals
 
-1. Validar que o PJ híbrido (MEI/freelancer/consultor) sente a dor da mistura PF/PJ com intensidade suficiente para trocar de ferramenta (H1).
-2. Descobrir disposição a pagar e âncoras de preço (H2).
-3. Testar se registro manual assistido por IA sustenta o uso sem Open Finance (H3).
-4. Verificar se o "divisor de recebimento" gera o momento AHA (H4).
-5. Entender o papel da conta família na decisão (aquisição vs. upgrade) (H5).
+1. Validate that the PJ hybrid (MEI/freelancer/consultant) feels the PF/PJ mixing pain intensely enough to switch tools (H1).
+2. Discover willingness to pay and price anchors (H2).
+3. Test whether AI-assisted manual entry sustains use without Open Finance (H3).
+4. Test whether the "income splitter" generates the AHA moment (H4).
+5. Understand the role of the family account in the decision (acquisition vs. upgrade) (H5).
 
-## Métodos
+## Methods
 
-| Método                                          | O que responde                           | Quando      | Meta                          |
+| Method                                          | What it answers                          | When        | Target                        |
 | ----------------------------------------------- | ---------------------------------------- | ----------- | ----------------------------- |
-| Entrevistas em profundidade (45–60 min, remoto) | H1, H2, H5, contexto e vocabulário       | Semanas 1–2 | 10–12 pessoas                 |
-| Teste de protótipo navegável (Figma, moderado)  | H4, fluxos e compreensão                 | Semanas 3–4 | 5–8 pessoas                   |
-| Landing page + waitlist com teste de preço      | H2 (reforço), mensagem de posicionamento | Semana 3+   | 200+ visitas, medir conversão |
-| Análise de reviews e comunidades (contínua)     | Dores dos concorrentes, vocabulário      | Contínuo    | —                             |
-| Beta fechado (pós-build)                        | H3, retenção real                        | Pós-MVP     | 30–50 usuários                |
+| In-depth interviews (45–60 min, remote)         | H1, H2, H5, context and vocabulary       | Weeks 1–2   | 10–12 people                  |
+| Navigable prototype test (Figma, moderated)     | H4, flows and comprehension              | Weeks 3–4   | 5–8 people                    |
+| Landing page + waitlist with a price test       | H2 (reinforcement), positioning message  | Week 3+     | 200+ visits, measure conversion |
+| Review and community analysis (ongoing)         | Competitors' pains, vocabulary           | Ongoing     | —                             |
+| Closed beta (post-build)                        | H3, real retention                       | Post-MVP    | 30–50 users                   |
 
-## Recrutamento (entrevistas)
+## Recruitment (interviews)
 
-**Perfil-alvo:** 25–45 anos, MEI ou PJ (Simples), fatura R$ 3k–25k/mês, emite nota, renda variável.
+**Target profile:** 25–45 years old, MEI or PJ (Simples), bills R$ 3k–25k/month, issues invoices, variable income.
 
-**Mix desejado (10–12):**
+**Desired mix (10–12):**
 
-- 3–4 que nunca usaram app de finanças (por quê?)
-- 3–4 que usaram e desistiram (o ouro está aqui)
-- 2–3 que usam algo hoje (o que os prende?)
-- 1–2 que dividem finanças com parceiro(a)
-- Variar profissões: dev/designer freelancer, consultor, profissional de saúde/beleza, prestador de serviço local
+- 3–4 who have never used a finance app (why?)
+- 3–4 who used one and quit (the gold is here)
+- 2–3 who use something today (what keeps them?)
+- 1–2 who split finances with a partner
+- Vary occupations: freelance dev/designer, consultant, health/beauty professional, local service provider
 
-**Canais:** rede pessoal (evitar amigos próximos demais), grupos de MEI/freelancer no WhatsApp/Facebook, LinkedIn, comunidades dev/design, indicação em bola de neve (última pergunta do roteiro).
+**Channels:** personal network (avoid friends who are too close), MEI/freelancer groups on WhatsApp/Facebook, LinkedIn, dev/design communities, snowball referral (the script's last question).
 
-**Incentivo:** agradecimento + acesso antecipado ao beta (evitar pagar em dinheiro nesta fase; atrai perfil errado).
+**Incentive:** a thank-you + early access to the beta (avoid paying cash at this stage; it attracts the wrong profile).
 
-## Critérios de invalidação (decididos ANTES de coletar)
+## Invalidation criteria (decided BEFORE collecting)
 
-- H1 invalidada se <60% relatarem a dor PF/PJ espontaneamente (sem eu induzir).
-- H2 invalidada se, mesmo entre quem tem a dor, a âncora dominante for "só uso se for grátis".
-- H4 invalidada se a reação ao divisor no protótipo for morna ("ah, legal") em vez de desejo ("quando lança?").
+- H1 invalidated if <60% report the PF/PJ pain spontaneously (without me prompting).
+- H2 invalidated if, even among those with the pain, the dominant anchor is "I'll only use it if it's free".
+- H4 invalidated if the reaction to the splitter in the prototype is lukewarm ("oh, nice") instead of desire ("when does it launch?").
 
-## Vieses a controlar
+## Biases to control
 
-- **Viés de confirmação**: eu quero que a tese seja verdade. Mitigação: perguntas sobre comportamento passado, nunca opinião sobre a ideia; só apresentar o conceito no fim.
-- **Amostra enviesada**: recrutar fora da bolha tech (pelo menos 4 não-tech).
-- **Mom test**: nunca perguntar "você usaria?"; perguntar "como você fez da última vez?".
+- **Confirmation bias**: I want the thesis to be true. Mitigation: questions about past behavior, never an opinion about the idea; only present the concept at the end.
+- **Biased sample**: recruit outside the tech bubble (at least 4 non-tech).
+- **Mom test**: never ask "would you use it?"; ask "how did you do it last time?".
 
-## Entregáveis
+## Deliverables
 
-- Notas por entrevista em `interview-notes/` (template incluso)
-- Síntese em `insights.md` após cada 4 entrevistas
-- Atualização de `assumptions.md` com status das hipóteses
-- Decisão go/pivot/kill do escopo do MVP ao final da rodada
+- Notes per interview in `interview-notes/` (template included)
+- A synthesis in `insights.md` after every 4 interviews
+- An update of `assumptions.md` with the hypotheses' status
+- A go/pivot/kill decision on the MVP scope at the end of the round

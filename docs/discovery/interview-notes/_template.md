@@ -1,48 +1,48 @@
-# Entrevista NN — [Nome fictício]
+# Interview NN — [Fictional name]
 
-**Data:** · **Duração:** · **Canal:** remoto/presencial
-**Perfil:** idade ~ · profissão · MEI/PJ Simples · faturamento aproximado · tempo de PJ
-**Recrutado via:**
+**Date:** · **Duration:** · **Channel:** remote/in-person
+**Profile:** age ~ · occupation · MEI/PJ Simples · approximate revenue · time as a PJ
+**Recruited via:**
 
-## Resumo em 3 frases
+## 3-sentence summary
 
-## Como lida com dinheiro hoje
+## How they deal with money today
 
-- Ferramentas:
-- Separação PF/PJ:
-- Rotina de imposto:
+- Tools:
+- PF/PJ separation:
+- Tax routine:
 
-## Histórias marcantes (comportamento passado)
+## Notable stories (past behavior)
 
 1.
 2.
 
-## Quotes literais ⭐
+## Literal quotes ⭐
 
 > ""
 > ""
 
-## Ferramentas que tentou e abandonou — e por quê
+## Tools they tried and abandoned — and why
 
-## Reação ao conceito (divisor de recebimento)
+## Reaction to the concept (income splitter)
 
-- Primeira reação:
-- Objeções:
-- Sinal de desejo real? (pediu acesso? perguntou preço?) sim/não
+- First reaction:
+- Objections:
+- A sign of real desire? (asked for access? asked about the price?) yes/no
 
-## Evidência sobre hipóteses
+## Evidence on the hypotheses
 
-| Hipótese       | Suporta / Contradiz / Neutro | Evidência |
-| -------------- | ---------------------------- | --------- |
-| H1 dor PF/PJ   |                              |           |
-| H2 pagaria     |                              |           |
-| H3 manual ok   |                              |           |
-| H4 AHA divisor |                              |           |
-| H5 família     |                              |           |
+| Hypothesis      | Supports / Contradicts / Neutral | Evidence |
+| --------------- | -------------------------------- | -------- |
+| H1 PF/PJ pain   |                                  |          |
+| H2 would pay    |                                  |          |
+| H3 manual ok    |                                  |          |
+| H4 splitter AHA |                                  |          |
+| H5 family       |                                  |          |
 
-## Insights derivados (linkar em insights.md)
+## Derived insights (link in insights.md)
 
 ## Follow-up
 
-- [ ] Adicionar à waitlist do beta
-- [ ] Indicações recebidas:
+- [ ] Add to the beta waitlist
+- [ ] Referrals received:

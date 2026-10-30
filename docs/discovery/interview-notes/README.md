@@ -1,4 +1,4 @@
-# Notas de Entrevistas
+# Interview Notes
 
-Uma entrevista = um arquivo. Nomeie: `NN-nome-ficticio.md` (ex.: `01-rafael-dev.md`).
-Preencher em até 24h após a conversa (memória decai rápido). Usar o template abaixo.
+One interview = one file. Name it: `NN-fictional-name.md` (e.g. `01-rafael-dev.md`).
+Fill it within 24h of the conversation (memory decays fast). Use the template below.
